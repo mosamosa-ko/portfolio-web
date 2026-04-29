@@ -163,7 +163,7 @@ export function XrayPortfolioHero() {
         <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:radial-gradient(rgba(17,17,17,0.42)_0.7px,transparent_0.7px)] [background-size:7px_7px]" />
 
         <div className="absolute left-6 top-6 z-10 text-[0.54rem] uppercase tracking-[0.32em] text-black/34 sm:left-10 sm:top-8">
-          Soft X-ray Portfolio
+          Portfolio Baggage
         </div>
 
         <div className="absolute left-6 top-[17%] z-10 max-w-3xl sm:left-10 lg:left-16">
