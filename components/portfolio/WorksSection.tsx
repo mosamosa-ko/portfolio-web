@@ -182,6 +182,9 @@ function RetroMacDesktop() {
           </div>
           <div className="border border-black bg-white p-2">
             <Image src="/models/ad.png" alt="Terraplot app preview" width={900} height={540} className="h-auto w-full" />
+            <p className="mt-2 text-right font-mono text-[10px] uppercase tracking-[0.18em] text-black/35">
+              Concept visual
+            </p>
           </div>
         </div>
       );
