@@ -2,15 +2,88 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrthographicCamera } from "@react-three/drei";
-import { motion, useReducedMotion } from "framer-motion";
+import { OrthographicCamera, useProgress } from "@react-three/drei";
+import { motion } from "framer-motion";
 import { SuitcaseModel } from "./SuitcaseModel";
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-function SceneContent({ progress }: { progress: number }) {
+function LoadingScreen({ ready }: { ready: boolean }) {
+  const { progress } = useProgress();
+  const displayProgress = ready ? 100 : Math.min(98, Math.round(progress));
+  const progressBlocks = Math.max(1, Math.round(displayProgress / 5));
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050708] px-6 text-[#d9f7ff]"
+      initial={false}
+      animate={{ opacity: ready ? 0 : 1, pointerEvents: ready ? "none" : "auto" }}
+      transition={{ duration: 0.55, ease: "easeOut" }}
+    >
+      <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:100%_4px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(143,199,221,0.14),transparent_42%)]" />
+
+      <div className="relative w-full max-w-5xl font-mono">
+        <div className="mb-7 flex items-center justify-between gap-4 border-b border-white/12 pb-4 text-xs uppercase tracking-[0.3em] text-white/38">
+          <span className="flex items-center gap-2">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-[#8fc7dd]" />
+            X-ray baggage boot
+          </span>
+          <span>portfolio scanner</span>
+        </div>
+
+        <pre className="overflow-x-auto text-[0.48rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#8fc7dd] drop-shadow-[0_0_14px_rgba(143,199,221,0.22)] sm:text-[0.72rem] lg:text-[0.92rem]">
+{String.raw`
+  __        ______     ______     ______     _____     __     __   __     ______
+ /\ \      /\  __ \   /\  __ \   /\  ___\   /\  __-.  /\ \   /\ "-.\ \   /\  ___\
+ \ \ \____ \ \ \/\ \  \ \  __ \  \ \ \____  \ \ \/\ \ \ \ \  \ \ \-.  \  \ \ \__ \
+  \ \_____\ \ \_____\  \ \_\ \_\  \ \_____\  \ \____-  \ \_\  \ \_\\"\_\  \ \_____\
+   \/_____/  \/_____/   \/_/\/_/   \/_____/   \/____/   \/_/   \/_/ \/_/   \/_____/
+
+        .---------------------------------------------------------------.
+       /  .----------------------------------------------------------.  /|
+      /  /                                                          /  / |
+     /  /      KO YAMASAKI / PORTFOLIO BAGGAGE                    /  /  |
+    /  /      XRAY MATERIAL PASS                                  /  /   |
+   /  /__________________________________________________________/  /    |
+  |   |                                                          |   |   |
+  |   |   [ CPU ] [ GRAPH ] [ APP ] [ MAP ] [ SYSTEMS ]          |   |   |
+  |   |                                                          |   |  /
+  |   |__________________________________________________________|   | /
+  |  /____________________________________________________________\  |/
+  '---------------------------------------------------------------'
+`}
+        </pre>
+
+        <div className="mt-8 grid gap-3 border border-white/12 bg-white/[0.03] p-4 text-xs uppercase tracking-[0.18em] text-white/42 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div>
+            <div className="mb-2 flex justify-between gap-4">
+              <span>scan target: /models/new_suitcase.glb</span>
+              <span>{displayProgress}%</span>
+            </div>
+            <div className="h-3 border border-[#8fc7dd]/42 p-[2px]">
+              <div className="h-full bg-[#8fc7dd] transition-all duration-300" style={{ width: `${displayProgress}%` }} />
+            </div>
+          </div>
+          <div className="whitespace-nowrap text-[#8fc7dd]">
+            {"█".repeat(progressBlocks)}
+            <span className="text-white/18">{"░".repeat(20 - progressBlocks)}</span>
+          </div>
+        </div>
+
+        <div className="mt-5 flex flex-wrap justify-between gap-3 text-xs uppercase tracking-[0.2em] text-white/30">
+          <span>loading model</span>
+          <span>applying transparent x-ray material</span>
+          <span>please keep baggage on belt</span>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function SceneContent({ progress, onModelReady }: { progress: number; onModelReady: () => void }) {
   const zoom = 104 + progress * 8;
 
   return (
@@ -21,22 +94,17 @@ function SceneContent({ progress }: { progress: number }) {
       <directionalLight position={[3, 4, 5]} intensity={0.35} color="#ffffff" />
       <directionalLight position={[-3, 2, 3]} intensity={0.18} color="#f3fbff" />
       <pointLight position={[1.1, 0.2, 3.4]} intensity={0.22} color="#ffffff" distance={6} />
-      <SuitcaseModel scanProgress={progress} activeIndex={progress < 0.42 ? 0 : progress < 0.72 ? 1 : 2} />
+      <SuitcaseModel scanProgress={progress} activeIndex={progress < 0.42 ? 0 : progress < 0.72 ? 1 : 2} onReady={onModelReady} />
     </>
   );
 }
 
 export function XrayPortfolioHero() {
-  const reducedMotion = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [modelReady, setModelReady] = useState(false);
 
   useEffect(() => {
-    if (reducedMotion) {
-      setScrollProgress(0.54);
-      return;
-    }
-
     const handleScroll = () => {
       const section = sectionRef.current;
       const viewport = window.innerHeight || 1;
@@ -55,7 +123,7 @@ export function XrayPortfolioHero() {
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [reducedMotion]);
+  }, []);
 
   const progress = useMemo(() => clamp(scrollProgress, 0, 1), [scrollProgress]);
 
@@ -66,8 +134,8 @@ export function XrayPortfolioHero() {
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className="absolute inset-0">
-          <Canvas dpr={[0.85, 1.15]} gl={{ antialias: true, alpha: false, powerPreference: "low-power" }}>
-            <SceneContent progress={progress} />
+          <Canvas dpr={[0.6, 0.9]} frameloop="demand" gl={{ antialias: false, alpha: false, powerPreference: "low-power" }}>
+            <SceneContent progress={progress} onModelReady={() => setModelReady(true)} />
           </Canvas>
         </div>
 
@@ -120,6 +188,7 @@ export function XrayPortfolioHero() {
           <span>{String(Math.round(progress * 100)).padStart(2, "0")}%</span>
         </div>
       </div>
+      <LoadingScreen ready={modelReady} />
     </section>
   );
 }

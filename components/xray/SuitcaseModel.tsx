@@ -1,16 +1,13 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { Suspense, useEffect, useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import {
   Box3,
   DoubleSide,
   EdgesGeometry,
-  Group,
   LineBasicMaterial,
   LineSegments,
-  MathUtils,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
@@ -21,6 +18,7 @@ import {
 type SuitcaseModelProps = {
   scanProgress: number;
   activeIndex: number;
+  onReady?: () => void;
 };
 
 const XRAY_COLORS = {
@@ -32,7 +30,7 @@ const XRAY_COLORS = {
 
 const XRAY_OPACITY = {
   shell: 0.012,
-  shellEdge: 0.24,
+  shellEdge: 0.18,
   inner: 0.52,
 };
 
@@ -64,6 +62,15 @@ function disposeMaterial(mesh: Mesh) {
   }
 
   material?.dispose?.();
+}
+
+function shouldDrawShellEdges(mesh: Mesh) {
+  const name = `${mesh.name} ${mesh.parent?.name ?? ""}`.toLowerCase();
+  const geometry = mesh.geometry;
+  const vertexCount = geometry.getAttribute("position")?.count ?? 0;
+
+  if (vertexCount > 9000) return false;
+  return /(suitcase|case|shell|handle|cube\.001|cube\.031)/i.test(name);
 }
 
 function overrideXrayMaterials(root: Object3D) {
@@ -104,18 +111,20 @@ function overrideXrayMaterials(root: Object3D) {
       });
       mesh.renderOrder = 1;
 
-      const edgeLines = new LineSegments(
-        new EdgesGeometry(mesh.geometry, 20),
-        new LineBasicMaterial({
-          color: XRAY_COLORS.shellEdge,
-          transparent: true,
-          opacity: XRAY_OPACITY.shellEdge,
-          depthWrite: false,
-        }),
-      );
-      edgeLines.name = `${mesh.name}-soft-edge`;
-      edgeLines.renderOrder = 3;
-      mesh.add(edgeLines);
+      if (shouldDrawShellEdges(mesh)) {
+        const edgeLines = new LineSegments(
+          new EdgesGeometry(mesh.geometry, 28),
+          new LineBasicMaterial({
+            color: XRAY_COLORS.shellEdge,
+            transparent: true,
+            opacity: XRAY_OPACITY.shellEdge,
+            depthWrite: false,
+          }),
+        );
+        edgeLines.name = `${mesh.name}-soft-edge`;
+        edgeLines.renderOrder = 3;
+        mesh.add(edgeLines);
+      }
     } else {
       mesh.material = new MeshStandardMaterial({
         color: XRAY_COLORS.inner,
@@ -153,25 +162,19 @@ function normalizeScene(root: Object3D) {
   };
 }
 
-function GlbSuitcase({ scanProgress }: SuitcaseModelProps) {
-  const groupRef = useRef<Group>(null);
+function GlbSuitcase({ scanProgress, onReady }: SuitcaseModelProps) {
   const { scene } = useGLTF("/models/new_suitcase.glb");
   const model = useMemo(() => scene.clone(true), [scene]);
   const normalized = useMemo(() => normalizeScene(model), [model]);
+  const x = -12.5 + scanProgress * 25;
 
   useEffect(() => {
     overrideXrayMaterials(model);
-  }, [model]);
-
-  useFrame((state) => {
-    if (!groupRef.current) return;
-
-    groupRef.current.position.x = MathUtils.lerp(-6, 6, scanProgress);
-    groupRef.current.position.y = Math.sin(state.clock.elapsedTime * 4.4) * 0.01 - 0.2;
-  });
+    onReady?.();
+  }, [model, onReady]);
 
   return (
-    <group ref={groupRef}>
+    <group position={[x, -0.2, 0]}>
       <group rotation={[0, -Math.PI / 2, 0]} scale={normalized.scale}>
         <primitive object={model} position={[normalized.offset.x, normalized.offset.y, normalized.offset.z]} />
       </group>

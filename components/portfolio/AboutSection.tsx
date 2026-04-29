@@ -1,3 +1,7 @@
+"use client";
+
+import { FormEvent, useState } from "react";
+
 const focusItems = [
   { label: "AI / Machine Learning", code: "ml.pipeline.train()" },
   { label: "Graph data / GNN", code: "graph.query(nodes, edges)" },
@@ -6,61 +10,294 @@ const focusItems = [
   { label: "Location-based systems", code: "gps.capture(cells)" },
 ];
 
+const nameAscii = String.raw`
+@@@  @@@   @@@@@@       @@@ @@@   @@@@@@   @@@@@@@@@@    @@@@@@    @@@@@@    @@@@@@   @@@  @@@  @@@
+@@@ @@@   @@@@@@@@      @@@ @@@  @@@@@@@@  @@@@@@@@@@@  @@@@@@@@  @@@@@@@   @@@@@@@@  @@@ @@@   @@@
+@@!@@!    @@!  @@@      @@! !@@  @@!  @@@  @@! @@! @@!  @@!  @@@  !@@       @@!  @@@  @@! !@@   @@!
+!@!!@!    !@!  @!@      !@! @!!  !@!  @!@  !@! !@! !@!  !@!  @!@  !@!       !@!  @!@  !@! @!!   !@!
+@!@!@!    @!@  !@!       !@!@!   @!@!@!@!  @!! !!@ @!@  @!@!@!@!  !!@@!!    @!@!@!@!  @!@@!@!   !!@
+!!!@!!!   !@!  !!!        @!!!   !!!@!!!!  !@!   ! !@!  !!!@!!!!   !!@!!!   !!!@!!!!  !!@!!!    !!!
+!!: :!!   !!:  !!!        !!:    !!:  !!!  !!:     !!:  !!:  !!!       !:!  !!:  !!!  !!: :!!   !!:
+:!:  !:!  :!:  !:!        :!:    :!:  !:!  :!:     :!:  :!:  !:!      !:!   :!:  !:!  :!:  !:!  :!:
+ ::  :::  ::::: ::         ::    ::   :::  :::     ::   ::   :::  :::: ::   ::   :::   ::  :::   ::
+ :   :::   : :  :          :      :   : :   :      :     :   : :  :: : :     :   : :   :   :::  :
+`;
+
+const idCardAscii = String.raw`
++------------------------------------------------+
+| ID: KO-YAMASAKI                                |
+| FIELD: COMPUTER SCIENCE                        |
+| FOCUS: AI / GRAPH / APP DEV                    |
+| BASE: HIROSHIMA                                |
+|                                                |
+| ||| || |||| ||| || ||||| || ||| |||| |||       |
++------------------------------------------------+`;
+
+const initialLines = [
+  "boot portfolio terminal...",
+  "click a command below, or type naturally: help / ls / cd 01",
+  "available folders: 01-terraplot  02-mappi  03-portfolio  04-research",
+];
+
+const quickCommands = ["ls", "01", "map", "manifest", "stack", "github", "clear"];
+
+function normalizeCommand(rawCommand: string) {
+  const command = rawCommand.trim().toLowerCase();
+
+  if (command.startsWith("type ")) return command.replace(/^type\s+/, "");
+  if (command === "dir") return "ls";
+  if (command === "cd" || command === "cd ." || command === "cd .." || command === "pwd") return "home";
+  if (command === "cd 01" || command === "cd 01-terraplot" || command === "open 01") return "terraplot";
+  if (command === "cd 02" || command === "cd 02-mappi" || command === "02") return "mappi";
+  if (command === "cd 03" || command === "cd 03-portfolio" || command === "03") return "portfolio";
+  if (command === "cd 04" || command === "cd 04-research" || command === "04") return "research";
+  if (command === "01") return "terraplot";
+  if (command === "cd terraplot" || command === "open terraplot") return "terraplot";
+  if (command === "open github") return "github";
+  if (command === "projects" || command === "cd projects") return "ls";
+
+  return command;
+}
+
+function getCommandOutput(rawCommand: string) {
+  const command = normalizeCommand(rawCommand);
+
+  if (!command) return [];
+
+  if (command === "help") {
+    return [
+      "you can click command chips below, or type:",
+      "  ls              list projects",
+      "  01              open Terraplot",
+      "  cd 01           same as Terraplot",
+      "  cd / cd ..      return to baggage home",
+      "  map             show Terraplot map cells",
+      "  manifest        show suitcase contents",
+      "  scan            show full manifest",
+      "  stack           list skills",
+      "  github          show GitHub profile",
+    ];
+  }
+
+  if (command === "home") {
+    return [
+      "directory: ~/baggage",
+      "folders: 01-terraplot  02-mappi  03-portfolio  04-research",
+      "hint: type `ls`, `01`, or click a command chip.",
+    ];
+  }
+
+  if (command === "ls" || command === "scan") {
+    return [
+      "01-terraplot      gps territory game / movement as play",
+      "02-mappi          location system / maps / interaction",
+      "03-portfolio      web design / 3d / scroll storytelling",
+      "04-research       graph data / gnn / query optimization",
+      "hint: type `01` or `cd 01` to open Terraplot.",
+    ];
+  }
+
+  if (command === "terraplot") {
+    return [
+      "project: Terraplot",
+      "url: https://terraplot-chi.vercel.app/en",
+      "concept: walk through real places, capture territory cells.",
+      "signal: GPS / Mapbox / Firebase / iOS product thinking",
+    ];
+  }
+
+  if (command === "map") {
+    return [
+      "+-------------------+",
+      "| . . # # . . . . . |",
+      "| . # # @ # . . . . |",
+      "| . . # # # . . . . |",
+      "| . . . . # # . . . |",
+      "+-------------------+",
+      "@ = current position / # = captured cells",
+    ];
+  }
+
+  if (command === "manifest") {
+    return [
+      "+---------------- BAGGAGE MANIFEST ----------------+",
+      "| CPU      -> AI / backend computation              |",
+      "| PIN      -> Terraplot / GPS territory             |",
+      "| CABLE    -> systems / connection                  |",
+      "| WRENCH   -> engineering / problem solving         |",
+      "| HEADSET  -> UX / production                       |",
+      "+--------------------------------------------------+",
+    ];
+  }
+
+  if (command === "mappi") {
+    return ["project: Mappi", "concept: map and location-based interaction system.", "status: in development"];
+  }
+
+  if (command === "portfolio") {
+    return ["project: Portfolio Website", "stack: Next.js / TypeScript / React Three Fiber", "concept: X-ray suitcase + interactive terminal storytelling"];
+  }
+
+  if (command === "graph" || command === "research") {
+    return [
+      "research field:",
+      "  nodes -> edges -> queries -> learning",
+      "  interests: graph database, GNN, query optimization",
+      "  direction: systems that understand connected data",
+    ];
+  }
+
+  if (command === "stack") {
+    return focusItems.map((item, index) => `${String(index + 1).padStart(2, "0")} ${item.code}  // ${item.label}`);
+  }
+
+  if (command === "github") {
+    return ["github: https://github.com/mosamosa-ko", "status: public profile linked"];
+  }
+
+  return [`command not found: ${rawCommand}`, "try `help`"];
+}
+
+type TerminalEntry = {
+  command?: string;
+  output: string[];
+};
+
 export function AboutSection() {
+  const [input, setInput] = useState("");
+  const [entries, setEntries] = useState<TerminalEntry[]>([{ output: initialLines }]);
+
+  const runCommand = (command: string) => {
+    const normalizedCommand = normalizeCommand(command);
+
+    if (normalizedCommand === "clear") {
+      setEntries([{ output: initialLines }]);
+      setInput("");
+      return;
+    }
+
+    if (command.toLowerCase() === "open terraplot") {
+      window.open("https://terraplot-chi.vercel.app/en", "_blank", "noopener,noreferrer");
+    }
+
+    if (command.toLowerCase() === "open github") {
+      window.open("https://github.com/mosamosa-ko", "_blank", "noopener,noreferrer");
+    }
+
+    setEntries((current) => [...current, { command, output: getCommandOutput(command) }]);
+    setInput("");
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const command = input.trim();
+    if (!command) return;
+
+    runCommand(command);
+  };
+
   return (
     <section className="bg-[#f5f5f7] px-6 py-32 text-[#1d1d1f] sm:px-10 lg:px-16">
-      <div className="mx-auto grid max-w-[1180px] gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-center">
+      <div className="mx-auto grid max-w-[1380px] gap-10 lg:grid-cols-[0.92fr_1.18fr] lg:items-center">
         <div>
           <p className="mb-4 text-sm font-medium tracking-[-0.01em] text-black/48">About</p>
-          <h2 className="font-display text-5xl font-semibold leading-[1.07] tracking-[-0.04em] sm:text-6xl">
-            Ko Yamasaki
-          </h2>
-          <p className="mt-6 max-w-xl text-xl leading-[1.45] tracking-[-0.02em] text-black/68 sm:text-2xl">
+          <pre className="max-w-full overflow-x-auto font-mono text-[0.52rem] font-semibold leading-[1.05] tracking-[-0.08em] text-[#1d1d1f] sm:text-[0.7rem] lg:text-[0.82rem]">
+            {nameAscii}
+          </pre>
+          <pre className="mt-8 max-w-2xl overflow-x-auto font-mono text-[0.8rem] leading-[1.35] text-black/46">
+            {idCardAscii}
+          </pre>
+          <p className="mt-7 max-w-2xl text-2xl leading-[1.35] tracking-[-0.03em] text-black/68 sm:text-3xl">
             Computer Science student interested in AI, graph data, app development, and location-based products.
           </p>
+          <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <a
+              href="https://terraplot-chi.vercel.app/en"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl bg-white px-4 py-4 text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(0,0,0,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:text-[#0066cc]"
+            >
+              View Terraplot
+              <span className="mt-1 block text-xs text-black/38">GPS territory game</span>
+            </a>
+            <button
+              type="button"
+              onClick={() => runCommand("manifest")}
+              className="rounded-xl bg-white px-4 py-4 text-left text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(0,0,0,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:text-[#0066cc]"
+            >
+              Scan Manifest
+              <span className="mt-1 block text-xs text-black/38">what is inside</span>
+            </button>
+            <a
+              href="https://github.com/mosamosa-ko"
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-xl bg-white px-4 py-4 text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(0,0,0,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:text-[#0066cc]"
+            >
+              GitHub
+              <span className="mt-1 block text-xs text-black/38">source profile</span>
+            </a>
+          </div>
         </div>
 
-        <div className="overflow-hidden rounded-2xl bg-[#0b0f12] shadow-[rgba(0,0,0,0.2)_3px_5px_30px_0px]">
-          <div className="flex items-center gap-2 border-b border-white/10 px-5 py-4">
-            <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
-            <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
-            <span className="h-3 w-3 rounded-full bg-[#28c840]" />
-            <span className="ml-3 text-xs tracking-[-0.01em] text-white/38">portfolio-scan — zsh</span>
+        <div className="overflow-hidden rounded-[1.6rem] bg-[#0b0f12] shadow-[rgba(0,0,0,0.2)_3px_5px_30px_0px]">
+          <div className="flex items-center gap-2 border-b border-white/10 px-6 py-5">
+            <span className="h-3.5 w-3.5 rounded-full bg-[#ff5f57]" />
+            <span className="h-3.5 w-3.5 rounded-full bg-[#febc2e]" />
+            <span className="h-3.5 w-3.5 rounded-full bg-[#28c840]" />
+            <span className="ml-3 text-sm tracking-[-0.01em] text-white/38">portfolio-scan — interactive</span>
           </div>
 
-          <div className="px-5 py-6 font-mono text-[0.78rem] leading-6 text-[#b7e5d1] sm:px-7 sm:py-7 sm:text-sm">
-            <p>
-              <span className="text-[#6fb6d3]">ko@portfolio</span>
-              <span className="text-white/34"> ~/baggage </span>
-              <span className="text-[#f5f5f7]">$ ./scan_identity</span>
-            </p>
-            <pre className="mt-5 overflow-x-auto text-[#8fc7dd]">
-{`+------------------------------------------------+
-| KO YAMASAKI                                    |
-| COMPUTER SCIENCE / AI / APP DEVELOPMENT        |
-+----------------------+-------------------------+
-| location systems     | graph data              |
-| product prototyping  | interactive interfaces  |
-+----------------------+-------------------------+`}
-            </pre>
-            <div className="mt-6 space-y-2">
-              {focusItems.map((item, index) => (
-                <div key={item.label} className="grid gap-2 border-t border-white/8 pt-2 sm:grid-cols-[36px_1fr]">
-                  <span className="text-white/28">{String(index + 1).padStart(2, "0")}</span>
-                  <div>
-                    <p className="text-[#f5f5f7]">{item.code}</p>
-                    <p className="text-white/42">// {item.label}</p>
+          <div className="min-h-[560px] px-6 py-7 font-mono text-sm leading-7 text-[#b7e5d1] sm:px-8 sm:py-8 sm:text-base">
+            <div className="mb-6 flex flex-wrap gap-2.5">
+              {quickCommands.map((command) => (
+                <button
+                  key={command}
+                  type="button"
+                  onClick={() => runCommand(command)}
+                  className="rounded-full border border-white/10 px-3.5 py-1.5 text-sm text-white/52 transition hover:border-[#6fb6d3]/50 hover:text-[#b7e5d1]"
+                >
+                  {command}
+                </button>
+              ))}
+            </div>
+            <div className="max-h-[430px] space-y-5 overflow-y-auto pr-2">
+              {entries.map((entry, index) => (
+                <div key={`${entry.command ?? "init"}-${index}`}>
+                  {entry.command ? (
+                    <p>
+                      <span className="text-[#6fb6d3]">ko@portfolio</span>
+                      <span className="text-white/34"> ~/baggage </span>
+                      <span className="text-[#f5f5f7]">$ {entry.command}</span>
+                    </p>
+                  ) : null}
+                  <div className={entry.command ? "mt-2" : ""}>
+                    {entry.output.map((line) => (
+                      <p key={line} className={line.startsWith("  ") ? "pl-4 text-white/48" : "text-[#b7e5d1]"}>
+                        {line}
+                      </p>
+                    ))}
                   </div>
                 </div>
               ))}
             </div>
-            <pre className="mt-6 overflow-x-auto text-[#6fb6d3]">
-{`route: Hiroshima -> web -> iOS -> graph AI
-status: building products around movement + data`}
-            </pre>
-            <p className="mt-5 text-white/38">
-              <span className="text-[#b7e5d1]">scan complete</span> _ cursor ready for next project
-            </p>
+
+            <form onSubmit={handleSubmit} className="mt-7 flex items-center border-t border-white/10 pt-5">
+              <label htmlFor="portfolio-terminal" className="sr-only">
+                Portfolio terminal command
+              </label>
+              <span className="text-[#6fb6d3]">ko@portfolio</span>
+              <span className="mx-2 text-white/34">~/baggage $</span>
+              <input
+                id="portfolio-terminal"
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                className="min-w-0 flex-1 bg-transparent text-[#f5f5f7] caret-[#b7e5d1] outline-none placeholder:text-white/24"
+                placeholder="type help"
+                spellCheck={false}
+              />
+            </form>
           </div>
         </div>
       </div>
