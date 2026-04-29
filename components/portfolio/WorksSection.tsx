@@ -262,11 +262,17 @@ function RetroMacDesktop() {
             <div
               key={windowItem.id}
               onPointerDown={() => focusWindow(windowItem.id)}
-              className="absolute overflow-hidden border border-black bg-[#f2f2f2] shadow-[5px_5px_0_rgba(0,0,0,0.22)]"
+              className={`absolute border border-black bg-[#f2f2f2] shadow-[5px_5px_0_rgba(0,0,0,0.22)] ${
+                windowItem.expanded ? "overflow-hidden" : "resize overflow-auto"
+              }`}
               style={{
                 left: windowItem.expanded ? 170 : windowItem.x,
                 top: windowItem.expanded ? 36 : windowItem.y,
                 width: windowItem.expanded ? "calc(100% - 190px)" : windowItem.width,
+                minWidth: windowItem.expanded ? undefined : 320,
+                minHeight: windowItem.expanded ? undefined : 220,
+                maxWidth: "calc(100% - 180px)",
+                maxHeight: "660px",
                 zIndex: windowItem.z,
               }}
             >
@@ -304,6 +310,13 @@ function RetroMacDesktop() {
                 </button>
               </div>
               <div className={windowItem.expanded ? "min-h-[560px] p-6" : "min-h-[250px] p-5"}>{renderWindowContent(windowItem.id)}</div>
+              {!windowItem.expanded ? (
+                <div className="pointer-events-none absolute bottom-1 right-1 grid h-4 w-4 grid-cols-3 gap-px opacity-60">
+                  {Array.from({ length: 9 }).map((_, index) => (
+                    <span key={index} className={index >= 2 && index % 3 <= 2 ? "bg-black/45" : ""} />
+                  ))}
+                </div>
+              ) : null}
             </div>
           ))}
 
@@ -327,97 +340,6 @@ export function WorksSection() {
         </div>
 
         <RetroMacDesktop />
-
-        <div className="space-y-5">
-          {projects.map((project, index) => {
-            const isFeatured = Boolean(project.image);
-            const projectImage = project.image ?? "";
-            const projectHref = project.href ?? "#";
-
-            return (
-              <article
-                key={project.title}
-                className={
-                  isFeatured
-                    ? "group overflow-hidden rounded-xl bg-[#f5f5f7] p-6 text-center shadow-[rgba(0,0,0,0.12)_3px_5px_30px_0px] sm:p-10"
-                    : "group rounded-xl bg-[#f5f5f7] p-7 sm:p-9"
-                }
-              >
-                {isFeatured ? (
-                  <>
-                    <p className="mb-3 text-sm font-medium tracking-[-0.01em] text-black/48">
-                      {String(index + 1).padStart(2, "0")} / {project.category}
-                    </p>
-                    <a href={projectHref} target="_blank" rel="noreferrer" className="inline-block">
-                      <h3 className="font-display text-4xl font-semibold leading-[1.08] tracking-[-0.045em] text-[#1d1d1f] transition duration-300 group-hover:opacity-80 sm:text-6xl">
-                        {project.title}
-                      </h3>
-                    </a>
-                    <p className="mx-auto mt-4 max-w-2xl text-[17px] leading-[1.47] tracking-[-0.022em] text-black/62">
-                      {project.description}
-                    </p>
-                    <div className="mt-6 flex justify-center gap-3">
-                      <a
-                        href={projectHref}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="rounded-full bg-[#0071e3] px-5 py-2 text-[17px] leading-none tracking-[-0.01em] text-white transition hover:bg-[#0077ed]"
-                      >
-                        View Terraplot
-                      </a>
-                    </div>
-                    <a
-                      href={projectHref}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mx-auto mt-9 block max-w-4xl overflow-hidden rounded-xl bg-white shadow-[rgba(0,0,0,0.14)_3px_5px_30px_0px]"
-                    >
-                      <Image
-                        src={projectImage}
-                        alt="Terraplot app preview"
-                        width={1200}
-                        height={720}
-                        className="h-auto w-full transition duration-500 group-hover:scale-[1.015]"
-                        priority={false}
-                      />
-                    </a>
-                    <div className="mt-7 flex flex-wrap justify-center gap-x-5 gap-y-2">
-                      {project.tags.map((tag) => (
-                        <span key={tag} className="text-sm tracking-[-0.01em] text-black/44">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <div className="grid gap-6 md:grid-cols-[80px_1fr_1.1fr] md:items-center">
-                    <span className="text-sm font-medium tracking-[-0.01em] text-black/36">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3 className="font-display text-3xl font-semibold leading-[1.1] tracking-[-0.035em] text-[#1d1d1f] sm:text-4xl">
-                        {project.title}
-                      </h3>
-                      <p className="mt-2 text-sm tracking-[-0.01em] text-black/48">{project.category}</p>
-                    </div>
-                    <div>
-                      <p className="text-[17px] leading-[1.47] tracking-[-0.022em] text-black/58">
-                        {project.description}
-                      </p>
-                      <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2">
-                        {project.tags.map((tag) => (
-                          <span key={tag} className="text-sm tracking-[-0.01em] text-black/42">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </article>
-            );
-          })}
-        </div>
       </div>
     </section>
   );

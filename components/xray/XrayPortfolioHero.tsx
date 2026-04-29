@@ -25,22 +25,33 @@ function LoadingScreen({ ready }: { ready: boolean }) {
       <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:100%_4px]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(143,199,221,0.14),transparent_42%)]" />
 
-      <div className="relative w-full max-w-5xl font-mono">
-        <div className="mb-7 flex items-center justify-between gap-4 border-b border-white/12 pb-4 text-xs uppercase tracking-[0.3em] text-white/38">
-          <span className="flex items-center gap-2">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[#8fc7dd]" />
-            X-ray baggage boot
-          </span>
-          <span>portfolio scanner</span>
+      <div className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-white/14 bg-[#0b0f12] font-mono shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
+        <div className="flex items-center gap-2 border-b border-white/10 px-5 py-4">
+          <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+          <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+          <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+          <span className="ml-3 text-xs tracking-[-0.01em] text-white/34">portfolio-loader — zsh</span>
         </div>
 
-        <pre className="overflow-x-auto text-[0.48rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#8fc7dd] drop-shadow-[0_0_14px_rgba(143,199,221,0.22)] sm:text-[0.72rem] lg:text-[0.92rem]">
+        <div className="p-5 sm:p-7">
+          <div className="mb-5 text-sm text-white/48">
+            <span className="text-[#6fb6d3]">ko@portfolio</span>
+            <span className="text-white/30"> ~/baggage </span>
+            <span className="text-white/70">$ ./boot_xray_portfolio</span>
+          </div>
+
+          <pre className="overflow-x-auto text-[0.48rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#8fc7dd] drop-shadow-[0_0_14px_rgba(143,199,221,0.22)] sm:text-[0.72rem] lg:text-[0.92rem]">
 {String.raw`
-  __        ______     ______     ______     _____     __     __   __     ______
- /\ \      /\  __ \   /\  __ \   /\  ___\   /\  __-.  /\ \   /\ "-.\ \   /\  ___\
- \ \ \____ \ \ \/\ \  \ \  __ \  \ \ \____  \ \ \/\ \ \ \ \  \ \ \-.  \  \ \ \__ \
-  \ \_____\ \ \_____\  \ \_\ \_\  \ \_____\  \ \____-  \ \_\  \ \_\\"\_\  \ \_____\
-   \/_____/  \/_____/   \/_/\/_/   \/_____/   \/____/   \/_/   \/_/ \/_/   \/_____/
+@@@        @@@@@@    @@@@@@   @@@@@@@   @@@  @@@  @@@   @@@@@@
+@@@       @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@  @@@@ @@@  @@@@@@@
+@@!       @@!  @@@  @@!  @@@  @@!  @@@  @@!  @@!@!@@@  !@@
+!@!       !@!  @!@  !@!  @!@  !@!  @!@  !@!  !@!!@!@!  !@!
+@!!       @!@  !@!  @!@!@!@!  @!@  !@!  !!@  @!@ !!@!  !!@@!!
+!!!       !@!  !!!  !!!@!!!!  !@!  !!!  !!!  !@!  !!!   !!@!!!
+!!:       !!:  !!!  !!:  !!!  !!:  !!!  !!:  !!:  !!!       !:!
+:!:       :!:  !:!  :!:  !:!  :!:  !:!  :!:  :!:  !:!      !:!
+ :: ::::  ::::: ::  ::   :::   :::: ::   ::   ::   ::   :::: ::
+: :: : :   : :  :    :   : :  :: :  :   :    ::    :    :: : :
 
         .---------------------------------------------------------------.
        /  .----------------------------------------------------------.  /|
@@ -55,28 +66,36 @@ function LoadingScreen({ ready }: { ready: boolean }) {
   |  /____________________________________________________________\  |/
   '---------------------------------------------------------------'
 `}
-        </pre>
+          </pre>
 
-        <div className="mt-8 grid gap-3 border border-white/12 bg-white/[0.03] p-4 text-xs uppercase tracking-[0.18em] text-white/42 sm:grid-cols-[1fr_auto] sm:items-center">
-          <div>
-            <div className="mb-2 flex justify-between gap-4">
-              <span>scan target: /models/new_suitcase.glb</span>
-              <span>{displayProgress}%</span>
+          <div className="mt-7 space-y-2 text-xs uppercase tracking-[0.18em] text-white/42">
+            <p><span className="text-[#8fc7dd]">[01]</span> loading /models/new_suitcase.glb</p>
+            <p><span className="text-[#8fc7dd]">[02]</span> applying transparent x-ray material</p>
+            <p><span className="text-[#8fc7dd]">[03]</span> preparing desktop portfolio</p>
+          </div>
+
+          <div className="mt-7 grid gap-3 border border-white/12 bg-white/[0.03] p-4 text-xs uppercase tracking-[0.18em] text-white/42 sm:grid-cols-[1fr_auto] sm:items-center">
+            <div>
+              <div className="mb-2 flex justify-between gap-4">
+                <span>LOADING BAGGAGE</span>
+                <span>{displayProgress}%</span>
+              </div>
+              <div className="h-3 border border-[#8fc7dd]/42 p-[2px]">
+                <div className="h-full bg-[#8fc7dd] transition-all duration-300" style={{ width: `${displayProgress}%` }} />
+              </div>
             </div>
-            <div className="h-3 border border-[#8fc7dd]/42 p-[2px]">
-              <div className="h-full bg-[#8fc7dd] transition-all duration-300" style={{ width: `${displayProgress}%` }} />
+            <div className="whitespace-nowrap text-[#8fc7dd]">
+              {"█".repeat(progressBlocks)}
+              <span className="text-white/18">{"░".repeat(20 - progressBlocks)}</span>
             </div>
           </div>
-          <div className="whitespace-nowrap text-[#8fc7dd]">
-            {"█".repeat(progressBlocks)}
-            <span className="text-white/18">{"░".repeat(20 - progressBlocks)}</span>
-          </div>
-        </div>
 
-        <div className="mt-5 flex flex-wrap justify-between gap-3 text-xs uppercase tracking-[0.2em] text-white/30">
-          <span>loading model</span>
-          <span>applying transparent x-ray material</span>
-          <span>please keep baggage on belt</span>
+          <div className="mt-5 flex items-center text-sm text-white/52">
+            <span className="text-[#6fb6d3]">ko@portfolio</span>
+            <span className="mx-2 text-white/30">~/baggage $</span>
+            <span className="text-white/72">waiting for scan</span>
+            <span className="ml-1 animate-pulse text-[#8fc7dd]">_</span>
+          </div>
         </div>
       </div>
     </motion.div>
