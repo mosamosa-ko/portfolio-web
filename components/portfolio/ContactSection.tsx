@@ -5,16 +5,10 @@ const links = [
 
 export function ContactSection() {
   return (
-    <section className="bg-white px-6 py-16 text-[#1d1d1f] sm:px-10 lg:px-16">
-      <div className="mx-auto max-w-[1440px] border-t border-black/12 pt-8">
-        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="mb-3 text-sm font-medium tracking-[-0.01em] text-black/44">Contact</p>
-            <h2 className="max-w-2xl font-display text-4xl font-semibold leading-[1.08] tracking-[-0.045em] sm:text-5xl">
-              Let&apos;s build something interesting.
-            </h2>
-          </div>
-
+    <footer className="bg-white px-6 py-10 text-[#1d1d1f] sm:px-10 lg:px-16">
+      <div className="mx-auto max-w-[1440px] border-t border-black/12 pt-6">
+        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          <span className="text-xs uppercase tracking-[0.16em] text-black/36">© 2026 Ko Yamasaki</span>
           <div className="flex flex-wrap gap-3">
             {links.map((link) => (
               <a
@@ -39,12 +33,7 @@ export function ContactSection() {
             ))}
           </div>
         </div>
-
-        <div className="mt-12 flex flex-wrap justify-between gap-4 border-t border-black/10 pt-5 text-xs uppercase tracking-[0.16em] text-black/36">
-          <span>© 2026 Ko Yamasaki</span>
-          <span>Built with Next.js / Three.js</span>
-        </div>
       </div>
-    </section>
+    </footer>
   );
 }
