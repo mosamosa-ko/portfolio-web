@@ -132,7 +132,7 @@ export function ContactSection() {
           observer.disconnect();
         }
       },
-      { root: null, rootMargin: "700px 0px", threshold: 0.01 },
+      { root: null, rootMargin: "1800px 0px", threshold: 0.01 },
     );
 
     observer.observe(section);
