@@ -3,7 +3,7 @@
 import { Component, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
 const links = [
@@ -19,6 +19,11 @@ type GarageModelProps = {
   position: [number, number, number];
   rotation: [number, number, number];
   opacity?: number;
+};
+
+type PointerState = {
+  x: number;
+  y: number;
 };
 
 class GarageErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
@@ -96,9 +101,9 @@ function GarageModel({ path, color, emissive, targetSize, position, rotation, op
   );
 }
 
-function GarageBackgroundModels() {
+function GarageBackgroundModels({ pointer }: { pointer: PointerState }) {
   return (
-    <group rotation={[0.02, -0.08, 0]}>
+    <group rotation={[0.02 + pointer.y * 0.18, -0.08 + pointer.x * 0.36, pointer.x * 0.08]}>
       <GarageModel
         path="/models/Alternator.glb"
         color="#a8bdc7"
@@ -108,6 +113,15 @@ function GarageBackgroundModels() {
         rotation={[0.2, -0.48, -0.08]}
         opacity={0.62}
       />
+      <GarageModel
+        path="/models/bic.glb"
+        color="#c7d7df"
+        emissive="#7ea8b8"
+        targetSize={3.2}
+        position={[-2.85, -0.95, 0.2]}
+        rotation={[0.05, 0.22, -0.4]}
+        opacity={0.46}
+      />
     </group>
   );
 }
@@ -115,6 +129,7 @@ function GarageBackgroundModels() {
 export function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [shouldLoadGarage, setShouldLoadGarage] = useState(false);
+  const [pointer, setPointer] = useState<PointerState>({ x: 0, y: 0 });
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -141,7 +156,18 @@ export function ContactSection() {
 
   return (
     <>
-      <section ref={sectionRef} className="relative min-h-[760px] overflow-hidden bg-white px-6 py-28 text-[#1d1d1f] sm:px-10 lg:px-16">
+      <section
+        ref={sectionRef}
+        onPointerMove={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          setPointer({
+            x: ((event.clientX - rect.left) / rect.width - 0.5) * 2,
+            y: ((event.clientY - rect.top) / rect.height - 0.5) * -2,
+          });
+        }}
+        onPointerLeave={() => setPointer({ x: 0, y: 0 })}
+        className="relative min-h-[760px] select-none overflow-hidden bg-white px-6 py-28 text-[#1d1d1f] sm:px-10 lg:px-16"
+      >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_68%_42%,rgba(159,211,230,0.2),transparent_36%),linear-gradient(135deg,#ffffff_0%,#f7fbfc_58%,#ffffff_100%)]" />
 
         <div className="pointer-events-none absolute -right-28 top-1/2 h-[620px] w-[620px] -translate-y-1/2 rounded-full border border-[#8fc7dd]/20 bg-[radial-gradient(circle,rgba(159,211,230,0.18)_0%,rgba(159,211,230,0.08)_36%,transparent_64%)]">
@@ -156,14 +182,18 @@ export function ContactSection() {
         <div className="absolute inset-0">
           {shouldLoadGarage ? (
             <GarageErrorBoundary>
-              <Canvas camera={{ position: [0, 0.15, 7.2], fov: 34 }} dpr={[0.75, 1.25]} gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}>
+              <Canvas
+                className="pointer-events-none"
+                camera={{ position: [0, 0.15, 7.2], fov: 34 }}
+                dpr={[0.75, 1.25]}
+                gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
+              >
                 <ambientLight intensity={1.55} />
                 <directionalLight position={[3, 4, 5]} intensity={1.12} />
                 <directionalLight position={[-4, 2, 3]} intensity={0.42} color="#e8f6ff" />
                 <Suspense fallback={null}>
-                  <GarageBackgroundModels />
+                  <GarageBackgroundModels pointer={pointer} />
                 </Suspense>
-                <OrbitControls enablePan={false} enableDamping dampingFactor={0.08} rotateSpeed={0.58} minDistance={5.2} maxDistance={9.4} />
               </Canvas>
             </GarageErrorBoundary>
           ) : null}
@@ -178,13 +208,13 @@ export function ContactSection() {
               Power for things that move.
             </h2>
             <p className="mt-7 text-[17px] leading-7 text-black/58 sm:text-lg">
-              A closing garage scene for the portfolio: generation, ignition, and small systems that turn ideas into motion. Drag the background and inspect the parts.
+              A closing garage scene for the portfolio: generation, ignition, and small systems that turn ideas into motion. Move the cursor and the parts respond quietly in the background.
             </p>
             <div className="mt-9 flex flex-wrap gap-3 font-mono text-xs uppercase tracking-[0.16em] text-black/38">
               <span className="rounded-full border border-black/12 bg-white/78 px-4 py-2">Generation</span>
               <span className="rounded-full border border-black/12 bg-white/78 px-4 py-2">Systems</span>
               <span className="rounded-full border border-[#5f9fba]/20 bg-white/78 px-4 py-2 text-[#2f718a]">
-                {shouldLoadGarage ? "Drag to inspect" : "Loading near view"}
+                {shouldLoadGarage ? "Move cursor" : "Loading near view"}
               </span>
             </div>
           </div>
