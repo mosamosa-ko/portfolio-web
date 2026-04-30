@@ -31,6 +31,46 @@ type DragState = {
   y: number;
 };
 
+type MuseumPoint = {
+  x: number;
+  y: number;
+};
+
+const museumExhibits = [
+  {
+    id: "terraplot",
+    title: "TerraPlot",
+    caption: "Movement becomes territory. A map product about walking, play, and place.",
+    x: 20,
+    y: 24,
+    size: "large",
+  },
+  {
+    id: "portfolio",
+    title: "Portfolio Website",
+    caption: "A scroll-based interface with baggage, terminal play, and desktop UI.",
+    x: 74,
+    y: 22,
+    size: "wide",
+  },
+  {
+    id: "graph",
+    title: "Graph / AI Research",
+    caption: "Nodes, edges, queries, and machine learning as a research direction.",
+    x: 28,
+    y: 70,
+    size: "wide",
+  },
+  {
+    id: "app",
+    title: "App Development",
+    caption: "Small product systems across iOS, web, maps, and interaction.",
+    x: 78,
+    y: 68,
+    size: "large",
+  },
+];
+
 class GarageErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
 
@@ -143,6 +183,136 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
         opacity={0.46}
       />
     </group>
+  );
+}
+
+function getClosestExhibit(visitor: MuseumPoint) {
+  return museumExhibits.reduce((closest, exhibit) => {
+    const closestDistance = Math.hypot(visitor.x - closest.x, visitor.y - closest.y);
+    const distance = Math.hypot(visitor.x - exhibit.x, visitor.y - exhibit.y);
+    return distance < closestDistance ? exhibit : closest;
+  }, museumExhibits[0]);
+}
+
+function MiniMuseum() {
+  const [visitor, setVisitor] = useState<MuseumPoint>({ x: 50, y: 52 });
+  const targetRef = useRef<MuseumPoint>({ x: 50, y: 52 });
+  const closest = getClosestExhibit(visitor);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const tick = () => {
+      setVisitor((current) => {
+        const target = targetRef.current;
+        const next = {
+          x: current.x + (target.x - current.x) * 0.08,
+          y: current.y + (target.y - current.y) * 0.08,
+        };
+
+        if (Math.abs(next.x - current.x) < 0.02 && Math.abs(next.y - current.y) < 0.02) {
+          return current;
+        }
+
+        return next;
+      });
+
+      frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  const moveTo = (point: MuseumPoint) => {
+    targetRef.current = {
+      x: THREE.MathUtils.clamp(point.x, 8, 92),
+      y: THREE.MathUtils.clamp(point.y, 12, 88),
+    };
+  };
+
+  return (
+    <div className="grid gap-4">
+      <div
+        role="application"
+        tabIndex={0}
+        aria-label="Interactive portfolio museum"
+        onPointerDown={(event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          moveTo({
+            x: ((event.clientX - rect.left) / rect.width) * 100,
+            y: ((event.clientY - rect.top) / rect.height) * 100,
+          });
+        }}
+        onKeyDown={(event) => {
+          const step = event.shiftKey ? 12 : 7;
+          if (event.key === "ArrowUp" || event.key.toLowerCase() === "w") {
+            event.preventDefault();
+            moveTo({ x: targetRef.current.x, y: targetRef.current.y - step });
+          }
+          if (event.key === "ArrowDown" || event.key.toLowerCase() === "s") {
+            event.preventDefault();
+            moveTo({ x: targetRef.current.x, y: targetRef.current.y + step });
+          }
+          if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
+            event.preventDefault();
+            moveTo({ x: targetRef.current.x - step, y: targetRef.current.y });
+          }
+          if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
+            event.preventDefault();
+            moveTo({ x: targetRef.current.x + step, y: targetRef.current.y });
+          }
+        }}
+        className="relative min-h-[520px] cursor-crosshair overflow-hidden border border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(143,199,221,0.12)_1px,transparent_1px),linear-gradient(180deg,rgba(143,199,221,0.1)_1px,transparent_1px)] bg-[size:42px_42px]" />
+        <div className="pointer-events-none absolute inset-6 border border-[#8fc7dd]/22" />
+        <div className="pointer-events-none absolute left-[50%] top-8 h-[calc(100%-64px)] w-px bg-[#8fc7dd]/18" />
+        <div className="pointer-events-none absolute left-8 top-[50%] h-px w-[calc(100%-64px)] bg-[#8fc7dd]/18" />
+
+        <div className="pointer-events-none absolute left-6 top-5 font-mono text-[0.64rem] uppercase tracking-[0.18em] text-black/38">
+          Click floor or use WASD / arrow keys
+        </div>
+
+        {museumExhibits.map((exhibit) => (
+          <button
+            key={exhibit.id}
+            type="button"
+            onClick={(event) => {
+              event.stopPropagation();
+              moveTo({ x: exhibit.x, y: exhibit.y + 12 });
+            }}
+            className={`absolute -translate-x-1/2 -translate-y-1/2 border border-[#6faec7]/36 bg-white/86 p-3 text-left shadow-[8px_10px_0_rgba(143,199,221,0.08)] transition hover:border-[#2f718a]/50 ${
+              exhibit.size === "wide" ? "w-44" : "w-36"
+            }`}
+            style={{ left: `${exhibit.x}%`, top: `${exhibit.y}%` }}
+          >
+            <span className="block h-16 border border-[#8fc7dd]/22 bg-[radial-gradient(circle_at_38%_34%,rgba(111,166,194,0.24),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.9),rgba(232,246,250,0.82))]" />
+            <span className="mt-3 block font-mono text-[0.66rem] uppercase tracking-[0.14em] text-[#2f718a]">
+              {exhibit.title}
+            </span>
+          </button>
+        ))}
+
+        <div
+          className="pointer-events-none absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 transition-[filter] duration-300"
+          style={{ left: `${visitor.x}%`, top: `${visitor.y}%`, filter: "drop-shadow(0 8px 12px rgba(47,113,138,0.18))" }}
+        >
+          <span className="absolute left-1/2 top-0 h-3.5 w-3.5 -translate-x-1/2 rounded-full border border-[#2f718a]/55 bg-white" />
+          <span className="absolute left-1/2 top-3 h-4 w-3 -translate-x-1/2 rounded-t-full border border-[#2f718a]/55 bg-[#d8edf6]" />
+          <span className="absolute left-2 top-6 h-3 w-px rotate-12 bg-[#2f718a]/55" />
+          <span className="absolute right-2 top-6 h-3 w-px -rotate-12 bg-[#2f718a]/55" />
+        </div>
+      </div>
+
+      <div className="grid gap-4 border border-[#8fc7dd]/28 bg-white p-5 sm:grid-cols-[0.8fr_1.2fr]">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-[0.16em] text-black/42">now viewing</p>
+          <p className="mt-2 text-2xl font-semibold tracking-[-0.05em]">{closest.title}</p>
+        </div>
+        <p className="text-sm leading-6 text-black/56">{closest.caption}</p>
+      </div>
+    </div>
   );
 }
 
@@ -302,7 +472,7 @@ export function ContactSection() {
               </p>
             </div>
 
-            <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+            <div className="grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
               <div className="border border-[#8fc7dd]/38 bg-[#fbfdfe] p-5 font-mono text-xs uppercase tracking-[0.12em] text-black/58 shadow-[0_18px_60px_rgba(95,159,186,0.1)]">
                 <div className="mb-5 border-b border-[#8fc7dd]/28 pb-4 text-center">
                   <p className="text-[#2f718a]">portfolio receipt</p>
@@ -327,63 +497,7 @@ export function ContactSection() {
                 <div className="mt-5 h-8 bg-[repeating-linear-gradient(90deg,#111_0,#111_2px,transparent_2px,transparent_5px)] opacity-25" />
               </div>
 
-              <div className="grid gap-5">
-                <div className="border border-[#8fc7dd]/32 bg-[#f8fcfd] p-5">
-                  <p className="mb-4 font-mono text-xs uppercase tracking-[0.16em] text-black/42">sticker sheet</p>
-                  <div className="flex flex-wrap gap-2">
-                    {["GPS", "AI", "GRAPH", "APP", "WEB", "MAP", "3D", "DESIGN", "RESEARCH", "HIROSHIMA"].map(
-                      (label, index) => (
-                        <span
-                          key={label}
-                          className="rounded-full border border-[#8fc7dd]/38 bg-white px-3 py-1.5 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[2px_2px_0_rgba(143,199,221,0.12)]"
-                          style={{ transform: `rotate(${index % 2 === 0 ? -1.5 : 1.5}deg)` }}
-                        >
-                          {label}
-                        </span>
-                      ),
-                    )}
-                  </div>
-                </div>
-
-                <div className="grid gap-5 md:grid-cols-2">
-                  <div className="border border-[#8fc7dd]/32 bg-white p-5">
-                    <p className="font-mono text-xs uppercase tracking-[0.16em] text-black/42">museum label</p>
-                    <p className="mt-4 text-2xl font-semibold tracking-[-0.05em]">TerraPlot</p>
-                    <p className="mt-2 text-sm leading-6 text-black/54">
-                      A small product about movement, maps, and making ordinary walks feel playable.
-                    </p>
-                  </div>
-
-                  <div className="border border-[#8fc7dd]/32 bg-white p-5">
-                    <p className="font-mono text-xs uppercase tracking-[0.16em] text-black/42">recipe card</p>
-                    <ul className="mt-4 space-y-2 font-mono text-xs uppercase tracking-[0.1em] text-black/52">
-                      <li>1 transparent suitcase</li>
-                      <li>4 project files</li>
-                      <li>many experiments</li>
-                      <li>a little humor</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="border border-[#8fc7dd]/32 bg-[#f8fcfd] p-5">
-                  <p className="mb-4 font-mono text-xs uppercase tracking-[0.16em] text-black/42">inbox zero</p>
-                  {[
-                    ["read", "project files inspected"],
-                    ["new", "next idea captured"],
-                    ["sent", "thank you for visiting"],
-                  ].map(([state, message]) => (
-                    <div
-                      key={message}
-                      className="flex items-center justify-between gap-5 border-t border-[#8fc7dd]/18 py-3 first:border-t-0"
-                    >
-                      <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[#2f718a]">
-                        {state}
-                      </span>
-                      <span className="text-right text-sm text-black/58">{message}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <MiniMuseum />
             </div>
           </div>
         </div>
