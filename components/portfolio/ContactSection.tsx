@@ -82,15 +82,6 @@ function GarageBackgroundModels() {
   return (
     <group rotation={[0.02, -0.08, 0]}>
       <GarageModel
-        path="/models/Alternator.glb"
-        color="#a8bdc7"
-        emissive="#6f97a8"
-        targetSize={6.6}
-        position={[1.75, 0.05, -0.25]}
-        rotation={[0.2, -0.48, -0.08]}
-        opacity={0.62}
-      />
-      <GarageModel
         path="/models/bic.glb"
         color="#c7d7df"
         emissive="#7ea8b8"
@@ -134,6 +125,15 @@ export function ContactSection() {
     <>
       <section ref={sectionRef} className="relative min-h-[760px] overflow-hidden bg-white px-6 py-28 text-[#1d1d1f] sm:px-10 lg:px-16">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_68%_42%,rgba(159,211,230,0.2),transparent_36%),linear-gradient(135deg,#ffffff_0%,#f7fbfc_58%,#ffffff_100%)]" />
+
+        <div className="pointer-events-none absolute -right-28 top-1/2 h-[620px] w-[620px] -translate-y-1/2 rounded-full border border-[#8fc7dd]/20 bg-[radial-gradient(circle,rgba(159,211,230,0.18)_0%,rgba(159,211,230,0.08)_36%,transparent_64%)]">
+          <div className="absolute inset-20 rounded-full border border-[#8fc7dd]/24" />
+          <div className="absolute inset-40 rounded-full border border-[#8fc7dd]/28" />
+          <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-[#8fc7dd]/16" />
+          <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-[#8fc7dd]/16" />
+          <div className="absolute left-1/2 top-1/2 h-[112%] w-px -translate-x-1/2 -translate-y-1/2 rotate-45 bg-[#8fc7dd]/12" />
+          <div className="absolute left-1/2 top-1/2 h-[112%] w-px -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-[#8fc7dd]/12" />
+        </div>
 
         <div className="absolute inset-0">
           {shouldLoadGarage ? (
