@@ -82,13 +82,13 @@ function GarageBackgroundModels() {
   return (
     <group rotation={[0.02, -0.08, 0]}>
       <GarageModel
-        path="/models/bic.glb"
-        color="#c7d7df"
-        emissive="#7ea8b8"
-        targetSize={3.2}
-        position={[-2.85, -0.95, 0.2]}
-        rotation={[0.05, 0.22, -0.4]}
-        opacity={0.46}
+        path="/models/Alternator.glb"
+        color="#a8bdc7"
+        emissive="#6f97a8"
+        targetSize={6.6}
+        position={[1.75, 0.05, -0.25]}
+        rotation={[0.2, -0.48, -0.08]}
+        opacity={0.62}
       />
     </group>
   );
@@ -114,7 +114,7 @@ export function ContactSection() {
           observer.disconnect();
         }
       },
-      { root: null, rootMargin: "900px 0px", threshold: 0.01 },
+      { root: null, rootMargin: "700px 0px", threshold: 0.01 },
     );
 
     observer.observe(section);
@@ -162,8 +162,10 @@ export function ContactSection() {
             </p>
             <div className="mt-9 flex flex-wrap gap-3 font-mono text-xs uppercase tracking-[0.16em] text-black/38">
               <span className="rounded-full border border-black/12 bg-white/78 px-4 py-2">Generation</span>
-              <span className="rounded-full border border-black/12 bg-white/78 px-4 py-2">Ignition</span>
-              <span className="rounded-full border border-black/12 bg-white/78 px-4 py-2">Drag to inspect</span>
+              <span className="rounded-full border border-black/12 bg-white/78 px-4 py-2">Systems</span>
+              <span className="rounded-full border border-[#5f9fba]/20 bg-white/78 px-4 py-2 text-[#2f718a]">
+                {shouldLoadGarage ? "Drag to inspect" : "Loading near view"}
+              </span>
             </div>
           </div>
         </div>
