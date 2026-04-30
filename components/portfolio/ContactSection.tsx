@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Component, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
@@ -19,6 +20,23 @@ type GarageModelProps = {
   rotation: [number, number, number];
   opacity?: number;
 };
+
+class GarageErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: unknown) {
+    console.warn("Garage model failed to load", error);
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
 
 function GarageModel({ path, color, emissive, targetSize, position, rotation, opacity = 0.58 }: GarageModelProps) {
   const { scene } = useGLTF(path);
@@ -137,15 +155,17 @@ export function ContactSection() {
 
         <div className="absolute inset-0">
           {shouldLoadGarage ? (
-            <Canvas camera={{ position: [0, 0.15, 7.2], fov: 34 }} dpr={[0.75, 1.25]} gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}>
-              <ambientLight intensity={1.55} />
-              <directionalLight position={[3, 4, 5]} intensity={1.12} />
-              <directionalLight position={[-4, 2, 3]} intensity={0.42} color="#e8f6ff" />
-              <Suspense fallback={null}>
-                <GarageBackgroundModels />
-              </Suspense>
-              <OrbitControls enablePan={false} enableDamping dampingFactor={0.08} rotateSpeed={0.58} minDistance={5.2} maxDistance={9.4} />
-            </Canvas>
+            <GarageErrorBoundary>
+              <Canvas camera={{ position: [0, 0.15, 7.2], fov: 34 }} dpr={[0.75, 1.25]} gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}>
+                <ambientLight intensity={1.55} />
+                <directionalLight position={[3, 4, 5]} intensity={1.12} />
+                <directionalLight position={[-4, 2, 3]} intensity={0.42} color="#e8f6ff" />
+                <Suspense fallback={null}>
+                  <GarageBackgroundModels />
+                </Suspense>
+                <OrbitControls enablePan={false} enableDamping dampingFactor={0.08} rotateSpeed={0.58} minDistance={5.2} maxDistance={9.4} />
+              </Canvas>
+            </GarageErrorBoundary>
           ) : null}
         </div>
 
