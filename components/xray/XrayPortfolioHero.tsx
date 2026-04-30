@@ -27,7 +27,7 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
       onClick={() => {
         if (ready) onDismiss();
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050708] px-6 text-[#d9f7ff]"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050708] px-3 text-[#d9f7ff] sm:px-6"
       initial={false}
       animate={{ opacity: visible ? 1 : 0, pointerEvents: visible ? "auto" : "none" }}
       transition={{ duration: 0.55, ease: "easeOut" }}
@@ -35,15 +35,15 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
       <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:100%_4px]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(143,199,221,0.16),transparent_38%),radial-gradient(circle_at_72%_68%,rgba(255,255,255,0.08),transparent_34%)]" />
 
-      <div className="relative w-full max-w-6xl overflow-hidden rounded-3xl border border-white/14 bg-[#080d10] font-mono shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
-        <div className="flex items-center gap-2 border-b border-white/10 px-5 py-4">
+      <div className="relative max-h-[92vh] w-full max-w-6xl overflow-y-auto overflow-x-hidden rounded-2xl border border-white/14 bg-[#080d10] font-mono shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:rounded-3xl">
+        <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3 sm:px-5 sm:py-4">
           <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
           <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
           <span className="h-3 w-3 rounded-full bg-[#28c840]" />
           <span className="ml-3 text-xs tracking-[-0.01em] text-white/34">portfolio-loader — xray boot</span>
         </div>
 
-        <div className="p-5 sm:p-7 lg:p-8">
+        <div className="p-4 sm:p-7 lg:p-8">
           <div className="mb-6 flex flex-col gap-2 text-sm text-white/48 sm:flex-row sm:items-center sm:justify-between">
             <div>
             <span className="text-[#6fb6d3]">ko@portfolio</span>
@@ -55,7 +55,7 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
 
           <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
             <div>
-              <pre className="overflow-x-auto text-[0.46rem] font-semibold leading-[1.02] tracking-[-0.055em] text-[#9fd3e6] drop-shadow-[0_0_14px_rgba(143,199,221,0.2)] sm:text-[0.66rem] lg:text-[0.78rem]">
+              <pre className="max-w-full overflow-x-auto text-[0.34rem] font-semibold leading-[1.02] tracking-[-0.055em] text-[#9fd3e6] drop-shadow-[0_0_14px_rgba(143,199,221,0.2)] sm:text-[0.66rem] lg:text-[0.78rem]">
 {String.raw`
   @@@  @@@   @@@@@@        @@@ @@@   @@@@@@   @@@@@@@@@@    @@@@@@    @@@@@@    @@@  @@@  @@@
   @@@  @@@  @@@@@@@@       @@@ @@@  @@@@@@@@  @@@@@@@@@@@  @@@@@@@   @@@@@@@@   @@@  @@@  @@@
@@ -70,7 +70,7 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
 `}
               </pre>
 
-              <div className="mt-5 border border-[#8fc7dd]/18 bg-[#d9f7ff]/[0.035] p-4 text-[0.68rem] uppercase leading-relaxed tracking-[0.16em] text-white/42">
+              <div className="mt-5 border border-[#8fc7dd]/18 bg-[#d9f7ff]/[0.035] p-3 text-[0.55rem] uppercase leading-relaxed tracking-[0.12em] text-white/42 sm:p-4 sm:text-[0.68rem] sm:tracking-[0.16em]">
                 <pre className="overflow-x-auto text-[#d9f7ff]/74">
 {String.raw`
 +--------------------------------------------------+
@@ -86,7 +86,7 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
               </div>
             </div>
 
-            <div className="border border-white/12 bg-black/22 p-4 sm:p-5">
+            <div className="min-w-0 border border-white/12 bg-black/22 p-4 sm:p-5">
               <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.2em] text-white/34">
                 <span>boot manifest</span>
                 <span>{ready ? "ready" : "scanning"}</span>
@@ -117,7 +117,7 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
             </div>
           </div>
 
-          <div className="mt-6 grid gap-3 border border-white/12 bg-white/[0.03] p-4 text-xs uppercase tracking-[0.18em] text-white/42 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div className="mt-6 grid gap-3 border border-white/12 bg-white/[0.03] p-4 text-[0.68rem] uppercase tracking-[0.14em] text-white/42 sm:grid-cols-[1fr_auto] sm:items-center sm:text-xs sm:tracking-[0.18em]">
             <div>
               <div className="mb-2 flex justify-between gap-4">
                 <span>LOADING BAGGAGE</span>
@@ -127,15 +127,15 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
                 <div className="h-full bg-[#8fc7dd] transition-all duration-300" style={{ width: `${displayProgress}%` }} />
               </div>
             </div>
-            <div className="whitespace-nowrap text-[#8fc7dd]">
+            <div className="hidden whitespace-nowrap text-[#8fc7dd] sm:block">
               {"█".repeat(progressBlocks)}
               <span className="text-white/18">{"░".repeat(25 - progressBlocks)}</span>
             </div>
           </div>
 
-          <div className="mt-5 flex items-center text-sm text-white/52">
+          <div className="mt-5 flex items-center text-xs text-white/52 sm:text-sm">
             <span className="text-[#6fb6d3]">ko@portfolio</span>
-            <span className="mx-2 text-white/30">~/baggage $</span>
+            <span className="mx-2 shrink-0 text-white/30">~/baggage $</span>
             <span className="text-white/72">{ready ? "scroll or tap to enter" : "waiting for scan"}</span>
             <span className="ml-1 animate-pulse text-[#8fc7dd]">_</span>
           </div>
@@ -240,7 +240,7 @@ export function XrayPortfolioHero() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[300vh] bg-[radial-gradient(circle_at_72%_45%,rgba(70,150,185,0.12),transparent_32%),linear-gradient(135deg,#ffffff_0%,#f6fbfd_60%,#ffffff_100%)] text-[#111111]"
+      className="relative h-[300vh] overflow-x-hidden bg-[radial-gradient(circle_at_72%_45%,rgba(70,150,185,0.12),transparent_32%),linear-gradient(135deg,#ffffff_0%,#f6fbfd_60%,#ffffff_100%)] text-[#111111]"
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className="absolute inset-0">
@@ -257,7 +257,7 @@ export function XrayPortfolioHero() {
           Portfolio Baggage
         </div>
 
-        <div className="absolute left-6 top-[17%] z-10 max-w-3xl sm:left-10 lg:left-16">
+        <div className="absolute left-5 top-[14%] z-10 max-w-[88vw] sm:left-10 sm:top-[17%] sm:max-w-3xl lg:left-16">
           <motion.p
             className="mb-6 text-[0.6rem] uppercase tracking-[0.3em] text-black/46"
             initial={{ opacity: 0, y: 12 }}
@@ -267,7 +267,7 @@ export function XrayPortfolioHero() {
             Computer Science / AI / App Development
           </motion.p>
           <motion.h1
-            className="font-display text-6xl font-semibold uppercase leading-[0.92] tracking-[-0.045em] text-[#111111] sm:text-7xl lg:text-8xl"
+            className="font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[-0.045em] text-[#111111] sm:text-7xl lg:text-8xl"
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}

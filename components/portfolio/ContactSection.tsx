@@ -213,11 +213,11 @@ export function ContactSection() {
         onPointerLeave={() => {
           if (!dragRef.current.active) setPointer({ x: 0, y: 0 });
         }}
-        className="relative min-h-[760px] select-none overflow-hidden bg-white px-6 py-28 text-[#1d1d1f] sm:px-10 lg:px-16"
+        className="relative min-h-[720px] touch-pan-y select-none overflow-hidden bg-white px-5 py-24 text-[#1d1d1f] sm:min-h-[760px] sm:px-10 sm:py-28 lg:px-16"
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_68%_42%,rgba(159,211,230,0.2),transparent_36%),linear-gradient(135deg,#ffffff_0%,#f7fbfc_58%,#ffffff_100%)]" />
 
-        <div className="pointer-events-none absolute -right-28 top-1/2 h-[620px] w-[620px] -translate-y-1/2 rounded-full border border-[#8fc7dd]/20 bg-[radial-gradient(circle,rgba(159,211,230,0.18)_0%,rgba(159,211,230,0.08)_36%,transparent_64%)]">
+        <div className="pointer-events-none absolute -right-48 top-1/2 h-[520px] w-[520px] -translate-y-1/2 rounded-full border border-[#8fc7dd]/20 bg-[radial-gradient(circle,rgba(159,211,230,0.18)_0%,rgba(159,211,230,0.08)_36%,transparent_64%)] sm:-right-28 sm:h-[620px] sm:w-[620px]">
           <div className="absolute inset-20 rounded-full border border-[#8fc7dd]/24" />
           <div className="absolute inset-40 rounded-full border border-[#8fc7dd]/28" />
           <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-[#8fc7dd]/16" />
@@ -248,10 +248,10 @@ export function ContactSection() {
 
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.96)_0%,rgba(255,255,255,0.8)_28%,rgba(255,255,255,0.18)_72%,rgba(255,255,255,0.58)_100%)]" />
 
-        <div className="relative z-10 mx-auto flex min-h-[560px] max-w-[1320px] items-center">
-          <div className="pointer-events-none max-w-xl">
+        <div className="relative z-10 mx-auto flex min-h-[520px] max-w-[1320px] items-center sm:min-h-[560px]">
+          <div className="pointer-events-none max-w-[88vw] sm:max-w-xl">
             <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Garage object</p>
-            <h2 className="mt-3 font-display text-5xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-7xl">
+            <h2 className="mt-3 font-display text-4xl font-semibold leading-[1.02] tracking-[-0.055em] sm:text-7xl">
               Power for things that move.
             </h2>
             <p className="mt-7 text-[17px] leading-7 text-black/58 sm:text-lg">

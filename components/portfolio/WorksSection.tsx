@@ -521,11 +521,11 @@ function RetroMacDesktop() {
 
 export function WorksSection() {
   return (
-    <section id="works" className="bg-white px-6 py-32 text-[#1d1d1f] sm:px-10 lg:px-16">
+    <section id="works" className="overflow-x-hidden bg-white px-5 py-24 text-[#1d1d1f] sm:px-10 sm:py-32 lg:px-16">
       <div className="mx-auto max-w-[1440px]">
-        <div className="mx-auto mb-16 max-w-[760px] text-center">
+        <div className="mx-auto mb-12 max-w-[760px] text-center sm:mb-16">
           <p className="mb-4 text-sm font-medium tracking-[-0.01em] text-black/48">Works</p>
-          <h2 className="font-display text-5xl font-semibold leading-[1.07] tracking-[-0.045em] text-[#1d1d1f] sm:text-6xl">
+          <h2 className="font-display text-4xl font-semibold leading-[1.07] tracking-[-0.045em] text-[#1d1d1f] sm:text-6xl">
             Selected Projects
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-[17px] leading-[1.47] tracking-[-0.022em] text-black/58">
@@ -533,6 +533,7 @@ export function WorksSection() {
           </p>
         </div>
 
+        <MobileRetroMacDesktop />
         <RetroMacDesktop />
       </div>
     </section>

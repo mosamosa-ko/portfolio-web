@@ -254,17 +254,17 @@ export function AboutSection() {
   };
 
   return (
-    <section className="bg-white px-6 py-32 text-[#1d1d1f] sm:px-10 lg:px-16">
+    <section className="overflow-x-hidden bg-white px-5 py-24 text-[#1d1d1f] sm:px-10 sm:py-32 lg:px-16">
       <div className="mx-auto grid max-w-[1380px] gap-10 lg:grid-cols-[0.92fr_1.18fr] lg:items-center">
-        <div>
+        <div className="min-w-0">
           <p className="mb-4 text-sm font-medium tracking-[-0.01em] text-black/48">About</p>
-          <pre className="max-w-full overflow-x-auto font-mono text-[0.52rem] font-semibold leading-[1.05] tracking-[-0.08em] text-[#1d1d1f] sm:text-[0.7rem] lg:text-[0.82rem]">
+          <pre className="max-w-full overflow-x-auto font-mono text-[0.42rem] font-semibold leading-[1.05] tracking-[-0.08em] text-[#1d1d1f] sm:text-[0.7rem] lg:text-[0.82rem]">
             {nameAscii}
           </pre>
-          <pre className="mt-8 max-w-2xl overflow-x-auto font-mono text-[0.8rem] leading-[1.35] text-black/46">
+          <pre className="mt-8 max-w-full overflow-x-auto font-mono text-[0.68rem] leading-[1.35] text-black/46 sm:max-w-2xl sm:text-[0.8rem]">
             {idCardAscii}
           </pre>
-          <p className="mt-7 max-w-2xl text-2xl leading-[1.35] tracking-[-0.03em] text-black/68 sm:text-3xl">
+          <p className="mt-7 max-w-2xl text-[1.65rem] leading-[1.25] tracking-[-0.04em] text-black/68 sm:text-3xl sm:leading-[1.35]">
             Computer Science student interested in AI, graph data, app development, and location-based products.
           </p>
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -297,7 +297,7 @@ export function AboutSection() {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-[1.6rem] bg-[#0b0f12] shadow-[rgba(0,0,0,0.2)_3px_5px_30px_0px]">
+        <div className="min-w-0 overflow-hidden rounded-[1.3rem] bg-[#0b0f12] shadow-[rgba(0,0,0,0.2)_3px_5px_30px_0px] sm:rounded-[1.6rem]">
           <div className="flex items-center gap-2 border-b border-white/10 px-6 py-5">
             <span className="h-3.5 w-3.5 rounded-full bg-[#ff5f57]" />
             <span className="h-3.5 w-3.5 rounded-full bg-[#febc2e]" />
@@ -305,14 +305,14 @@ export function AboutSection() {
             <span className="ml-3 text-sm tracking-[-0.01em] text-white/38">portfolio-scan — interactive</span>
           </div>
 
-          <div className="min-h-[560px] px-6 py-7 font-mono text-sm leading-7 text-[#b7e5d1] sm:px-8 sm:py-8 sm:text-base">
+          <div className="min-h-[480px] px-4 py-6 font-mono text-xs leading-6 text-[#b7e5d1] sm:min-h-[560px] sm:px-8 sm:py-8 sm:text-base sm:leading-7">
             <div className="mb-6 flex flex-wrap gap-2.5">
               {quickCommands.map((command) => (
                 <button
                   key={command}
                   type="button"
                   onClick={() => runCommand(command)}
-                  className="rounded-full border border-white/10 px-3.5 py-1.5 text-sm text-white/52 transition hover:border-[#6fb6d3]/50 hover:text-[#b7e5d1]"
+                  className="rounded-full border border-white/10 px-3 py-1.5 text-xs text-white/52 transition hover:border-[#6fb6d3]/50 hover:text-[#b7e5d1] sm:px-3.5 sm:text-sm"
                 >
                   {command}
                 </button>
@@ -339,12 +339,12 @@ export function AboutSection() {
               ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="mt-7 flex items-center border-t border-white/10 pt-5">
+            <form onSubmit={handleSubmit} className="mt-7 flex min-w-0 items-center border-t border-white/10 pt-5">
               <label htmlFor="portfolio-terminal" className="sr-only">
                 Portfolio terminal command
               </label>
-              <span className="text-[#6fb6d3]">ko@portfolio</span>
-              <span className="mx-2 text-white/34">~/baggage $</span>
+              <span className="hidden text-[#6fb6d3] sm:inline">ko@portfolio</span>
+              <span className="mx-2 shrink-0 text-white/34">~/baggage $</span>
               <input
                 id="portfolio-terminal"
                 value={input}
