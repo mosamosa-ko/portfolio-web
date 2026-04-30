@@ -10,6 +10,8 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
+const BAGGAGE_SCROLL_DISTANCE = 1500;
+
 function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible: boolean; onDismiss: () => void }) {
   const { progress } = useProgress();
   const displayProgress = ready ? 100 : Math.min(98, Math.round(progress));
@@ -163,40 +165,74 @@ function SceneContent({ progress, onModelReady }: { progress: number; onModelRea
 
 export function XrayPortfolioHero() {
   const sectionRef = useRef<HTMLElement>(null);
+  const progressRef = useRef(0);
+  const touchYRef = useRef<number | null>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [modelReady, setModelReady] = useState(false);
   const [introElapsed, setIntroElapsed] = useState(false);
   const [introDismissed, setIntroDismissed] = useState(false);
+  const progress = useMemo(() => clamp(scrollProgress, 0, 1), [scrollProgress]);
+  const showLoadingScreen = !modelReady || (!introElapsed && !introDismissed);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const isHeroActive = () => {
       const section = sectionRef.current;
-      const viewport = window.innerHeight || 1;
-
-      if (!section) {
-        setScrollProgress(clamp(window.scrollY / (viewport * 1.4), 0, 1));
-        return;
-      }
+      if (!section) return false;
 
       const rect = section.getBoundingClientRect();
-      const scrollableDistance = Math.max(section.offsetHeight - viewport, 1);
-      const rawProgress = clamp(-rect.top / scrollableDistance, 0, 1);
-      // The suitcase should finish its travel before the sticky hero releases.
-      setScrollProgress(clamp(rawProgress / 0.48, 0, 1));
+      return rect.top <= 2 && rect.bottom > window.innerHeight * 0.6;
     };
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const advanceBaggage = (delta: number) => {
+      const current = progressRef.current;
+      const next = clamp(current + delta / BAGGAGE_SCROLL_DISTANCE, 0, 1);
+      const shouldLockScroll = (delta > 0 && current < 1) || (delta < 0 && current > 0 && window.scrollY <= 4);
+
+      progressRef.current = next;
+      setScrollProgress(next);
+
+      return shouldLockScroll;
+    };
+
+    const handleWheel = (event: WheelEvent) => {
+      if (showLoadingScreen || !isHeroActive()) return;
+
+      if (advanceBaggage(event.deltaY)) {
+        event.preventDefault();
+      }
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      touchYRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (showLoadingScreen || !isHeroActive() || touchYRef.current === null) return;
+
+      const currentY = event.touches[0]?.clientY ?? touchYRef.current;
+      const delta = touchYRef.current - currentY;
+      touchYRef.current = currentY;
+
+      if (advanceBaggage(delta * 2.4)) {
+        event.preventDefault();
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, [showLoadingScreen]);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setIntroElapsed(true), 3200);
     return () => window.clearTimeout(timer);
   }, []);
-
-  const progress = useMemo(() => clamp(scrollProgress, 0, 1), [scrollProgress]);
-  const showLoadingScreen = !modelReady || (!introElapsed && !introDismissed);
 
   useEffect(() => {
     if (!modelReady || !showLoadingScreen) return undefined;
@@ -208,6 +244,7 @@ export function XrayPortfolioHero() {
         // Some mobile browsers are strict about scroll APIs during overlays.
       }
 
+      progressRef.current = 0;
       setScrollProgress(0);
       setIntroDismissed(true);
     };
@@ -241,9 +278,9 @@ export function XrayPortfolioHero() {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[300vh] overflow-x-hidden bg-[radial-gradient(circle_at_72%_45%,rgba(70,150,185,0.12),transparent_32%),linear-gradient(135deg,#ffffff_0%,#f6fbfd_60%,#ffffff_100%)] text-[#111111]"
+      className="relative h-screen overflow-hidden bg-[radial-gradient(circle_at_72%_45%,rgba(70,150,185,0.12),transparent_32%),linear-gradient(135deg,#ffffff_0%,#f6fbfd_60%,#ffffff_100%)] text-[#111111]"
     >
-      <div className="sticky top-0 h-screen overflow-hidden">
+      <div className="relative h-screen overflow-hidden">
         <div className="absolute inset-0">
           <Canvas dpr={[0.6, 0.9]} frameloop="demand" gl={{ antialias: false, alpha: false, powerPreference: "low-power" }}>
             <SceneContent progress={progress} onModelReady={() => setModelReady(true)} />
@@ -309,6 +346,7 @@ export function XrayPortfolioHero() {
             // Keep the intro dismissal resilient on mobile browsers.
           }
 
+          progressRef.current = 0;
           setScrollProgress(0);
           setIntroDismissed(true);
         }}
