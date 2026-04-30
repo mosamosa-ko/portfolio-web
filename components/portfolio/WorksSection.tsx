@@ -41,14 +41,14 @@ const projects = [
 const desktopApps = [
   { id: "projects", label: "Projects", title: "Projects", x: 188, y: 60, width: 560, color: "#edf3f6" },
   { id: "terraplot", label: "TerraPlot", title: "TerraPlot", x: 260, y: 112, width: 640, color: "#9fd3e6" },
-  { id: "about", label: "About", title: "About Ko", x: 340, y: 86, width: 470, color: "#e6edf2" },
-  { id: "skills", label: "Skills", title: "Skills", x: 430, y: 150, width: 470, color: "#dde8e6" },
-  { id: "contact", label: "Contact", title: "Contact", x: 520, y: 108, width: 420, color: "#e9edf3" },
-  { id: "profiler", label: "System Profiler", title: "About This Portfolio", x: 632, y: 62, width: 520, color: "#d6e8ff" },
+  { id: "about", label: "About", title: "About Ko", x: 340, y: 86, width: 470, color: "#eef7fa" },
+  { id: "skills", label: "Skills", title: "Skills", x: 430, y: 150, width: 470, color: "#e8f4f8" },
+  { id: "contact", label: "Contact", title: "Contact", x: 520, y: 108, width: 420, color: "#f2fafc" },
+  { id: "profiler", label: "System Profiler", title: "About This Portfolio", x: 632, y: 62, width: 520, color: "#dceff7" },
   { id: "search", label: "Finder Search", title: "Find Projects", x: 664, y: 178, width: 540, color: "#eef4f6" },
-  { id: "floppy", label: "Save Contact", title: "Contact Card Saved", x: 704, y: 282, width: 440, color: "#d8f0e1" },
-  { id: "startup", label: "Startup Disk", title: "Startup Disk", x: 250, y: 334, width: 500, color: "#e8eef4" },
-  { id: "trash", label: "Trash", title: "discarded ideas.txt", x: 70, y: 608, width: 520, color: "#eeeeee" },
+  { id: "floppy", label: "Save Contact", title: "Contact Card Saved", x: 704, y: 282, width: 440, color: "#e6f5fa" },
+  { id: "startup", label: "Startup Disk", title: "Startup Disk", x: 250, y: 334, width: 500, color: "#edf7fa" },
+  { id: "trash", label: "Trash", title: "discarded ideas.txt", x: 70, y: 608, width: 520, color: "#f6fbfd" },
 ];
 
 type DesktopApp = (typeof desktopApps)[number];
@@ -146,7 +146,7 @@ function FinderSearchContent({ openWindow }: { openWindow: (id: string) => void 
 function ProjectSignalVisual({ project }: { project: (typeof projects)[number] }) {
   if (project.title === "Terraplot") {
     return (
-      <div className="border border-black bg-[#f8fbfc] p-3">
+      <div className="border border-[#8fc7dd]/42 bg-[#f8fcfd] p-3">
         <div className="grid grid-cols-7 gap-1">
           {Array.from({ length: 35 }).map((_, index) => {
             const captured = [2, 3, 9, 10, 11, 16, 17, 18, 24, 25].includes(index);
@@ -154,7 +154,7 @@ function ProjectSignalVisual({ project }: { project: (typeof projects)[number] }
             return (
               <span
                 key={index}
-                className={`aspect-square border border-black/20 ${current ? "bg-black" : captured ? "bg-[#9fd3e6]" : "bg-white"}`}
+                className={`aspect-square border border-[#8fc7dd]/28 ${current ? "bg-[#2f718a]" : captured ? "bg-[#9fd3e6]" : "bg-white"}`}
               />
             );
           })}
@@ -169,11 +169,11 @@ function ProjectSignalVisual({ project }: { project: (typeof projects)[number] }
 
   if (project.title === "Mappi") {
     return (
-      <div className="relative h-36 overflow-hidden border border-black bg-[#f8fbfc]">
+      <div className="relative h-36 overflow-hidden border border-[#8fc7dd]/42 bg-[#f8fcfd]">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.08)_1px,transparent_1px),linear-gradient(rgba(0,0,0,0.08)_1px,transparent_1px)] bg-[length:28px_28px]" />
-        <div className="absolute left-8 top-9 h-14 w-24 rounded-full border border-black/50" />
-        <div className="absolute left-20 top-12 h-20 w-28 rounded-full border border-black/35" />
-        <div className="absolute left-[46%] top-[42%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-black bg-[#9fd3e6]" />
+        <div className="absolute left-8 top-9 h-14 w-24 rounded-full border border-[#5f9fba]/42" />
+        <div className="absolute left-20 top-12 h-20 w-28 rounded-full border border-[#5f9fba]/30" />
+        <div className="absolute left-[46%] top-[42%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#5f9fba]/60 bg-[#9fd3e6]" />
         <div className="absolute bottom-3 left-3 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-black/50">location layer</div>
       </div>
     );
@@ -181,12 +181,12 @@ function ProjectSignalVisual({ project }: { project: (typeof projects)[number] }
 
   if (project.title === "Portfolio Website") {
     return (
-      <div className="border border-black bg-[#f8fbfc] p-3">
-        <div className="border border-black bg-white">
-          <div className="flex h-6 items-center gap-1 border-b border-black px-2">
-            <span className="h-2 w-2 rounded-full bg-[#ff5f57]" />
-            <span className="h-2 w-2 rounded-full bg-[#febc2e]" />
-            <span className="h-2 w-2 rounded-full bg-[#28c840]" />
+      <div className="border border-[#8fc7dd]/42 bg-[#f8fcfd] p-3">
+        <div className="border border-[#8fc7dd]/42 bg-white">
+          <div className="flex h-6 items-center gap-1 border-b border-[#8fc7dd]/36 px-2">
+            <span className="h-2 w-2 rounded-full bg-[#8fc7dd]" />
+            <span className="h-2 w-2 rounded-full bg-[#b7d6e2]" />
+            <span className="h-2 w-2 rounded-full bg-[#dceff7]" />
           </div>
           <div className="grid gap-2 p-3">
             <span className="h-7 w-3/4 bg-[#dcebf1]" />
@@ -204,7 +204,7 @@ function ProjectSignalVisual({ project }: { project: (typeof projects)[number] }
   }
 
   return (
-    <div className="relative h-36 overflow-hidden border border-black bg-[#f8fbfc]">
+    <div className="relative h-36 overflow-hidden border border-[#8fc7dd]/42 bg-[#f8fcfd]">
       {[
         [28, 42],
         [78, 28],
@@ -212,7 +212,7 @@ function ProjectSignalVisual({ project }: { project: (typeof projects)[number] }
         [54, 102],
         [144, 112],
       ].map(([left, top], index) => (
-        <span key={`${left}-${top}`} className="absolute h-5 w-5 rounded-full border border-black bg-[#dcebf1]" style={{ left, top }} />
+        <span key={`${left}-${top}`} className="absolute h-5 w-5 rounded-full border border-[#5f9fba]/42 bg-[#dcebf1]" style={{ left, top }} />
       ))}
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 190 144" aria-hidden="true">
         <path d="M38 52 88 38 128 84 64 112 154 122 128 84 88 38" fill="none" stroke="rgba(0,0,0,0.45)" strokeWidth="1" />
@@ -229,7 +229,7 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
         {projects.map((project) => (
           <div
             key={project.title}
-            className="border border-black bg-white p-3 font-mono text-sm text-black shadow-[2px_2px_0_rgba(0,0,0,0.14)]"
+            className="border border-[#8fc7dd]/42 bg-white p-3 font-mono text-sm text-black shadow-[2px_2px_0_rgba(95,159,186,0.12)]"
           >
             <ProjectSignalVisual project={project} />
             <div className="mt-3 flex items-start gap-3">
@@ -398,22 +398,22 @@ function MobileRetroMacDesktop() {
   const selectedApp = desktopApps.find((app) => app.id === activeApp) ?? desktopApps[0];
 
   return (
-    <div className="mb-16 overflow-hidden border border-black bg-[#aeb8c6] p-1.5 shadow-[rgba(0,0,0,0.14)_3px_5px_26px_0px] md:hidden">
-      <div className="flex h-8 items-center justify-between border border-black bg-white px-2 font-mono text-[0.66rem] text-black">
+    <div className="mb-16 overflow-hidden border border-[#8fc7dd]/42 bg-[#eef7fa] p-1.5 shadow-[rgba(95,159,186,0.12)_3px_5px_26px_0px] md:hidden">
+      <div className="flex h-8 items-center justify-between border border-[#8fc7dd]/36 bg-white px-2 font-mono text-[0.66rem] text-black">
         <span className="font-bold">● File</span>
         <span>Portfolio Macintosh</span>
       </div>
 
-      <div className="relative border-x border-b border-black bg-[#d7e1e8] bg-[radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.72),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(159,211,230,0.42),transparent_28%),radial-gradient(circle_at_70%_88%,rgba(221,232,238,0.56),transparent_30%)] p-4">
+      <div className="relative border-x border-b border-[#8fc7dd]/36 bg-[#f4fbfd] bg-[radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.82),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(159,211,230,0.32),transparent_28%),radial-gradient(circle_at_70%_88%,rgba(221,239,246,0.56),transparent_30%)] p-4">
         {bootVisible ? (
           <button
             type="button"
             onClick={() => setBootVisible(false)}
-            className="absolute inset-0 z-30 grid place-items-center bg-[#d7e1e8]/96 p-6 font-mono text-black"
+            className="absolute inset-0 z-30 grid place-items-center bg-[#f4fbfd]/96 p-6 font-mono text-black"
             aria-label="Dismiss portfolio desktop boot screen"
           >
-            <span className="w-full border border-black bg-white p-5 text-center shadow-[4px_4px_0_rgba(0,0,0,0.18)]">
-              <span className="mx-auto grid h-16 w-16 place-items-center border border-black bg-[#eef4f6] text-3xl">⌘</span>
+            <span className="w-full border border-[#8fc7dd]/42 bg-white p-5 text-center shadow-[4px_4px_0_rgba(95,159,186,0.14)]">
+              <span className="mx-auto grid h-16 w-16 place-items-center border border-[#8fc7dd]/42 bg-[#eef7fa] text-3xl">⌘</span>
               <span className="mt-5 block text-lg font-bold tracking-[-0.05em]">Portfolio OS</span>
               <span className="mt-3 block text-xs uppercase leading-5 tracking-[0.12em] text-black/58">
                 projects folder ready
@@ -433,9 +433,9 @@ function MobileRetroMacDesktop() {
           ))}
         </div>
 
-        <div className="mt-6 border border-black bg-[#f2f2f2] shadow-[4px_4px_0_rgba(0,0,0,0.18)]">
-          <div className="flex h-8 items-center border-b border-black" style={{ backgroundColor: selectedApp.color }}>
-            <span className="mx-2 h-4 w-4 border border-black bg-white" />
+        <div className="mt-6 border border-[#8fc7dd]/42 bg-[#fbfdfe] shadow-[4px_4px_0_rgba(95,159,186,0.14)]">
+          <div className="flex h-8 items-center border-b border-[#8fc7dd]/36" style={{ backgroundColor: selectedApp.color }}>
+            <span className="mx-2 h-4 w-4 border border-[#8fc7dd]/42 bg-white" />
             <div className="h-[13px] flex-1 bg-[repeating-linear-gradient(to_bottom,#000_0,#000_1px,transparent_1px,transparent_3px)] opacity-70" />
             <span className="mx-3 font-mono text-xs">{selectedApp.title}</span>
             <div className="h-[13px] flex-1 bg-[repeating-linear-gradient(to_bottom,#000_0,#000_1px,transparent_1px,transparent_3px)] opacity-70" />
@@ -524,8 +524,8 @@ function RetroMacDesktop() {
   };
 
   return (
-    <div className="mb-20 hidden cursor-default overflow-hidden border border-black bg-[#aeb8c6] p-2 shadow-[rgba(0,0,0,0.16)_3px_5px_30px_0px] md:block">
-      <div className="flex h-8 items-center justify-between border border-black bg-white px-3 font-mono text-[0.72rem] text-black">
+    <div className="mb-20 hidden cursor-default overflow-hidden border border-[#8fc7dd]/42 bg-[#eef7fa] p-2 shadow-[rgba(95,159,186,0.14)_3px_5px_30px_0px] md:block">
+      <div className="flex h-8 items-center justify-between border border-[#8fc7dd]/36 bg-white px-3 font-mono text-[0.72rem] text-black">
         <div className="flex items-center gap-4">
           <span className="font-bold">●</span>
           <span>File</span>
@@ -540,17 +540,17 @@ function RetroMacDesktop() {
         onPointerMove={dragWindow}
         onPointerUp={() => setDragging(null)}
         onPointerCancel={() => setDragging(null)}
-        className="relative min-h-[780px] overflow-hidden border-x border-b border-black bg-[#d7e1e8] bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.7),transparent_22%),radial-gradient(circle_at_82%_24%,rgba(159,211,230,0.42),transparent_24%),radial-gradient(circle_at_68%_84%,rgba(221,232,238,0.56),transparent_25%),linear-gradient(45deg,rgba(255,255,255,0.22)_25%,transparent_25%,transparent_75%,rgba(255,255,255,0.22)_75%),linear-gradient(45deg,rgba(255,255,255,0.22)_25%,transparent_25%,transparent_75%,rgba(255,255,255,0.22)_75%)] bg-[length:auto,auto,auto,4px_4px,4px_4px] bg-[position:center,center,center,0_0,2px_2px] p-6"
+        className="relative min-h-[780px] overflow-hidden border-x border-b border-[#8fc7dd]/36 bg-[#f4fbfd] bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.82),transparent_22%),radial-gradient(circle_at_82%_24%,rgba(159,211,230,0.34),transparent_24%),radial-gradient(circle_at_68%_84%,rgba(221,239,246,0.58),transparent_25%),linear-gradient(45deg,rgba(143,199,221,0.1)_25%,transparent_25%,transparent_75%,rgba(143,199,221,0.1)_75%),linear-gradient(45deg,rgba(143,199,221,0.1)_25%,transparent_25%,transparent_75%,rgba(143,199,221,0.1)_75%)] bg-[length:auto,auto,auto,4px_4px,4px_4px] bg-[position:center,center,center,0_0,2px_2px] p-6"
       >
         {bootVisible ? (
           <button
             type="button"
             onClick={() => setBootVisible(false)}
-            className="absolute inset-0 z-[9999] grid cursor-pointer place-items-center bg-[#d7e1e8]/96 font-mono text-black backdrop-blur-[1px]"
+            className="absolute inset-0 z-[9999] grid cursor-pointer place-items-center bg-[#f4fbfd]/96 font-mono text-black backdrop-blur-[1px]"
             aria-label="Dismiss portfolio desktop boot screen"
           >
-            <span className="w-[420px] max-w-[80%] border border-black bg-white p-6 text-center shadow-[6px_6px_0_rgba(0,0,0,0.2)]">
-              <span className="mx-auto grid h-20 w-20 place-items-center border border-black bg-[#eef4f6] text-4xl shadow-[3px_3px_0_rgba(0,0,0,0.16)]">⌘</span>
+            <span className="w-[420px] max-w-[80%] border border-[#8fc7dd]/42 bg-white p-6 text-center shadow-[6px_6px_0_rgba(95,159,186,0.14)]">
+              <span className="mx-auto grid h-20 w-20 place-items-center border border-[#8fc7dd]/42 bg-[#eef7fa] text-4xl shadow-[3px_3px_0_rgba(95,159,186,0.14)]">⌘</span>
               <span className="mt-6 block text-xl font-bold tracking-[-0.05em]">Welcome to Portfolio OS</span>
               <span className="mt-4 block text-left text-xs uppercase leading-6 tracking-[0.12em] text-black/58">
                 loading desktop files...
@@ -559,7 +559,7 @@ function RetroMacDesktop() {
                 <br />
                 ready for inspection.
               </span>
-              <span className="mt-5 block border border-black bg-[#f8fbfc] px-4 py-2 text-xs uppercase tracking-[0.16em]">
+              <span className="mt-5 block border border-[#8fc7dd]/42 bg-[#f8fcfd] px-4 py-2 text-xs uppercase tracking-[0.16em]">
                 click to continue
               </span>
             </span>
@@ -589,7 +589,7 @@ function RetroMacDesktop() {
             <div
               key={windowItem.id}
               onPointerDown={() => focusWindow(windowItem.id)}
-              className={`absolute border border-black bg-[#f2f2f2] shadow-[5px_5px_0_rgba(0,0,0,0.22)] ${
+            className={`absolute border border-[#8fc7dd]/42 bg-[#fbfdfe] shadow-[5px_5px_0_rgba(95,159,186,0.16)] ${
                 windowItem.expanded ? "overflow-hidden" : "resize overflow-auto"
               }`}
               style={{
@@ -605,7 +605,7 @@ function RetroMacDesktop() {
             >
               <div
                 onPointerDown={(event) => startDrag(event, windowItem)}
-                className="flex h-8 touch-none cursor-move items-center border-b border-black"
+                className="flex h-8 touch-none cursor-move items-center border-b border-[#8fc7dd]/36"
                 style={{ backgroundColor: windowItem.color }}
               >
                 <button
@@ -615,7 +615,7 @@ function RetroMacDesktop() {
                     event.stopPropagation();
                     closeWindow(windowItem.id);
                   }}
-                  className="mx-2 h-4 w-4 border border-black bg-white text-[0.55rem] leading-none hover:bg-black hover:text-white"
+                  className="mx-2 h-4 w-4 border border-[#8fc7dd]/42 bg-white text-[0.55rem] leading-none hover:bg-[#8fc7dd]/18"
                   aria-label={`Close ${windowItem.title}`}
                 >
                   ×
@@ -630,7 +630,7 @@ function RetroMacDesktop() {
                     event.stopPropagation();
                     toggleExpandWindow(windowItem.id);
                   }}
-                  className="mx-2 h-4 w-4 border border-black bg-white text-[0.55rem] leading-none hover:bg-black hover:text-white"
+                  className="mx-2 h-4 w-4 border border-[#8fc7dd]/42 bg-white text-[0.55rem] leading-none hover:bg-[#8fc7dd]/18"
                   aria-label={`${windowItem.expanded ? "Restore" : "Expand"} ${windowItem.title}`}
                 >
                   {windowItem.expanded ? "□" : "+"}

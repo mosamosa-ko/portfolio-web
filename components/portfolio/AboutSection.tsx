@@ -287,7 +287,7 @@ export function AboutSection() {
               href="https://terraplot-chi.vercel.app/en"
               target="_blank"
               rel="noreferrer"
-              className="rounded-xl bg-white px-4 py-4 text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(0,0,0,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:text-[#0066cc]"
+              className="rounded-xl border border-[#8fc7dd]/18 bg-white px-4 py-4 text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(95,159,186,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:border-[#8fc7dd]/42 hover:text-[#2f718a]"
             >
               View Terraplot
               <span className="mt-1 block text-xs text-black/38">GPS territory game</span>
@@ -295,7 +295,7 @@ export function AboutSection() {
             <button
               type="button"
               onClick={() => runCommand("manifest")}
-              className="rounded-xl bg-white px-4 py-4 text-left text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(0,0,0,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:text-[#0066cc]"
+              className="rounded-xl border border-[#8fc7dd]/18 bg-white px-4 py-4 text-left text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(95,159,186,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:border-[#8fc7dd]/42 hover:text-[#2f718a]"
             >
               Scan Manifest
               <span className="mt-1 block text-xs text-black/38">what is inside</span>
@@ -304,7 +304,7 @@ export function AboutSection() {
               href="https://github.com/mosamosa-ko"
               target="_blank"
               rel="noreferrer"
-              className="rounded-xl bg-white px-4 py-4 text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(0,0,0,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:text-[#0066cc]"
+              className="rounded-xl border border-[#8fc7dd]/18 bg-white px-4 py-4 text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(95,159,186,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:border-[#8fc7dd]/42 hover:text-[#2f718a]"
             >
               GitHub
               <span className="mt-1 block text-xs text-black/38">source profile</span>
