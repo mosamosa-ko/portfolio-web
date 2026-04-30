@@ -10,7 +10,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-const BAGGAGE_SCROLL_DISTANCE = 1500;
+const BAGGAGE_SCROLL_DISTANCE = 2400;
 
 function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible: boolean; onDismiss: () => void }) {
   const { progress } = useProgress();
@@ -213,7 +213,7 @@ export function XrayPortfolioHero() {
       const delta = touchYRef.current - currentY;
       touchYRef.current = currentY;
 
-      if (advanceBaggage(delta * 2.4)) {
+      if (advanceBaggage(delta * 1.55)) {
         event.preventDefault();
       }
     };
