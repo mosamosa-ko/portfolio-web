@@ -143,23 +143,113 @@ function FinderSearchContent({ openWindow }: { openWindow: (id: string) => void 
   );
 }
 
+function ProjectSignalVisual({ project }: { project: (typeof projects)[number] }) {
+  if (project.title === "Terraplot") {
+    return (
+      <div className="border border-black bg-[#f8fbfc] p-3">
+        <div className="grid grid-cols-7 gap-1">
+          {Array.from({ length: 35 }).map((_, index) => {
+            const captured = [2, 3, 9, 10, 11, 16, 17, 18, 24, 25].includes(index);
+            const current = index === 17;
+            return (
+              <span
+                key={index}
+                className={`aspect-square border border-black/20 ${current ? "bg-black" : captured ? "bg-[#9fd3e6]" : "bg-white"}`}
+              />
+            );
+          })}
+        </div>
+        <div className="mt-3 flex items-center justify-between font-mono text-[0.62rem] uppercase tracking-[0.12em] text-black/50">
+          <span>gps cells</span>
+          <span>territory +42</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (project.title === "Mappi") {
+    return (
+      <div className="relative h-36 overflow-hidden border border-black bg-[#f8fbfc]">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.08)_1px,transparent_1px),linear-gradient(rgba(0,0,0,0.08)_1px,transparent_1px)] bg-[length:28px_28px]" />
+        <div className="absolute left-8 top-9 h-14 w-24 rounded-full border border-black/50" />
+        <div className="absolute left-20 top-12 h-20 w-28 rounded-full border border-black/35" />
+        <div className="absolute left-[46%] top-[42%] h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border border-black bg-[#9fd3e6]" />
+        <div className="absolute bottom-3 left-3 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-black/50">location layer</div>
+      </div>
+    );
+  }
+
+  if (project.title === "Portfolio Website") {
+    return (
+      <div className="border border-black bg-[#f8fbfc] p-3">
+        <div className="border border-black bg-white">
+          <div className="flex h-6 items-center gap-1 border-b border-black px-2">
+            <span className="h-2 w-2 rounded-full bg-[#ff5f57]" />
+            <span className="h-2 w-2 rounded-full bg-[#febc2e]" />
+            <span className="h-2 w-2 rounded-full bg-[#28c840]" />
+          </div>
+          <div className="grid gap-2 p-3">
+            <span className="h-7 w-3/4 bg-[#dcebf1]" />
+            <span className="h-3 w-full bg-black/10" />
+            <span className="h-3 w-2/3 bg-black/10" />
+            <div className="mt-2 grid grid-cols-3 gap-2">
+              <span className="h-10 bg-[#eef4f6]" />
+              <span className="h-10 bg-[#eef4f6]" />
+              <span className="h-10 bg-[#eef4f6]" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative h-36 overflow-hidden border border-black bg-[#f8fbfc]">
+      {[
+        [28, 42],
+        [78, 28],
+        [118, 74],
+        [54, 102],
+        [144, 112],
+      ].map(([left, top], index) => (
+        <span key={`${left}-${top}`} className="absolute h-5 w-5 rounded-full border border-black bg-[#dcebf1]" style={{ left, top }} />
+      ))}
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 190 144" aria-hidden="true">
+        <path d="M38 52 88 38 128 84 64 112 154 122 128 84 88 38" fill="none" stroke="rgba(0,0,0,0.45)" strokeWidth="1" />
+      </svg>
+      <div className="absolute bottom-3 left-3 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-black/50">node / edge field</div>
+    </div>
+  );
+}
+
 function WindowContent({ id, openWindow }: WindowContentProps) {
   if (id === "projects") {
     return (
-      <div className="space-y-3">
+      <div className="grid gap-4 lg:grid-cols-2">
         {projects.map((project) => (
-          <button
+          <div
             key={project.title}
-            type="button"
-            onClick={() => (project.title === "Terraplot" ? openWindow("terraplot") : undefined)}
-            className="grid w-full grid-cols-[42px_1fr] gap-3 border border-black bg-white p-3 text-left font-mono text-sm text-black shadow-[2px_2px_0_rgba(0,0,0,0.14)] transition hover:bg-black hover:text-white"
+            className="border border-black bg-white p-3 font-mono text-sm text-black shadow-[2px_2px_0_rgba(0,0,0,0.14)]"
           >
-            <span>{project.code}</span>
-            <span>
-              <span className="block font-bold">{project.title}</span>
-              <span className="block text-xs opacity-70">{project.category}</span>
-            </span>
-          </button>
+            <ProjectSignalVisual project={project} />
+            <div className="mt-3 flex items-start gap-3">
+              <span className="text-black/42">{project.code}</span>
+              <div>
+                <p className="font-bold">{project.title}</p>
+                <p className="mt-1 text-xs uppercase tracking-[0.12em] text-black/46">{project.category}</p>
+                <p className="mt-2 text-xs leading-5 text-black/62">{project.description}</p>
+                {project.title === "Terraplot" ? (
+                  <button
+                    type="button"
+                    onClick={() => openWindow("terraplot")}
+                    className="mt-3 border border-black bg-white px-3 py-1.5 text-xs font-bold hover:bg-black hover:text-white"
+                  >
+                    Open project file
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </div>
         ))}
       </div>
     );

@@ -179,6 +179,7 @@ export function ContactSection() {
   return (
     <>
       <section
+        id="garage"
         ref={sectionRef}
         onPointerMove={(event) => {
           const rect = event.currentTarget.getBoundingClientRect();

@@ -35,12 +35,12 @@ const idCardAscii = String.raw`
 
 const initialLines = [
   "boot portfolio terminal...",
-  "click a command below, or type naturally: help / ls / cd 01",
+  "click a command below, or type naturally: help / ls / cd 01 / garage",
   "available folders: 01-terraplot  02-mappi  03-portfolio  04-research",
-  "hidden: profiler / find / save / trash / startup",
+  "hidden: profiler / find / save / trash / startup / garage",
 ];
 
-const quickCommands = ["ls", "01", "map", "manifest", "stack", "profiler", "find", "trash", "github", "clear"];
+const quickCommands = ["ls", "01", "map", "manifest", "stack", "garage", "profiler", "find", "trash", "github", "clear"];
 
 function normalizeCommand(rawCommand: string) {
   const command = rawCommand.trim().toLowerCase();
@@ -61,6 +61,7 @@ function normalizeCommand(rawCommand: string) {
   if (command === "floppy" || command === "save contact" || command === "contact.vcf") return "save";
   if (command === "guestbook" || command === "discarded ideas" || command === "discarded ideas.txt") return "trash";
   if (command === "startup disk" || command === "thanks") return "startup";
+  if (command === "garage" || command === "engine" || command === "alternator") return "garage";
 
   return command;
 }
@@ -82,6 +83,7 @@ function getCommandOutput(rawCommand: string) {
       "  scan            show full manifest",
       "  stack           list skills",
       "  github          show GitHub profile",
+      "  garage          jump to the moving garage object",
       "  profiler        open system profile",
       "  find            search project signals",
       "  save            save contact card",
@@ -211,6 +213,15 @@ function getCommandOutput(rawCommand: string) {
     return ["Startup Disk selected.", "Thanks for visiting.", "New projects will be added here."];
   }
 
+  if (command === "garage") {
+    return [
+      "routing to garage object...",
+      "section: power for things that move",
+      "interaction: move cursor / drag gently",
+      "signal: generation, ignition, small systems",
+    ];
+  }
+
   return [`command not found: ${rawCommand}`, "try `help`"];
 }
 
@@ -230,6 +241,10 @@ export function AboutSection() {
       setEntries([{ output: initialLines }]);
       setInput("");
       return;
+    }
+
+    if (normalizedCommand === "garage") {
+      document.getElementById("garage")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
     if (command.toLowerCase() === "open terraplot") {
