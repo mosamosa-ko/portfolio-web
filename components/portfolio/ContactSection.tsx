@@ -26,6 +26,11 @@ type PointerState = {
   y: number;
 };
 
+type DragState = {
+  x: number;
+  y: number;
+};
+
 class GarageErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
 
@@ -101,11 +106,15 @@ function GarageModel({ path, color, emissive, targetSize, position, rotation, op
   );
 }
 
-function GarageBackgroundModels({ pointer }: { pointer: PointerState }) {
+function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag: DragState }) {
   return (
     <group
       position={[pointer.x * 0.42, pointer.y * 0.22, 0]}
-      rotation={[0.04 + pointer.y * 0.55, -0.08 + pointer.x * 0.95, pointer.x * 0.22]}
+      rotation={[
+        0.04 + pointer.y * 0.55 + drag.y * 0.9,
+        -0.08 + pointer.x * 0.95 + drag.x * 1.15,
+        pointer.x * 0.22 + drag.x * 0.25,
+      ]}
     >
       <GarageModel
         path="/models/Alternator.glb"
@@ -113,7 +122,11 @@ function GarageBackgroundModels({ pointer }: { pointer: PointerState }) {
         emissive="#6f97a8"
         targetSize={6.6}
         position={[1.75 + pointer.x * 0.32, 0.05 + pointer.y * 0.18, -0.25]}
-        rotation={[0.2 + pointer.y * 0.35, -0.48 + pointer.x * 0.45, -0.08 + pointer.x * 0.16]}
+        rotation={[
+          0.2 + pointer.y * 0.35 + drag.y * 0.45,
+          -0.48 + pointer.x * 0.45 + drag.x * 0.52,
+          -0.08 + pointer.x * 0.16 + drag.x * 0.18,
+        ]}
         opacity={0.62}
       />
       <GarageModel
@@ -122,7 +135,11 @@ function GarageBackgroundModels({ pointer }: { pointer: PointerState }) {
         emissive="#7ea8b8"
         targetSize={3.2}
         position={[-2.85 - pointer.x * 0.28, -0.95 - pointer.y * 0.16, 0.2]}
-        rotation={[0.05 - pointer.y * 0.24, 0.22 - pointer.x * 0.36, -0.4 + pointer.x * 0.22]}
+        rotation={[
+          0.05 - pointer.y * 0.24 - drag.y * 0.36,
+          0.22 - pointer.x * 0.36 - drag.x * 0.42,
+          -0.4 + pointer.x * 0.22 + drag.x * 0.16,
+        ]}
         opacity={0.46}
       />
     </group>
@@ -131,8 +148,10 @@ function GarageBackgroundModels({ pointer }: { pointer: PointerState }) {
 
 export function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
+  const dragRef = useRef({ active: false, x: 0, y: 0 });
   const [shouldLoadGarage, setShouldLoadGarage] = useState(false);
   const [pointer, setPointer] = useState<PointerState>({ x: 0, y: 0 });
+  const [drag, setDrag] = useState<DragState>({ x: 0, y: 0 });
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -167,8 +186,33 @@ export function ContactSection() {
             x: ((event.clientX - rect.left) / rect.width - 0.5) * 2,
             y: ((event.clientY - rect.top) / rect.height - 0.5) * -2,
           });
+
+          if (!dragRef.current.active) return;
+
+          const deltaX = event.clientX - dragRef.current.x;
+          const deltaY = event.clientY - dragRef.current.y;
+          dragRef.current = { active: true, x: event.clientX, y: event.clientY };
+
+          setDrag((current) => ({
+            x: THREE.MathUtils.clamp(current.x + deltaX * 0.006, -1.25, 1.25),
+            y: THREE.MathUtils.clamp(current.y + deltaY * 0.006, -0.85, 0.85),
+          }));
         }}
-        onPointerLeave={() => setPointer({ x: 0, y: 0 })}
+        onPointerDown={(event) => {
+          if (event.pointerType === "mouse" && event.button !== 0) return;
+          event.currentTarget.setPointerCapture(event.pointerId);
+          dragRef.current = { active: true, x: event.clientX, y: event.clientY };
+        }}
+        onPointerUp={(event) => {
+          dragRef.current.active = false;
+          event.currentTarget.releasePointerCapture(event.pointerId);
+        }}
+        onPointerCancel={() => {
+          dragRef.current.active = false;
+        }}
+        onPointerLeave={() => {
+          if (!dragRef.current.active) setPointer({ x: 0, y: 0 });
+        }}
         className="relative min-h-[760px] select-none overflow-hidden bg-white px-6 py-28 text-[#1d1d1f] sm:px-10 lg:px-16"
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_68%_42%,rgba(159,211,230,0.2),transparent_36%),linear-gradient(135deg,#ffffff_0%,#f7fbfc_58%,#ffffff_100%)]" />
@@ -195,7 +239,7 @@ export function ContactSection() {
                 <directionalLight position={[3, 4, 5]} intensity={1.12} />
                 <directionalLight position={[-4, 2, 3]} intensity={0.42} color="#e8f6ff" />
                 <Suspense fallback={null}>
-                  <GarageBackgroundModels pointer={pointer} />
+                  <GarageBackgroundModels pointer={pointer} drag={drag} />
                 </Suspense>
               </Canvas>
             </GarageErrorBoundary>
