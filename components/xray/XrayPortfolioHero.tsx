@@ -157,7 +157,16 @@ export function XrayPortfolioHero() {
   useEffect(() => {
     if (!modelReady) return undefined;
 
-    const dismissIntro = () => setIntroDismissed(true);
+    const dismissIntro = () => {
+      try {
+        window.scrollTo(0, 0);
+      } catch {
+        // Some mobile browsers are strict about scroll APIs during overlays.
+      }
+
+      setScrollProgress(0);
+      setIntroDismissed(true);
+    };
 
     window.addEventListener("wheel", dismissIntro, { passive: true });
     window.addEventListener("touchmove", dismissIntro, { passive: true });
@@ -185,8 +194,6 @@ export function XrayPortfolioHero() {
     return () => {
       document.body.style.overflow = originalOverflow;
       document.documentElement.style.overscrollBehavior = originalOverscrollBehavior;
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-      setScrollProgress(0);
     };
   }, [showLoadingScreen]);
 
@@ -251,7 +258,20 @@ export function XrayPortfolioHero() {
           <span>{String(Math.round(progress * 100)).padStart(2, "0")}%</span>
         </div>
       </div>
-      <LoadingScreen ready={modelReady} visible={showLoadingScreen} onDismiss={() => setIntroDismissed(true)} />
+      <LoadingScreen
+        ready={modelReady}
+        visible={showLoadingScreen}
+        onDismiss={() => {
+          try {
+            window.scrollTo(0, 0);
+          } catch {
+            // Keep the intro dismissal resilient on mobile browsers.
+          }
+
+          setScrollProgress(0);
+          setIntroDismissed(true);
+        }}
+      />
     </section>
   );
 }

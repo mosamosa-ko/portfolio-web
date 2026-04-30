@@ -111,6 +111,11 @@ export function ContactSection() {
     const section = sectionRef.current;
     if (!section || shouldLoadGarage) return undefined;
 
+    if (!("IntersectionObserver" in window)) {
+      setShouldLoadGarage(true);
+      return undefined;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
