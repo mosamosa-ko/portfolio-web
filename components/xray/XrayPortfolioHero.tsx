@@ -154,8 +154,11 @@ export function XrayPortfolioHero() {
     return () => window.clearTimeout(timer);
   }, []);
 
+  const progress = useMemo(() => clamp(scrollProgress, 0, 1), [scrollProgress]);
+  const showLoadingScreen = !modelReady || (!introElapsed && !introDismissed);
+
   useEffect(() => {
-    if (!modelReady) return undefined;
+    if (!modelReady || !showLoadingScreen) return undefined;
 
     const dismissIntro = () => {
       try {
@@ -177,10 +180,7 @@ export function XrayPortfolioHero() {
       window.removeEventListener("touchmove", dismissIntro);
       window.removeEventListener("keydown", dismissIntro);
     };
-  }, [modelReady]);
-
-  const progress = useMemo(() => clamp(scrollProgress, 0, 1), [scrollProgress]);
-  const showLoadingScreen = !modelReady || (!introElapsed && !introDismissed);
+  }, [modelReady, showLoadingScreen]);
 
   useEffect(() => {
     if (!showLoadingScreen) return undefined;
