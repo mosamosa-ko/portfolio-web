@@ -181,7 +181,8 @@ export function XrayPortfolioHero() {
       const rect = section.getBoundingClientRect();
       const scrollableDistance = Math.max(section.offsetHeight - viewport, 1);
       const rawProgress = clamp(-rect.top / scrollableDistance, 0, 1);
-      setScrollProgress(clamp(rawProgress / 0.86, 0, 1));
+      // The suitcase should finish its travel before the sticky hero releases.
+      setScrollProgress(clamp(rawProgress / 0.48, 0, 1));
     };
 
     handleScroll();
