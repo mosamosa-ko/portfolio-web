@@ -30,9 +30,9 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
 
       <div className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-white/14 bg-[#0b0f12] font-mono shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
         <div className="flex items-center gap-2 border-b border-white/10 px-5 py-4">
-          <span className="h-3 w-3 rounded-full border border-white/18 bg-white/34" />
-          <span className="h-3 w-3 rounded-full border border-white/18 bg-white/24" />
-          <span className="h-3 w-3 rounded-full border border-white/18 bg-white/14" />
+          <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+          <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+          <span className="h-3 w-3 rounded-full bg-[#28c840]" />
           <span className="ml-3 text-xs tracking-[-0.01em] text-white/34">portfolio-loader — zsh</span>
         </div>
 
@@ -185,7 +185,7 @@ export function XrayPortfolioHero() {
     return () => {
       document.body.style.overflow = originalOverflow;
       document.documentElement.style.overscrollBehavior = originalOverscrollBehavior;
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       setScrollProgress(0);
     };
   }, [showLoadingScreen]);

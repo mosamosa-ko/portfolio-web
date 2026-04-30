@@ -299,9 +299,9 @@ export function AboutSection() {
 
         <div className="overflow-hidden rounded-[1.6rem] bg-[#0b0f12] shadow-[rgba(0,0,0,0.2)_3px_5px_30px_0px]">
           <div className="flex items-center gap-2 border-b border-white/10 px-6 py-5">
-            <span className="h-3.5 w-3.5 rounded-full border border-white/18 bg-white/32" />
-            <span className="h-3.5 w-3.5 rounded-full border border-white/18 bg-white/22" />
-            <span className="h-3.5 w-3.5 rounded-full border border-white/18 bg-white/14" />
+            <span className="h-3.5 w-3.5 rounded-full bg-[#ff5f57]" />
+            <span className="h-3.5 w-3.5 rounded-full bg-[#febc2e]" />
+            <span className="h-3.5 w-3.5 rounded-full bg-[#28c840]" />
             <span className="ml-3 text-sm tracking-[-0.01em] text-white/38">portfolio-scan — interactive</span>
           </div>
 
