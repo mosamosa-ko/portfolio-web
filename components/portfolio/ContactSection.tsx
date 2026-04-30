@@ -289,6 +289,106 @@ export function ContactSection() {
         </div>
       </section>
 
+      <section className="bg-white px-5 pb-20 pt-8 text-[#1d1d1f] sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-[1320px] border-t border-[#8fc7dd]/28 pt-14">
+          <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
+            <div>
+              <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Portfolio checkout</p>
+              <h2 className="mt-3 font-display text-4xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl">
+                Thanks for inspecting the baggage.
+              </h2>
+              <p className="mt-6 max-w-md text-[17px] leading-7 text-black/56">
+                A small closing counter for the projects, ideas, and experiments packed into this site.
+              </p>
+            </div>
+
+            <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
+              <div className="border border-[#8fc7dd]/38 bg-[#fbfdfe] p-5 font-mono text-xs uppercase tracking-[0.12em] text-black/58 shadow-[0_18px_60px_rgba(95,159,186,0.1)]">
+                <div className="mb-5 border-b border-[#8fc7dd]/28 pb-4 text-center">
+                  <p className="text-[#2f718a]">portfolio receipt</p>
+                  <p className="mt-1 text-[0.62rem] text-black/34">ko-yamasaki.vercel.app</p>
+                </div>
+                {[
+                  ["Terraplot", "GPS territory game"],
+                  ["App development", "iOS / web products"],
+                  ["Graph research", "nodes / queries / AI"],
+                  ["3D interface", "x-ray suitcase hero"],
+                  ["Human side", "curiosity + humor"],
+                ].map(([name, detail]) => (
+                  <div key={name} className="flex justify-between gap-4 border-b border-[#8fc7dd]/18 py-2">
+                    <span>{name}</span>
+                    <span className="text-right text-black/36">{detail}</span>
+                  </div>
+                ))}
+                <div className="mt-5 flex justify-between border-t border-[#8fc7dd]/34 pt-4 text-[#2f718a]">
+                  <span>Total</span>
+                  <span>Thank you</span>
+                </div>
+                <div className="mt-5 h-8 bg-[repeating-linear-gradient(90deg,#111_0,#111_2px,transparent_2px,transparent_5px)] opacity-25" />
+              </div>
+
+              <div className="grid gap-5">
+                <div className="border border-[#8fc7dd]/32 bg-[#f8fcfd] p-5">
+                  <p className="mb-4 font-mono text-xs uppercase tracking-[0.16em] text-black/42">sticker sheet</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["GPS", "AI", "GRAPH", "APP", "WEB", "MAP", "3D", "DESIGN", "RESEARCH", "HIROSHIMA"].map(
+                      (label, index) => (
+                        <span
+                          key={label}
+                          className="rounded-full border border-[#8fc7dd]/38 bg-white px-3 py-1.5 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[2px_2px_0_rgba(143,199,221,0.12)]"
+                          style={{ transform: `rotate(${index % 2 === 0 ? -1.5 : 1.5}deg)` }}
+                        >
+                          {label}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div className="border border-[#8fc7dd]/32 bg-white p-5">
+                    <p className="font-mono text-xs uppercase tracking-[0.16em] text-black/42">museum label</p>
+                    <p className="mt-4 text-2xl font-semibold tracking-[-0.05em]">TerraPlot</p>
+                    <p className="mt-2 text-sm leading-6 text-black/54">
+                      A small product about movement, maps, and making ordinary walks feel playable.
+                    </p>
+                  </div>
+
+                  <div className="border border-[#8fc7dd]/32 bg-white p-5">
+                    <p className="font-mono text-xs uppercase tracking-[0.16em] text-black/42">recipe card</p>
+                    <ul className="mt-4 space-y-2 font-mono text-xs uppercase tracking-[0.1em] text-black/52">
+                      <li>1 transparent suitcase</li>
+                      <li>4 project files</li>
+                      <li>many experiments</li>
+                      <li>a little humor</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="border border-[#8fc7dd]/32 bg-[#f8fcfd] p-5">
+                  <p className="mb-4 font-mono text-xs uppercase tracking-[0.16em] text-black/42">inbox zero</p>
+                  {[
+                    ["read", "project files inspected"],
+                    ["new", "next idea captured"],
+                    ["sent", "thank you for visiting"],
+                  ].map(([state, message]) => (
+                    <div
+                      key={message}
+                      className="flex items-center justify-between gap-5 border-t border-[#8fc7dd]/18 py-3 first:border-t-0"
+                    >
+                      <span className="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[#2f718a]">
+                        {state}
+                      </span>
+                      <span className="text-right text-sm text-black/58">{message}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <footer className="bg-white px-6 py-10 text-[#1d1d1f] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-[1440px] border-t border-black/12 pt-6">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
