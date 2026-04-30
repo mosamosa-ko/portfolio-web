@@ -162,12 +162,18 @@ function normalizeScene(root: Object3D) {
   };
 }
 
+function clamp01(value: number) {
+  return Math.min(1, Math.max(0, value));
+}
+
 function GlbSuitcase({ scanProgress, onReady }: SuitcaseModelProps) {
   const { scene } = useGLTF("/models/new_suitcase.glb");
   const model = useMemo(() => scene.clone(true), [scene]);
   const normalized = useMemo(() => normalizeScene(model), [model]);
-  const easedProgress = scanProgress < 0.5 ? 2 * scanProgress * scanProgress : 1 - Math.pow(-2 * scanProgress + 2, 2) / 2;
-  const x = -10.8 + easedProgress * 21.6;
+  const travelProgress = clamp01(scanProgress / 0.5);
+  const easedProgress =
+    travelProgress < 0.5 ? 2 * travelProgress * travelProgress : 1 - Math.pow(-2 * travelProgress + 2, 2) / 2;
+  const x = -11.4 + easedProgress * 25.8;
 
   useEffect(() => {
     overrideXrayMaterials(model);
