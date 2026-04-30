@@ -6,7 +6,7 @@ import { XrayPortfolioHero } from "@/components/xray/XrayPortfolioHero";
 
 export default function Home() {
   return (
-    <main className="bg-[#f3f1eb] text-[#111111]">
+    <main className="bg-white text-[#111111]">
       <XrayPortfolioHero />
       <AboutSection />
       <WorksSection />

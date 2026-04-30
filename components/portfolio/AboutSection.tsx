@@ -37,9 +37,10 @@ const initialLines = [
   "boot portfolio terminal...",
   "click a command below, or type naturally: help / ls / cd 01",
   "available folders: 01-terraplot  02-mappi  03-portfolio  04-research",
+  "hidden: profiler / find / save / trash / startup",
 ];
 
-const quickCommands = ["ls", "01", "map", "manifest", "stack", "github", "clear"];
+const quickCommands = ["ls", "01", "map", "manifest", "stack", "profiler", "find", "trash", "github", "clear"];
 
 function normalizeCommand(rawCommand: string) {
   const command = rawCommand.trim().toLowerCase();
@@ -55,6 +56,11 @@ function normalizeCommand(rawCommand: string) {
   if (command === "cd terraplot" || command === "open terraplot") return "terraplot";
   if (command === "open github") return "github";
   if (command === "projects" || command === "cd projects") return "ls";
+  if (command === "system" || command === "system profiler" || command === "about this mac") return "profiler";
+  if (command === "finder" || command === "search") return "find";
+  if (command === "floppy" || command === "save contact" || command === "contact.vcf") return "save";
+  if (command === "guestbook" || command === "discarded ideas" || command === "discarded ideas.txt") return "trash";
+  if (command === "startup disk" || command === "thanks") return "startup";
 
   return command;
 }
@@ -76,6 +82,11 @@ function getCommandOutput(rawCommand: string) {
       "  scan            show full manifest",
       "  stack           list skills",
       "  github          show GitHub profile",
+      "  profiler        open system profile",
+      "  find            search project signals",
+      "  save            save contact card",
+      "  trash           open discarded ideas",
+      "  startup         final startup note",
     ];
   }
 
@@ -155,6 +166,51 @@ function getCommandOutput(rawCommand: string) {
     return ["github: https://github.com/mosamosa-ko", "status: public profile linked"];
   }
 
+  if (command === "profiler") {
+    return [
+      "About This Portfolio",
+      "System: Ko Yamasaki / Computer Science",
+      "Memory: location systems, graph data, app development",
+      "Extensions: Next.js, SwiftUI, Firebase, Python, React Three Fiber",
+      "Status: building products around movement + data",
+    ];
+  }
+
+  if (command === "find") {
+    return [
+      "Finder Search:",
+      "  gps      -> Terraplot",
+      "  graph    -> Graph / AI Research",
+      "  ios      -> App Development",
+      "  web      -> Portfolio Website",
+      "hint: open the Finder Search folder below for the interactive version.",
+    ];
+  }
+
+  if (command === "save") {
+    return [
+      "saving contact.vcf...",
+      "name: Ko Yamasaki",
+      "github: https://github.com/mosamosa-ko",
+      "status: saved to desktop as contact card",
+    ];
+  }
+
+  if (command === "trash") {
+    return [
+      "discarded ideas.txt",
+      "01. overcomplicated scanner dashboard - deleted",
+      "02. too much neon - deleted",
+      "03. flight ticket section - archived",
+      "04. making every section interactive - maybe later",
+      "rule: playful, but never confusing.",
+    ];
+  }
+
+  if (command === "startup") {
+    return ["Startup Disk selected.", "Thanks for visiting.", "New projects will be added here."];
+  }
+
   return [`command not found: ${rawCommand}`, "try `help`"];
 }
 
@@ -198,7 +254,7 @@ export function AboutSection() {
   };
 
   return (
-    <section className="bg-[#f5f5f7] px-6 py-32 text-[#1d1d1f] sm:px-10 lg:px-16">
+    <section className="bg-white px-6 py-32 text-[#1d1d1f] sm:px-10 lg:px-16">
       <div className="mx-auto grid max-w-[1380px] gap-10 lg:grid-cols-[0.92fr_1.18fr] lg:items-center">
         <div>
           <p className="mb-4 text-sm font-medium tracking-[-0.01em] text-black/48">About</p>
@@ -243,9 +299,9 @@ export function AboutSection() {
 
         <div className="overflow-hidden rounded-[1.6rem] bg-[#0b0f12] shadow-[rgba(0,0,0,0.2)_3px_5px_30px_0px]">
           <div className="flex items-center gap-2 border-b border-white/10 px-6 py-5">
-            <span className="h-3.5 w-3.5 rounded-full bg-[#ff5f57]" />
-            <span className="h-3.5 w-3.5 rounded-full bg-[#febc2e]" />
-            <span className="h-3.5 w-3.5 rounded-full bg-[#28c840]" />
+            <span className="h-3.5 w-3.5 rounded-full border border-white/18 bg-white/32" />
+            <span className="h-3.5 w-3.5 rounded-full border border-white/18 bg-white/22" />
+            <span className="h-3.5 w-3.5 rounded-full border border-white/18 bg-white/14" />
             <span className="ml-3 text-sm tracking-[-0.01em] text-white/38">portfolio-scan — interactive</span>
           </div>
 

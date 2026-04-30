@@ -10,16 +10,19 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-function LoadingScreen({ ready }: { ready: boolean }) {
+function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible: boolean; onDismiss: () => void }) {
   const { progress } = useProgress();
   const displayProgress = ready ? 100 : Math.min(98, Math.round(progress));
   const progressBlocks = Math.max(1, Math.round(displayProgress / 5));
 
   return (
     <motion.div
+      onClick={() => {
+        if (ready) onDismiss();
+      }}
       className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-[#050708] px-6 text-[#d9f7ff]"
       initial={false}
-      animate={{ opacity: ready ? 0 : 1, pointerEvents: ready ? "none" : "auto" }}
+      animate={{ opacity: visible ? 1 : 0, pointerEvents: visible ? "auto" : "none" }}
       transition={{ duration: 0.55, ease: "easeOut" }}
     >
       <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:100%_4px]" />
@@ -27,9 +30,9 @@ function LoadingScreen({ ready }: { ready: boolean }) {
 
       <div className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-white/14 bg-[#0b0f12] font-mono shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
         <div className="flex items-center gap-2 border-b border-white/10 px-5 py-4">
-          <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
-          <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
-          <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+          <span className="h-3 w-3 rounded-full border border-white/18 bg-white/34" />
+          <span className="h-3 w-3 rounded-full border border-white/18 bg-white/24" />
+          <span className="h-3 w-3 rounded-full border border-white/18 bg-white/14" />
           <span className="ml-3 text-xs tracking-[-0.01em] text-white/34">portfolio-loader — zsh</span>
         </div>
 
@@ -93,7 +96,7 @@ function LoadingScreen({ ready }: { ready: boolean }) {
           <div className="mt-5 flex items-center text-sm text-white/52">
             <span className="text-[#6fb6d3]">ko@portfolio</span>
             <span className="mx-2 text-white/30">~/baggage $</span>
-            <span className="text-white/72">waiting for scan</span>
+            <span className="text-white/72">{ready ? "scroll or tap to enter" : "waiting for scan"}</span>
             <span className="ml-1 animate-pulse text-[#8fc7dd]">_</span>
           </div>
         </div>
@@ -107,7 +110,7 @@ function SceneContent({ progress, onModelReady }: { progress: number; onModelRea
 
   return (
     <>
-      <color attach="background" args={["#f7f5f0"]} />
+      <color attach="background" args={["#ffffff"]} />
       <OrthographicCamera makeDefault position={[0.2, -0.08, 8]} zoom={zoom} near={0.1} far={100} />
       <ambientLight intensity={0.65} color="#ffffff" />
       <directionalLight position={[3, 4, 5]} intensity={0.35} color="#ffffff" />
@@ -122,6 +125,8 @@ export function XrayPortfolioHero() {
   const sectionRef = useRef<HTMLElement>(null);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [modelReady, setModelReady] = useState(false);
+  const [introElapsed, setIntroElapsed] = useState(false);
+  const [introDismissed, setIntroDismissed] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -144,12 +149,51 @@ export function XrayPortfolioHero() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const timer = window.setTimeout(() => setIntroElapsed(true), 3200);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!modelReady) return undefined;
+
+    const dismissIntro = () => setIntroDismissed(true);
+
+    window.addEventListener("wheel", dismissIntro, { passive: true });
+    window.addEventListener("touchmove", dismissIntro, { passive: true });
+    window.addEventListener("keydown", dismissIntro);
+
+    return () => {
+      window.removeEventListener("wheel", dismissIntro);
+      window.removeEventListener("touchmove", dismissIntro);
+      window.removeEventListener("keydown", dismissIntro);
+    };
+  }, [modelReady]);
+
   const progress = useMemo(() => clamp(scrollProgress, 0, 1), [scrollProgress]);
+  const showLoadingScreen = !modelReady || (!introElapsed && !introDismissed);
+
+  useEffect(() => {
+    if (!showLoadingScreen) return undefined;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalOverscrollBehavior = document.documentElement.style.overscrollBehavior;
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overscrollBehavior = "none";
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.documentElement.style.overscrollBehavior = originalOverscrollBehavior;
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      setScrollProgress(0);
+    };
+  }, [showLoadingScreen]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative h-[300vh] bg-[radial-gradient(circle_at_72%_45%,rgba(70,150,185,0.16),transparent_32%),linear-gradient(135deg,#f7f5f0_0%,#f2f8fa_60%,#ffffff_100%)] text-[#111111]"
+      className="relative h-[300vh] bg-[radial-gradient(circle_at_72%_45%,rgba(70,150,185,0.12),transparent_32%),linear-gradient(135deg,#ffffff_0%,#f6fbfd_60%,#ffffff_100%)] text-[#111111]"
     >
       <div className="sticky top-0 h-screen overflow-hidden">
         <div className="absolute inset-0">
@@ -159,7 +203,7 @@ export function XrayPortfolioHero() {
         </div>
 
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_68%_50%,rgba(93,168,198,0.09)_0%,rgba(93,168,198,0.035)_35%,transparent_70%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(248,246,241,0.88)_0%,rgba(248,246,241,0.42)_44%,rgba(237,245,248,0.22)_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.46)_44%,rgba(237,245,248,0.18)_100%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:radial-gradient(rgba(17,17,17,0.42)_0.7px,transparent_0.7px)] [background-size:7px_7px]" />
 
         <div className="absolute left-6 top-6 z-10 text-[0.54rem] uppercase tracking-[0.32em] text-black/34 sm:left-10 sm:top-8">
@@ -207,7 +251,7 @@ export function XrayPortfolioHero() {
           <span>{String(Math.round(progress * 100)).padStart(2, "0")}%</span>
         </div>
       </div>
-      <LoadingScreen ready={modelReady} />
+      <LoadingScreen ready={modelReady} visible={showLoadingScreen} onDismiss={() => setIntroDismissed(true)} />
     </section>
   );
 }
