@@ -103,14 +103,17 @@ function GarageModel({ path, color, emissive, targetSize, position, rotation, op
 
 function GarageBackgroundModels({ pointer }: { pointer: PointerState }) {
   return (
-    <group rotation={[0.02 + pointer.y * 0.18, -0.08 + pointer.x * 0.36, pointer.x * 0.08]}>
+    <group
+      position={[pointer.x * 0.42, pointer.y * 0.22, 0]}
+      rotation={[0.04 + pointer.y * 0.55, -0.08 + pointer.x * 0.95, pointer.x * 0.22]}
+    >
       <GarageModel
         path="/models/Alternator.glb"
         color="#a8bdc7"
         emissive="#6f97a8"
         targetSize={6.6}
-        position={[1.75, 0.05, -0.25]}
-        rotation={[0.2, -0.48, -0.08]}
+        position={[1.75 + pointer.x * 0.32, 0.05 + pointer.y * 0.18, -0.25]}
+        rotation={[0.2 + pointer.y * 0.35, -0.48 + pointer.x * 0.45, -0.08 + pointer.x * 0.16]}
         opacity={0.62}
       />
       <GarageModel
@@ -118,8 +121,8 @@ function GarageBackgroundModels({ pointer }: { pointer: PointerState }) {
         color="#c7d7df"
         emissive="#7ea8b8"
         targetSize={3.2}
-        position={[-2.85, -0.95, 0.2]}
-        rotation={[0.05, 0.22, -0.4]}
+        position={[-2.85 - pointer.x * 0.28, -0.95 - pointer.y * 0.16, 0.2]}
+        rotation={[0.05 - pointer.y * 0.24, 0.22 - pointer.x * 0.36, -0.4 + pointer.x * 0.22]}
         opacity={0.46}
       />
     </group>
