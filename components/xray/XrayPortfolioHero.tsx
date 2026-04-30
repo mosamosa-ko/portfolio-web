@@ -181,7 +181,7 @@ export function XrayPortfolioHero() {
       const rect = section.getBoundingClientRect();
       const scrollableDistance = Math.max(section.offsetHeight - viewport, 1);
       const rawProgress = clamp(-rect.top / scrollableDistance, 0, 1);
-      setScrollProgress(clamp(rawProgress / 0.7, 0, 1));
+      setScrollProgress(rawProgress);
     };
 
     handleScroll();

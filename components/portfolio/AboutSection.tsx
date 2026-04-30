@@ -273,7 +273,7 @@ export function AboutSection() {
       <div className="mx-auto grid max-w-[1380px] gap-10 lg:grid-cols-[0.92fr_1.18fr] lg:items-center">
         <div className="min-w-0">
           <p className="mb-4 text-sm font-medium tracking-[-0.01em] text-black/48">About</p>
-          <pre className="max-w-full overflow-x-auto font-mono text-[0.42rem] font-semibold leading-[1.05] tracking-[-0.08em] text-[#1d1d1f] sm:text-[0.7rem] lg:text-[0.82rem]">
+          <pre className="max-w-full overflow-hidden font-mono text-[0.34rem] font-semibold leading-[1.05] tracking-[-0.08em] text-[#1d1d1f] sm:text-[0.46rem] lg:text-[0.5rem] xl:text-[0.58rem]">
             {nameAscii}
           </pre>
           <pre className="mt-8 max-w-full overflow-x-auto font-mono text-[0.68rem] leading-[1.35] text-black/46 sm:max-w-2xl sm:text-[0.8rem]">
