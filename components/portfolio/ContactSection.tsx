@@ -267,6 +267,26 @@ export function ContactSection() {
             </div>
           </div>
         </div>
+
+        <div className="pointer-events-none absolute bottom-8 right-5 z-10 hidden w-[320px] border border-[#7fb6cc]/26 bg-white/72 p-5 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-black/42 shadow-[0_18px_50px_rgba(95,159,186,0.12)] backdrop-blur-sm md:block lg:right-16">
+          <div className="mb-4 flex items-center justify-between border-b border-black/10 pb-3">
+            <span>parts note</span>
+            <span className="text-[#2f718a]">garage bench</span>
+          </div>
+          <div className="space-y-3 leading-5">
+            <p>
+              alternator / converts motion into electrical output. a small symbol for systems that keep moving after launch.
+            </p>
+            <p>
+              lighter / ignition object. the first spark before a product becomes real.
+            </p>
+          </div>
+          <div className="mt-4 grid grid-cols-4 gap-1">
+            {Array.from({ length: 16 }).map((_, index) => (
+              <span key={index} className={index % 3 === 0 ? "h-1 bg-[#7fb6cc]/45" : "h-1 bg-black/10"} />
+            ))}
+          </div>
+        </div>
       </section>
 
       <footer className="bg-white px-6 py-10 text-[#1d1d1f] sm:px-10 lg:px-16">

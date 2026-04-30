@@ -394,6 +394,7 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
 
 function MobileRetroMacDesktop() {
   const [activeApp, setActiveApp] = useState("projects");
+  const [bootVisible, setBootVisible] = useState(true);
   const selectedApp = desktopApps.find((app) => app.id === activeApp) ?? desktopApps[0];
 
   return (
@@ -403,7 +404,26 @@ function MobileRetroMacDesktop() {
         <span>Portfolio Macintosh</span>
       </div>
 
-      <div className="border-x border-b border-black bg-[#d7e1e8] bg-[radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.72),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(159,211,230,0.42),transparent_28%),radial-gradient(circle_at_70%_88%,rgba(221,232,238,0.56),transparent_30%)] p-4">
+      <div className="relative border-x border-b border-black bg-[#d7e1e8] bg-[radial-gradient(circle_at_20%_18%,rgba(255,255,255,0.72),transparent_28%),radial-gradient(circle_at_86%_22%,rgba(159,211,230,0.42),transparent_28%),radial-gradient(circle_at_70%_88%,rgba(221,232,238,0.56),transparent_30%)] p-4">
+        {bootVisible ? (
+          <button
+            type="button"
+            onClick={() => setBootVisible(false)}
+            className="absolute inset-0 z-30 grid place-items-center bg-[#d7e1e8]/96 p-6 font-mono text-black"
+            aria-label="Dismiss portfolio desktop boot screen"
+          >
+            <span className="w-full border border-black bg-white p-5 text-center shadow-[4px_4px_0_rgba(0,0,0,0.18)]">
+              <span className="mx-auto grid h-16 w-16 place-items-center border border-black bg-[#eef4f6] text-3xl">⌘</span>
+              <span className="mt-5 block text-lg font-bold tracking-[-0.05em]">Portfolio OS</span>
+              <span className="mt-3 block text-xs uppercase leading-5 tracking-[0.12em] text-black/58">
+                projects folder ready
+                <br />
+                tap to open desktop
+              </span>
+            </span>
+          </button>
+        ) : null}
+
         <div className="grid grid-cols-3 gap-x-3 gap-y-5">
           {desktopApps.map((app) => (
             <button key={app.id} type="button" onClick={() => setActiveApp(app.id)} className="text-center font-mono text-[0.68rem] text-black">
@@ -430,6 +450,7 @@ function MobileRetroMacDesktop() {
 }
 
 function RetroMacDesktop() {
+  const [bootVisible, setBootVisible] = useState(true);
   const [windows, setWindows] = useState<WindowState[]>(() =>
     desktopApps.map((app, index) => ({
       ...app,
@@ -521,6 +542,30 @@ function RetroMacDesktop() {
         onPointerCancel={() => setDragging(null)}
         className="relative min-h-[780px] overflow-hidden border-x border-b border-black bg-[#d7e1e8] bg-[radial-gradient(circle_at_18%_18%,rgba(255,255,255,0.7),transparent_22%),radial-gradient(circle_at_82%_24%,rgba(159,211,230,0.42),transparent_24%),radial-gradient(circle_at_68%_84%,rgba(221,232,238,0.56),transparent_25%),linear-gradient(45deg,rgba(255,255,255,0.22)_25%,transparent_25%,transparent_75%,rgba(255,255,255,0.22)_75%),linear-gradient(45deg,rgba(255,255,255,0.22)_25%,transparent_25%,transparent_75%,rgba(255,255,255,0.22)_75%)] bg-[length:auto,auto,auto,4px_4px,4px_4px] bg-[position:center,center,center,0_0,2px_2px] p-6"
       >
+        {bootVisible ? (
+          <button
+            type="button"
+            onClick={() => setBootVisible(false)}
+            className="absolute inset-0 z-[9999] grid cursor-pointer place-items-center bg-[#d7e1e8]/96 font-mono text-black backdrop-blur-[1px]"
+            aria-label="Dismiss portfolio desktop boot screen"
+          >
+            <span className="w-[420px] max-w-[80%] border border-black bg-white p-6 text-center shadow-[6px_6px_0_rgba(0,0,0,0.2)]">
+              <span className="mx-auto grid h-20 w-20 place-items-center border border-black bg-[#eef4f6] text-4xl shadow-[3px_3px_0_rgba(0,0,0,0.16)]">⌘</span>
+              <span className="mt-6 block text-xl font-bold tracking-[-0.05em]">Welcome to Portfolio OS</span>
+              <span className="mt-4 block text-left text-xs uppercase leading-6 tracking-[0.12em] text-black/58">
+                loading desktop files...
+                <br />
+                mounting projects folder...
+                <br />
+                ready for inspection.
+              </span>
+              <span className="mt-5 block border border-black bg-[#f8fbfc] px-4 py-2 text-xs uppercase tracking-[0.16em]">
+                click to continue
+              </span>
+            </span>
+          </button>
+        ) : null}
+
         <div className="grid w-32 gap-6">
           {desktopApps.map((app) => {
             return (
