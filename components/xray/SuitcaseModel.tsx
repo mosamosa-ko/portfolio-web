@@ -166,7 +166,8 @@ function GlbSuitcase({ scanProgress, onReady }: SuitcaseModelProps) {
   const { scene } = useGLTF("/models/new_suitcase.glb");
   const model = useMemo(() => scene.clone(true), [scene]);
   const normalized = useMemo(() => normalizeScene(model), [model]);
-  const x = -12.5 + scanProgress * 25;
+  const easedProgress = scanProgress < 0.5 ? 2 * scanProgress * scanProgress : 1 - Math.pow(-2 * scanProgress + 2, 2) / 2;
+  const x = -10.8 + easedProgress * 21.6;
 
   useEffect(() => {
     overrideXrayMaterials(model);
