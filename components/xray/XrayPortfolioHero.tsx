@@ -11,6 +11,7 @@ function clamp(value: number, min: number, max: number) {
 }
 
 const BAGGAGE_SCROLL_DISTANCE = 2400;
+const BAGGAGE_RELEASE_PROGRESS = 0.5;
 
 function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible: boolean; onDismiss: () => void }) {
   const { progress } = useProgress();
@@ -186,7 +187,9 @@ export function XrayPortfolioHero() {
     const advanceBaggage = (delta: number) => {
       const current = progressRef.current;
       const next = clamp(current + delta / BAGGAGE_SCROLL_DISTANCE, 0, 1);
-      const shouldLockScroll = (delta > 0 && current < 1) || (delta < 0 && current > 0 && window.scrollY <= 4);
+      const shouldLockScroll =
+        (delta > 0 && current < BAGGAGE_RELEASE_PROGRESS && next < BAGGAGE_RELEASE_PROGRESS) ||
+        (delta < 0 && current > 0 && window.scrollY <= 4);
 
       progressRef.current = next;
       setScrollProgress(next);

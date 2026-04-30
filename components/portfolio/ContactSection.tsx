@@ -289,6 +289,33 @@ export function ContactSection() {
         </div>
       </section>
 
+      <section className="bg-white px-5 pb-20 text-[#1d1d1f] sm:px-10 lg:px-16">
+        <div className="mx-auto grid max-w-[1320px] gap-6 border-t border-[#8fc7dd]/28 pt-12 md:grid-cols-[0.72fr_1.28fr]">
+          <div>
+            <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Closing log</p>
+            <h2 className="mt-3 font-display text-4xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-5xl">
+              Systems stay warm.
+            </h2>
+          </div>
+          <div className="grid gap-3 font-mono text-xs uppercase tracking-[0.13em] text-black/46 sm:grid-cols-3">
+            {[
+              ["01", "location signal", "gps cells / movement"],
+              ["02", "graph signal", "nodes / edges / queries"],
+              ["03", "garage signal", "generation / ignition"],
+            ].map(([number, title, body]) => (
+              <div key={number} className="border border-[#8fc7dd]/32 bg-[#f8fcfd] p-4">
+                <div className="mb-6 flex items-center justify-between text-[#2f718a]">
+                  <span>{number}</span>
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#8fc7dd]" />
+                </div>
+                <p className="text-black/68">{title}</p>
+                <p className="mt-2 text-[0.68rem] leading-5 text-black/38">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <footer className="bg-white px-6 py-10 text-[#1d1d1f] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-[1440px] border-t border-black/12 pt-6">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
