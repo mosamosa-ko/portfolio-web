@@ -13,7 +13,14 @@ function clamp(value: number, min: number, max: number) {
 function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible: boolean; onDismiss: () => void }) {
   const { progress } = useProgress();
   const displayProgress = ready ? 100 : Math.min(98, Math.round(progress));
-  const progressBlocks = Math.max(1, Math.round(displayProgress / 5));
+  const progressBlocks = Math.max(1, Math.round(displayProgress / 4));
+  const bootRows = [
+    { label: "mount /portfolio", value: "ok", active: displayProgress >= 8 },
+    { label: "load x-ray baggage", value: "new_suitcase.glb", active: displayProgress >= 22 },
+    { label: "apply translucent material", value: "soft blue-gray", active: displayProgress >= 44 },
+    { label: "index desktop windows", value: "projects / skills / contact", active: displayProgress >= 64 },
+    { label: "prepare interaction layer", value: "terminal / classic desktop", active: displayProgress >= 82 },
+  ];
 
   return (
     <motion.div
@@ -25,59 +32,92 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
       animate={{ opacity: visible ? 1 : 0, pointerEvents: visible ? "auto" : "none" }}
       transition={{ duration: 0.55, ease: "easeOut" }}
     >
-      <div className="pointer-events-none absolute inset-0 opacity-[0.08] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:100%_4px]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(143,199,221,0.14),transparent_42%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.07] [background-image:linear-gradient(rgba(255,255,255,0.5)_1px,transparent_1px)] [background-size:100%_4px]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_42%,rgba(143,199,221,0.16),transparent_38%),radial-gradient(circle_at_72%_68%,rgba(255,255,255,0.08),transparent_34%)]" />
 
-      <div className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-white/14 bg-[#0b0f12] font-mono shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
+      <div className="relative w-full max-w-6xl overflow-hidden rounded-3xl border border-white/14 bg-[#080d10] font-mono shadow-[0_30px_90px_rgba(0,0,0,0.42)]">
         <div className="flex items-center gap-2 border-b border-white/10 px-5 py-4">
           <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
           <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
           <span className="h-3 w-3 rounded-full bg-[#28c840]" />
-          <span className="ml-3 text-xs tracking-[-0.01em] text-white/34">portfolio-loader — zsh</span>
+          <span className="ml-3 text-xs tracking-[-0.01em] text-white/34">portfolio-loader — xray boot</span>
         </div>
 
-        <div className="p-5 sm:p-7">
-          <div className="mb-5 text-sm text-white/48">
+        <div className="p-5 sm:p-7 lg:p-8">
+          <div className="mb-6 flex flex-col gap-2 text-sm text-white/48 sm:flex-row sm:items-center sm:justify-between">
+            <div>
             <span className="text-[#6fb6d3]">ko@portfolio</span>
             <span className="text-white/30"> ~/baggage </span>
-            <span className="text-white/70">$ ./boot_xray_portfolio</span>
+              <span className="text-white/70">$ ./open_portfolio_baggage</span>
+            </div>
+            <span className="text-xs uppercase tracking-[0.24em] text-white/28">checkpoint 01 / hiroshima</span>
           </div>
 
-          <pre className="overflow-x-auto text-[0.48rem] font-semibold leading-[1.02] tracking-[-0.06em] text-[#8fc7dd] drop-shadow-[0_0_14px_rgba(143,199,221,0.22)] sm:text-[0.72rem] lg:text-[0.92rem]">
+          <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
+            <div>
+              <pre className="overflow-x-auto text-[0.46rem] font-semibold leading-[1.02] tracking-[-0.055em] text-[#9fd3e6] drop-shadow-[0_0_14px_rgba(143,199,221,0.2)] sm:text-[0.66rem] lg:text-[0.78rem]">
 {String.raw`
-@@@        @@@@@@    @@@@@@   @@@@@@@   @@@  @@@  @@@   @@@@@@
-@@@       @@@@@@@@  @@@@@@@@  @@@@@@@@  @@@  @@@@ @@@  @@@@@@@
-@@!       @@!  @@@  @@!  @@@  @@!  @@@  @@!  @@!@!@@@  !@@
-!@!       !@!  @!@  !@!  @!@  !@!  @!@  !@!  !@!!@!@!  !@!
-@!!       @!@  !@!  @!@!@!@!  @!@  !@!  !!@  @!@ !!@!  !!@@!!
-!!!       !@!  !!!  !!!@!!!!  !@!  !!!  !!!  !@!  !!!   !!@!!!
-!!:       !!:  !!!  !!:  !!!  !!:  !!!  !!:  !!:  !!!       !:!
-:!:       :!:  !:!  :!:  !:!  :!:  !:!  :!:  :!:  !:!      !:!
- :: ::::  ::::: ::  ::   :::   :::: ::   ::   ::   ::   :::: ::
-: :: : :   : :  :    :   : :  :: :  :   :    ::    :    :: : :
-
-        .---------------------------------------------------------------.
-       /  .----------------------------------------------------------.  /|
-      /  /                                                          /  / |
-     /  /      KO YAMASAKI / PORTFOLIO BAGGAGE                    /  /  |
-    /  /      XRAY MATERIAL PASS                                  /  /   |
-   /  /__________________________________________________________/  /    |
-  |   |                                                          |   |   |
-  |   |   [ CPU ] [ GRAPH ] [ APP ] [ MAP ] [ SYSTEMS ]          |   |   |
-  |   |                                                          |   |  /
-  |   |__________________________________________________________|   | /
-  |  /____________________________________________________________\  |/
-  '---------------------------------------------------------------'
+  @@@  @@@   @@@@@@        @@@ @@@   @@@@@@   @@@@@@@@@@    @@@@@@    @@@@@@    @@@  @@@  @@@
+  @@@  @@@  @@@@@@@@       @@@ @@@  @@@@@@@@  @@@@@@@@@@@  @@@@@@@   @@@@@@@@   @@@  @@@  @@@
+  @@!  !@@  @@!  @@@       @@! !@@  @@!  @@@  @@! @@! @@!  !@@       @@!  @@@   @@!  !@@  @@!
+  !@!  @!!  !@!  @!@       !@! @!!  !@!  @!@  !@! !@! !@!  !@!       !@!  @!@   !@!  @!!  !@!
+  @!@@!@!   @!@  !@!        !@!@!   @!@!@!@!  @!! !!@ @!@  !!@@!!    @!@!@!@!   @!@@!@!   !!@
+  !!@!!!    !@!  !!!         @!!!   !!!@!!!!  !@!   ! !@!   !!@!!!   !!!@!!!!   !!@!!!    !!!
+  !!: :!!   !!:  !!!         !!:    !!:  !!!  !!:     !!:       !:!  !!:  !!!   !!: :!!   !!:
+  :!:  !:!  :!:  !:!         :!:    :!:  !:!  :!:     :!:      !:!   :!:  !:!   :!:  !:!  :!:
+   ::  :::  ::::: ::          ::    ::   :::  :::     ::   :::: ::   ::   :::    ::  :::   ::
+   :   :::   : :  :           :      :   : :   :      :    :: : :     :   : :    :   :::  :
 `}
-          </pre>
+              </pre>
 
-          <div className="mt-7 space-y-2 text-xs uppercase tracking-[0.18em] text-white/42">
-            <p><span className="text-[#8fc7dd]">[01]</span> loading /models/new_suitcase.glb</p>
-            <p><span className="text-[#8fc7dd]">[02]</span> applying transparent x-ray material</p>
-            <p><span className="text-[#8fc7dd]">[03]</span> preparing desktop portfolio</p>
+              <div className="mt-5 border border-[#8fc7dd]/18 bg-[#d9f7ff]/[0.035] p-4 text-[0.68rem] uppercase leading-relaxed tracking-[0.16em] text-white/42">
+                <pre className="overflow-x-auto text-[#d9f7ff]/74">
+{String.raw`
++--------------------------------------------------+
+| ID: KO-YAMASAKI                                  |
+| FIELD: COMPUTER SCIENCE                          |
+| FOCUS: AI / GRAPH DATA / APP DEVELOPMENT         |
+| CARGO: TERRAPLOT / MAPPI / WEB / RESEARCH        |
+|                                                  |
+| ||| || |||| ||| || ||||| || ||| |||| ||| ||      |
++--------------------------------------------------+
+`}
+                </pre>
+              </div>
+            </div>
+
+            <div className="border border-white/12 bg-black/22 p-4 sm:p-5">
+              <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.2em] text-white/34">
+                <span>boot manifest</span>
+                <span>{ready ? "ready" : "scanning"}</span>
+              </div>
+
+              <div className="space-y-3">
+                {bootRows.map((row, index) => (
+                  <div key={row.label} className="grid grid-cols-[2.3rem_1fr] gap-3 text-xs">
+                    <span className={row.active ? "text-[#9fd3e6]" : "text-white/18"}>[{String(index + 1).padStart(2, "0")}]</span>
+                    <div className={row.active ? "text-white/64" : "text-white/24"}>
+                      <div className="uppercase tracking-[0.18em]">{row.label}</div>
+                      <div className="mt-1 text-[0.68rem] uppercase tracking-[0.14em] text-white/34">{row.value}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 grid grid-cols-8 gap-1">
+                {Array.from({ length: 32 }).map((_, index) => (
+                  <span
+                    key={index}
+                    className={`h-2 border border-[#8fc7dd]/24 ${
+                      index < Math.round(displayProgress / 3.125) ? "bg-[#9fd3e6]/72" : "bg-white/[0.025]"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="mt-7 grid gap-3 border border-white/12 bg-white/[0.03] p-4 text-xs uppercase tracking-[0.18em] text-white/42 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div className="mt-6 grid gap-3 border border-white/12 bg-white/[0.03] p-4 text-xs uppercase tracking-[0.18em] text-white/42 sm:grid-cols-[1fr_auto] sm:items-center">
             <div>
               <div className="mb-2 flex justify-between gap-4">
                 <span>LOADING BAGGAGE</span>
@@ -89,7 +129,7 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
             </div>
             <div className="whitespace-nowrap text-[#8fc7dd]">
               {"█".repeat(progressBlocks)}
-              <span className="text-white/18">{"░".repeat(20 - progressBlocks)}</span>
+              <span className="text-white/18">{"░".repeat(25 - progressBlocks)}</span>
             </div>
           </div>
 
