@@ -224,33 +224,57 @@ function ProjectSignalVisual({ project }: { project: (typeof projects)[number] }
 
 function WindowContent({ id, openWindow }: WindowContentProps) {
   if (id === "projects") {
+    const mainProject = projects[0];
+
     return (
-      <div className="grid gap-4 lg:grid-cols-2">
-        {projects.map((project) => (
-          <div
-            key={project.title}
-            className="border border-[#8fc7dd]/42 bg-white p-3 font-mono text-sm text-black shadow-[2px_2px_0_rgba(95,159,186,0.12)]"
-          >
-            <ProjectSignalVisual project={project} />
-            <div className="mt-3 flex items-start gap-3">
-              <span className="text-black/42">{project.code}</span>
-              <div>
-                <p className="font-bold">{project.title}</p>
-                <p className="mt-1 text-xs uppercase tracking-[0.12em] text-black/46">{project.category}</p>
-                <p className="mt-2 text-xs leading-5 text-black/62">{project.description}</p>
-                {project.title === "Terraplot" ? (
-                  <button
-                    type="button"
-                    onClick={() => openWindow("terraplot")}
-                    className="mt-3 border border-black bg-white px-3 py-1.5 text-xs font-bold hover:bg-black hover:text-white"
-                  >
-                    Open project file
-                  </button>
-                ) : null}
+      <div className="grid gap-5 font-mono text-black lg:grid-cols-[1fr_0.95fr]">
+        <div className="border border-[#8fc7dd]/42 bg-white">
+          <div className="grid grid-cols-[44px_1.2fr_1fr] border-b border-[#8fc7dd]/32 bg-[#f4fbfd] px-3 py-2 text-[0.64rem] uppercase tracking-[0.14em] text-black/42">
+            <span>ID</span>
+            <span>Project</span>
+            <span>Signal</span>
+          </div>
+          {projects.map((project) => (
+            <button
+              key={project.title}
+              type="button"
+              onClick={() => (project.title === "Terraplot" ? openWindow("terraplot") : undefined)}
+              className="grid w-full grid-cols-[44px_1.2fr_1fr] items-start border-b border-[#8fc7dd]/22 px-3 py-4 text-left transition last:border-b-0 hover:bg-[#f4fbfd]"
+            >
+              <span className="text-xs text-black/38">{project.code}</span>
+              <span>
+                <span className="block text-base font-bold tracking-[-0.04em]">{project.title}</span>
+                <span className="mt-1 block text-[0.66rem] uppercase tracking-[0.12em] text-black/42">{project.category}</span>
+              </span>
+              <span className="text-xs leading-5 text-black/56">{project.tags.join(" / ")}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="border border-[#8fc7dd]/42 bg-[#f8fcfd] p-4">
+          <div className="grid gap-4 sm:grid-cols-[0.85fr_1fr] lg:grid-cols-1">
+            <ProjectSignalVisual project={mainProject} />
+            <div>
+              <p className="text-xs uppercase tracking-[0.16em] text-black/42">Selected file</p>
+              <h3 className="mt-2 text-3xl font-bold tracking-[-0.07em]">{mainProject.title}</h3>
+              <p className="mt-3 text-sm leading-6 text-black/62">{mainProject.description}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {mainProject.tags.map((tag) => (
+                  <span key={tag} className="border border-[#8fc7dd]/36 bg-white px-2.5 py-1 text-[0.66rem] uppercase tracking-[0.1em] text-black/46">
+                    {tag}
+                  </span>
+                ))}
               </div>
+              <button
+                type="button"
+                onClick={() => openWindow("terraplot")}
+                className="mt-5 border border-[#5f9fba]/45 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[#2f718a] transition hover:bg-[#eef7fa]"
+              >
+                Open Terraplot file
+              </button>
             </div>
           </div>
-        ))}
+        </div>
       </div>
     );
   }
