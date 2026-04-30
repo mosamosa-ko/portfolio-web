@@ -109,11 +109,11 @@ function GarageModel({ path, color, emissive, targetSize, position, rotation, op
 function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag: DragState }) {
   return (
     <group
-      position={[pointer.x * 0.42, pointer.y * 0.22, 0]}
+      position={[pointer.x * 0.3, pointer.y * 0.16, 0]}
       rotation={[
-        0.04 + pointer.y * 0.55 + drag.y * 0.9,
-        -0.08 + pointer.x * 0.95 + drag.x * 1.15,
-        pointer.x * 0.22 + drag.x * 0.25,
+        0.04 + pointer.y * 0.34 + drag.y * 0.52,
+        -0.08 + pointer.x * 0.58 + drag.x * 0.68,
+        pointer.x * 0.12 + drag.x * 0.14,
       ]}
     >
       <GarageModel
@@ -121,11 +121,11 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
         color="#a8bdc7"
         emissive="#6f97a8"
         targetSize={6.6}
-        position={[1.75 + pointer.x * 0.32, 0.05 + pointer.y * 0.18, -0.25]}
+        position={[1.75 + pointer.x * 0.22, 0.05 + pointer.y * 0.12, -0.25]}
         rotation={[
-          0.2 + pointer.y * 0.35 + drag.y * 0.45,
-          -0.48 + pointer.x * 0.45 + drag.x * 0.52,
-          -0.08 + pointer.x * 0.16 + drag.x * 0.18,
+          0.2 + pointer.y * 0.22 + drag.y * 0.26,
+          -0.48 + pointer.x * 0.28 + drag.x * 0.3,
+          -0.08 + pointer.x * 0.08 + drag.x * 0.1,
         ]}
         opacity={0.62}
       />
@@ -134,11 +134,11 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
         color="#c7d7df"
         emissive="#7ea8b8"
         targetSize={3.2}
-        position={[-2.85 - pointer.x * 0.28, -0.95 - pointer.y * 0.16, 0.2]}
+        position={[-2.85 - pointer.x * 0.2, -0.95 - pointer.y * 0.1, 0.2]}
         rotation={[
-          0.05 - pointer.y * 0.24 - drag.y * 0.36,
-          0.22 - pointer.x * 0.36 - drag.x * 0.42,
-          -0.4 + pointer.x * 0.22 + drag.x * 0.16,
+          0.05 - pointer.y * 0.14 - drag.y * 0.22,
+          0.22 - pointer.x * 0.22 - drag.x * 0.26,
+          -0.4 + pointer.x * 0.12 + drag.x * 0.1,
         ]}
         opacity={0.46}
       />
@@ -194,8 +194,8 @@ export function ContactSection() {
           dragRef.current = { active: true, x: event.clientX, y: event.clientY };
 
           setDrag((current) => ({
-            x: THREE.MathUtils.clamp(current.x + deltaX * 0.006, -1.25, 1.25),
-            y: THREE.MathUtils.clamp(current.y + deltaY * 0.006, -0.85, 0.85),
+            x: THREE.MathUtils.clamp(current.x + deltaX * 0.0038, -0.9, 0.9),
+            y: THREE.MathUtils.clamp(current.y + deltaY * 0.0038, -0.6, 0.6),
           }));
         }}
         onPointerDown={(event) => {
