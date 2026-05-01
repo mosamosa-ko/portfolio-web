@@ -241,6 +241,9 @@ function MuseumRoom({
       velocity.lerp(new THREE.Vector3(0, 0, 0), 0.16);
     }
 
+    if (keysRef.current.q) yawRef.current += delta * 1.65;
+    if (keysRef.current.e) yawRef.current -= delta * 1.65;
+
     player.position.x = THREE.MathUtils.clamp(player.position.x + velocity.x * delta, -5.8, 5.8);
     player.position.z = THREE.MathUtils.clamp(player.position.z + velocity.z * delta, -5.25, 4.2);
 
@@ -339,6 +342,7 @@ function MuseumRoom({
 }
 
 function MiniMuseum() {
+  const museumRef = useRef<HTMLDivElement>(null);
   const keysRef = useRef<Record<string, boolean>>({});
   const yawRef = useRef(0);
   const viewDragRef = useRef({ active: false, x: 0 });
@@ -346,18 +350,22 @@ function MiniMuseum() {
 
   const setKey = (key: string, isPressed: boolean) => {
     const normalized = key.toLowerCase();
-    if (!["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(normalized)) return;
+    if (!["w", "a", "s", "d", "q", "e", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(normalized)) return;
     keysRef.current[normalized] = isPressed;
   };
 
   return (
     <div
+      ref={museumRef}
       role="application"
       tabIndex={0}
       aria-label="Third-person portfolio museum"
       onKeyDown={(event) => {
         setKey(event.key, true);
-        if (["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(event.key.toLowerCase())) {
+        const normalized = event.key.toLowerCase();
+        if (normalized === "q") yawRef.current += 0.12;
+        if (normalized === "e") yawRef.current -= 0.12;
+        if (["w", "a", "s", "d", "q", "e", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(normalized)) {
           event.preventDefault();
         }
       }}
@@ -366,24 +374,6 @@ function MiniMuseum() {
       }}
       onBlur={() => {
         keysRef.current = {};
-        viewDragRef.current.active = false;
-      }}
-      onPointerDown={(event) => {
-        event.currentTarget.focus();
-        event.currentTarget.setPointerCapture(event.pointerId);
-        viewDragRef.current = { active: true, x: event.clientX };
-      }}
-      onPointerMove={(event) => {
-        if (!viewDragRef.current.active) return;
-        const deltaX = event.clientX - viewDragRef.current.x;
-        viewDragRef.current = { active: true, x: event.clientX };
-        yawRef.current -= deltaX * 0.006;
-      }}
-      onPointerUp={(event) => {
-        viewDragRef.current.active = false;
-        event.currentTarget.releasePointerCapture(event.pointerId);
-      }}
-      onPointerCancel={() => {
         viewDragRef.current.active = false;
       }}
       className="relative min-h-[76vh] select-none overflow-hidden border border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
@@ -396,11 +386,33 @@ function MiniMuseum() {
         <MuseumRoom keysRef={keysRef} yawRef={yawRef} onActiveArtworkChange={setActiveArtwork} />
       </Canvas>
 
-      <div className="pointer-events-none absolute left-5 top-5 rounded-full border border-[#8fc7dd]/34 bg-white/78 px-4 py-2 font-mono text-[0.64rem] uppercase tracking-[0.18em] text-black/46 backdrop-blur-sm">
-        Click room: WASD to walk / drag to look
+      <div
+        className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing"
+        onPointerDown={(event) => {
+          museumRef.current?.focus();
+          event.currentTarget.setPointerCapture(event.pointerId);
+          viewDragRef.current = { active: true, x: event.clientX };
+        }}
+        onPointerMove={(event) => {
+          if (!viewDragRef.current.active) return;
+          const deltaX = event.clientX - viewDragRef.current.x;
+          viewDragRef.current = { active: true, x: event.clientX };
+          yawRef.current -= deltaX * 0.0075;
+        }}
+        onPointerUp={(event) => {
+          viewDragRef.current.active = false;
+          event.currentTarget.releasePointerCapture(event.pointerId);
+        }}
+        onPointerCancel={() => {
+          viewDragRef.current.active = false;
+        }}
+      />
+
+      <div className="pointer-events-none absolute left-5 top-5 z-20 rounded-full border border-[#8fc7dd]/34 bg-white/78 px-4 py-2 font-mono text-[0.64rem] uppercase tracking-[0.18em] text-black/46 backdrop-blur-sm">
+        WASD to walk / drag or Q E to look
       </div>
 
-      <div className="pointer-events-none absolute bottom-5 left-5 right-5 grid gap-3 sm:left-auto sm:w-[360px]">
+      <div className="pointer-events-none absolute bottom-5 left-5 right-5 z-20 grid gap-3 sm:left-auto sm:w-[360px]">
         {activeArtwork ? (
           <div className="border border-[#8fc7dd]/38 bg-white/86 p-5 shadow-[0_18px_60px_rgba(95,159,186,0.14)] backdrop-blur-sm">
             <p className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-[#2f718a]">near artwork</p>
@@ -573,12 +585,28 @@ export function ContactSection() {
         <div className="mx-auto max-w-[1480px] border-t border-[#8fc7dd]/28 pt-14">
           <div className="grid gap-8 lg:grid-cols-[1fr_420px]">
             <div>
-              <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Portfolio checkout</p>
+              <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Portfolio museum</p>
               <h2 className="mt-3 font-display text-4xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl">
-                Thanks for inspecting the baggage.
+                Walk through the projects.
               </h2>
               <p className="mt-6 max-w-md text-[17px] leading-7 text-black/56">
-                A small closing counter for the projects, ideas, and experiments packed into this site.
+                A small third-person room where each artwork acts like a project exhibit. Move close to inspect the work.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-10">
+            <MiniMuseum />
+          </div>
+
+          <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_420px] lg:items-start">
+            <div>
+              <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Museum shop</p>
+              <h3 className="mt-3 font-display text-4xl font-semibold leading-[1.06] tracking-[-0.055em] sm:text-5xl">
+                Take the receipt on the way out.
+              </h3>
+              <p className="mt-5 max-w-md text-[17px] leading-7 text-black/54">
+                The final counter turns the visit into a small checkout slip, like buying a print from the museum shop.
               </p>
             </div>
 
@@ -605,10 +633,6 @@ export function ContactSection() {
               </div>
               <div className="mt-5 h-8 bg-[repeating-linear-gradient(90deg,#111_0,#111_2px,transparent_2px,transparent_5px)] opacity-25" />
             </div>
-          </div>
-
-          <div className="mt-10">
-            <MiniMuseum />
           </div>
         </div>
       </section>
