@@ -12,7 +12,7 @@ const links = [
 ];
 
 const portfolioUrl = "https://ko-yamasaki.vercel.app";
-const receiptQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=132x132&margin=1&data=${encodeURIComponent(portfolioUrl)}`;
+const receiptQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=96x96&margin=1&data=${encodeURIComponent(portfolioUrl)}`;
 
 const receiptLogoAscii = String.raw`
 @@@  @@@   @@@@@@       @@@ @@@   @@@@@@   @@@@@@@@@@    @@@@@@    @@@@@@    @@@@@@   @@@  @@@  @@@
@@ -72,7 +72,7 @@ const receiptLetterMap: Record<string, string[]> = {
 };
 
 function renderReceiptNameAscii(name: string) {
-  const safeName = (name || "GUEST").toUpperCase().replace(/[^A-Z0-9@_,. ]/g, "").slice(0, 14) || "GUEST";
+  const safeName = (name || "GUEST").toUpperCase().replace(/[^A-Z0-9@_,. ]/g, "").slice(0, 10) || "GUEST";
   const rows = ["", "", "", "", ""];
 
   for (const character of safeName) {
@@ -169,41 +169,6 @@ const museumExhibits = [
   },
 ] satisfies MuseumArtwork[];
 
-const vendingItems = [
-  {
-    id: "terraplot",
-    code: "01",
-    title: "Terraplot",
-    label: "GPS Territory Game",
-    flavor: "movement / map / cells",
-    color: "#d8edf6",
-  },
-  {
-    id: "app",
-    code: "02",
-    title: "App Dev",
-    label: "iOS + Web Product",
-    flavor: "swiftui / ui / systems",
-    color: "#e8f4f8",
-  },
-  {
-    id: "portfolio",
-    code: "03",
-    title: "Portfolio",
-    label: "Interactive Web",
-    flavor: "3d / terminal / desktop",
-    color: "#f2fafc",
-  },
-  {
-    id: "research",
-    code: "04",
-    title: "Graph AI",
-    label: "Research Direction",
-    flavor: "nodes / queries / learning",
-    color: "#eef7fa",
-  },
-];
-
 class GarageErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
 
@@ -279,6 +244,37 @@ function GarageModel({ path, color, emissive, targetSize, position, rotation, op
   );
 }
 
+function RawDeliveryModel({ path, targetSize }: { path: string; targetSize: number }) {
+  const { scene } = useGLTF(path);
+
+  const normalized = useMemo(() => {
+    const model = scene.clone(true);
+
+    model.traverse((child) => {
+      if (!(child instanceof THREE.Mesh)) return;
+      child.castShadow = false;
+      child.receiveShadow = false;
+    });
+
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDimension = Math.max(size.x, size.y, size.z) || 1;
+
+    return {
+      model,
+      scale: targetSize / maxDimension,
+      offset: center.multiplyScalar(-1),
+    };
+  }, [path, scene, targetSize]);
+
+  return (
+    <group scale={normalized.scale}>
+      <primitive object={normalized.model} position={[normalized.offset.x, normalized.offset.y, normalized.offset.z]} />
+    </group>
+  );
+}
+
 function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag: DragState }) {
   return (
     <group
@@ -319,23 +315,18 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
   );
 }
 
-function VendingShopModels({ selectedIndex }: { selectedIndex: number }) {
+function DeliveryTrolleyScene() {
   const trolleyRef = useRef<THREE.Group>(null);
-  const vendingRef = useRef<THREE.Group>(null);
   const packageRef = useRef<THREE.Group>(null);
 
-  useFrame(({ clock }, delta) => {
+  useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
 
-    if (vendingRef.current) {
-      vendingRef.current.rotation.y = -0.36 + Math.sin(time * 0.45) * 0.025;
-    }
-
     if (trolleyRef.current) {
-      const targetX = -1.1 + selectedIndex * 0.72;
-      trolleyRef.current.position.x = THREE.MathUtils.lerp(trolleyRef.current.position.x, targetX, delta * 2.8);
-      trolleyRef.current.rotation.y = THREE.MathUtils.lerp(trolleyRef.current.rotation.y, -0.08 + selectedIndex * 0.035, delta * 2.4);
-      trolleyRef.current.position.y = -1.28 + Math.sin(time * 2.2) * 0.025;
+      const loop = (time * 0.15) % 1;
+      trolleyRef.current.position.x = THREE.MathUtils.lerp(-4.5, 4.2, loop);
+      trolleyRef.current.position.y = -1.12 + Math.sin(time * 2.1) * 0.025;
+      trolleyRef.current.rotation.y = -0.12 + Math.sin(time * 0.7) * 0.035;
     }
 
     if (packageRef.current) {
@@ -346,39 +337,20 @@ function VendingShopModels({ selectedIndex }: { selectedIndex: number }) {
 
   return (
     <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.53, 0.42]}>
-        <planeGeometry args={[6.8, 2.55]} />
-        <meshBasicMaterial color="#d8edf6" transparent opacity={0.32} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.34, 0.2]}>
+        <planeGeometry args={[9.8, 2.6]} />
+        <meshBasicMaterial color="#d8edf6" transparent opacity={0.28} />
       </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.51, 0.42]}>
-        <ringGeometry args={[1.38, 1.43, 96]} />
-        <meshBasicMaterial color="#8fc7dd" transparent opacity={0.28} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.31, 0.2]}>
+        <planeGeometry args={[9.2, 0.035]} />
+        <meshBasicMaterial color="#5f9fba" transparent opacity={0.36} />
       </mesh>
 
-      <group ref={vendingRef} position={[-2.1, -1.22, -0.42]}>
-        <GarageModel
-          path="/models/vending_machine.glb"
-          color="#c5d8df"
-          emissive="#6f97a8"
-          targetSize={21}
-          position={[0, 0, 0]}
-          rotation={[0, -0.12, 0]}
-          opacity={0.92}
-        />
-      </group>
-      <group ref={trolleyRef} position={[-1.1, -1.28, 1.02]}>
-        <GarageModel
-          path="/models/trolley.glb"
-          color="#b9ccd5"
-          emissive="#5f9fba"
-          targetSize={16}
-          position={[0, 0, 0]}
-          rotation={[0, 0.08, 0]}
-          opacity={0.98}
-        />
-        <group ref={packageRef} position={[0.08, 0.82, 0.02]}>
+      <group ref={trolleyRef} position={[-4.5, -1.12, 0.75]} rotation={[0, -0.12, 0]}>
+        <RawDeliveryModel path="/models/trolley.glb" targetSize={6.2} />
+        <group ref={packageRef} position={[0.12, 0.92, 0.02]}>
           <mesh>
-            <boxGeometry args={[0.68, 0.44, 0.58]} />
+            <boxGeometry args={[0.72, 0.48, 0.62]} />
             <meshStandardMaterial color="#d7c3a1" roughness={0.68} metalness={0.02} />
           </mesh>
           <mesh position={[0, 0.225, 0]}>
@@ -392,6 +364,49 @@ function VendingShopModels({ selectedIndex }: { selectedIndex: number }) {
         </group>
       </group>
     </group>
+  );
+}
+
+function DeliveryShowcase({ shouldLoadModels }: { shouldLoadModels: boolean }) {
+  return (
+    <section className="relative min-h-[660px] overflow-hidden rounded-[2rem] border border-[#8fc7dd]/30 bg-[radial-gradient(circle_at_74%_48%,rgba(143,199,221,0.2),transparent_36%),linear-gradient(135deg,#ffffff_0%,#f4fbfd_100%)] px-5 py-16 shadow-[0_28px_90px_rgba(95,159,186,0.12)] sm:px-10 lg:px-14">
+      <div className="absolute inset-0">
+        <Canvas
+          className="pointer-events-none"
+          camera={{ position: [0, 0.25, 7.8], fov: 32 }}
+          dpr={[0.75, 1.25]}
+          gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
+        >
+          <ambientLight intensity={1.2} />
+          <directionalLight position={[3, 4, 5]} intensity={0.82} />
+          <directionalLight position={[-3, 2, 3]} intensity={0.28} color="#d8edf6" />
+          {shouldLoadModels ? (
+            <GarageErrorBoundary>
+              <Suspense fallback={null}>
+                <DeliveryTrolleyScene />
+              </Suspense>
+            </GarageErrorBoundary>
+          ) : null}
+        </Canvas>
+      </div>
+
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.94)_0%,rgba(255,255,255,0.78)_38%,rgba(255,255,255,0.18)_100%)]" />
+
+      <div className="relative z-10 flex min-h-[520px] max-w-xl flex-col justify-center">
+        <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Delivery system</p>
+        <h3 className="mt-3 font-display text-4xl font-semibold leading-[1.03] tracking-[-0.055em] sm:text-6xl">
+          Systems delivered, not just displayed.
+        </h3>
+        <p className="mt-6 text-[17px] leading-7 text-black/56 sm:text-lg">
+          A small trolley moves the packed ideas across the floor: project files, interfaces, and experiments arriving as one system.
+        </p>
+        <div className="mt-8 flex flex-wrap gap-3 font-mono text-xs uppercase tracking-[0.16em] text-[#2f718a]">
+          <span className="rounded-full border border-[#8fc7dd]/42 bg-white/76 px-4 py-2">auto delivery</span>
+          <span className="rounded-full border border-[#8fc7dd]/42 bg-white/76 px-4 py-2">project cargo</span>
+          <span className="rounded-full border border-[#8fc7dd]/42 bg-white/76 px-4 py-2">system in motion</span>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -806,79 +821,6 @@ function MiniMuseum() {
   );
 }
 
-function PortfolioVendingMachine({
-  selectedItem,
-  onSelectItem,
-  shouldLoadModels,
-}: {
-  selectedItem: (typeof vendingItems)[number];
-  onSelectItem: (item: (typeof vendingItems)[number]) => void;
-  shouldLoadModels: boolean;
-}) {
-  const selectedIndex = Math.max(0, vendingItems.findIndex((item) => item.id === selectedItem.id));
-
-  return (
-    <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
-      <div>
-        <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Museum vending</p>
-        <h3 className="mt-3 font-display text-4xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-5xl">
-          Order a project.
-        </h3>
-        <p className="mt-5 max-w-md text-[17px] leading-7 text-black/54">
-          Press a number and the small trolley prepares the project souvenir before the receipt is printed.
-        </p>
-        <div className="mt-7 grid max-w-md grid-cols-2 gap-3">
-          {vendingItems.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => onSelectItem(item)}
-              className={`border px-4 py-3 text-left transition ${
-                selectedItem.id === item.id
-                  ? "border-[#2f718a]/48 bg-[#eef7fa]"
-                  : "border-[#8fc7dd]/30 bg-white hover:border-[#8fc7dd]/70"
-              }`}
-            >
-              <span className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[#2f718a]">{item.code}</span>
-              <span className="mt-2 block text-lg font-semibold tracking-[-0.04em]">{item.title}</span>
-              <span className="mt-1 block font-mono text-[0.55rem] uppercase tracking-[0.12em] text-black/34">
-                {item.flavor}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="relative min-h-[640px] overflow-hidden rounded-[2rem] border border-[#8fc7dd]/36 bg-[radial-gradient(circle_at_52%_45%,rgba(143,199,221,0.18),transparent_34%),linear-gradient(135deg,#ffffff_0%,#f4fbfd_100%)] shadow-[0_28px_90px_rgba(95,159,186,0.14)]">
-        <Canvas
-          className="absolute inset-0"
-          camera={{ position: [0, 0.08, 5.25], fov: 28 }}
-          dpr={[0.75, 1.25]}
-          gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
-        >
-          <ambientLight intensity={1.55} />
-          <directionalLight position={[3, 4, 5]} intensity={1.08} />
-          <directionalLight position={[-3, 2, 3]} intensity={0.44} color="#d8edf6" />
-          {shouldLoadModels ? (
-            <GarageErrorBoundary>
-              <Suspense fallback={null}>
-                <VendingShopModels selectedIndex={selectedIndex} />
-              </Suspense>
-            </GarageErrorBoundary>
-          ) : null}
-        </Canvas>
-        <div className="pointer-events-none absolute left-5 top-5 rounded-full border border-[#8fc7dd]/36 bg-white/78 px-4 py-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-black/42 backdrop-blur-sm">
-          project vending / trolley delivery
-        </div>
-        <div className="absolute bottom-5 left-5 right-5 flex flex-col gap-2 border-t border-[#8fc7dd]/28 bg-white/72 p-4 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-black/44 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
-          <span>dispensed: {selectedItem.label}</span>
-          <span className="text-[#2f718a]">price: curiosity</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const dragRef = useRef({ active: false, x: 0, y: 0 });
@@ -887,7 +829,6 @@ export function ContactSection() {
   const [drag, setDrag] = useState<DragState>({ x: 0, y: 0 });
   const [receiptMeta, setReceiptMeta] = useState({ date: "loading...", order: "#----" });
   const [receiptName, setReceiptName] = useState("");
-  const [selectedVendingItem, setSelectedVendingItem] = useState(vendingItems[0]);
   const [receiptPrinted, setReceiptPrinted] = useState(false);
   const [printProgress, setPrintProgress] = useState(0);
   const displayReceiptName = receiptName.trim() || "GUEST";
@@ -920,7 +861,7 @@ export function ContactSection() {
 
     let animationFrame = 0;
     const startedAt = performance.now();
-    const duration = 6200;
+    const duration = 9800;
 
     const tick = (now: number) => {
       const nextProgress = Math.min((now - startedAt) / duration, 1);
@@ -1091,14 +1032,10 @@ export function ContactSection() {
           </div>
 
           <div className="mt-20">
-            <PortfolioVendingMachine
-              selectedItem={selectedVendingItem}
-              onSelectItem={setSelectedVendingItem}
-              shouldLoadModels={shouldLoadGarage}
-            />
+            <DeliveryShowcase shouldLoadModels={shouldLoadGarage} />
           </div>
 
-          <div className="mt-20 grid gap-8 lg:grid-cols-[1fr_430px] lg:items-start">
+          <div className="mt-20 grid gap-8 lg:grid-cols-[1fr_390px] lg:items-start">
             <div>
               <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Museum shop</p>
               <h3 className="mt-3 font-display text-4xl font-semibold leading-[1.06] tracking-[-0.055em] sm:text-5xl">
@@ -1133,13 +1070,7 @@ export function ContactSection() {
               </button>
             </div>
 
-            <div className="mx-auto w-full max-w-[430px] rounded-t-[1.4rem] border border-[#8fc7dd]/30 bg-[#f8fcfd] p-4 shadow-[0_22px_70px_rgba(95,159,186,0.16)]">
-              <div className="relative mx-auto mb-4 h-16 w-full max-w-[360px] rounded-t-[1.2rem] border border-black/10 bg-[#111] shadow-[inset_0_-10px_20px_rgba(255,255,255,0.06)]">
-                <div className="absolute left-1/2 top-1/2 h-3 w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-black shadow-[0_2px_16px_rgba(255,255,255,0.18)]" />
-                <p className="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono text-[0.52rem] uppercase tracking-[0.18em] text-white/38">
-                  receipt printer
-                </p>
-              </div>
+            <div className="mx-auto w-full max-w-[390px] border border-[#8fc7dd]/30 bg-[#f8fcfd] p-3 shadow-[0_22px_70px_rgba(95,159,186,0.16)]">
               {!receiptPrinted ? (
                 <div className="mx-auto grid min-h-[360px] w-full max-w-[390px] place-items-center border border-dashed border-[#8fc7dd]/36 bg-white/64 p-8 text-center font-mono text-[0.62rem] uppercase tracking-[0.18em] text-black/34">
                   <span>
@@ -1183,7 +1114,7 @@ export function ContactSection() {
 
               <div className="my-5 border-y border-dashed border-black/18 py-4 text-center" translate="no">
                 <p className="text-[0.58rem] tracking-[0.2em] text-black/34">issued to</p>
-                <pre className="mx-auto mt-3 max-w-full overflow-hidden whitespace-pre text-center font-mono text-[0.34rem] leading-[0.43rem] tracking-[-0.05em] text-[#2f718a]/78">
+                <pre className="mx-auto mt-2 max-w-full overflow-hidden whitespace-pre text-center font-mono text-[0.26rem] leading-[0.34rem] tracking-[-0.055em] text-[#2f718a]/78">
                   {receiptNameAscii}
                 </pre>
               </div>
@@ -1195,7 +1126,7 @@ export function ContactSection() {
                 </div>
                 <div className="flex justify-between">
                   <span>souvenir</span>
-                  <span>{selectedVendingItem.title}</span>
+                  <span>Portfolio System</span>
                 </div>
                 <div className="flex justify-between">
                   <span>cashier</span>
@@ -1253,8 +1184,8 @@ export function ContactSection() {
                 <img
                   src={receiptQrUrl}
                   alt="QR code for ko-yamasaki.vercel.app"
-                  width={112}
-                  height={112}
+                  width={84}
+                  height={84}
                   className="block"
                 />
               </a>
