@@ -202,15 +202,19 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
 
 function MuseumRoom({
   keysRef,
+  yawRef,
   onActiveArtworkChange,
 }: {
   keysRef: React.MutableRefObject<Record<string, boolean>>;
+  yawRef: React.MutableRefObject<number>;
   onActiveArtworkChange: (artwork: MuseumArtwork | null) => void;
 }) {
   const playerRef = useRef<THREE.Group>(null);
   const activeIdRef = useRef<string | null>(null);
   const velocity = useMemo(() => new THREE.Vector3(), []);
   const direction = useMemo(() => new THREE.Vector3(), []);
+  const forward = useMemo(() => new THREE.Vector3(), []);
+  const right = useMemo(() => new THREE.Vector3(), []);
   const targetCamera = useMemo(() => new THREE.Vector3(), []);
   const targetLookAt = useMemo(() => new THREE.Vector3(), []);
 
@@ -218,12 +222,16 @@ function MuseumRoom({
     const player = playerRef.current;
     if (!player) return;
 
+    const yaw = yawRef.current;
+
+    forward.set(Math.sin(yaw), 0, -Math.cos(yaw));
+    right.set(Math.cos(yaw), 0, Math.sin(yaw));
     direction.set(0, 0, 0);
 
-    if (keysRef.current.w || keysRef.current.arrowup) direction.z -= 1;
-    if (keysRef.current.s || keysRef.current.arrowdown) direction.z += 1;
-    if (keysRef.current.a || keysRef.current.arrowleft) direction.x -= 1;
-    if (keysRef.current.d || keysRef.current.arrowright) direction.x += 1;
+    if (keysRef.current.w || keysRef.current.arrowup) direction.add(forward);
+    if (keysRef.current.s || keysRef.current.arrowdown) direction.sub(forward);
+    if (keysRef.current.a || keysRef.current.arrowleft) direction.sub(right);
+    if (keysRef.current.d || keysRef.current.arrowright) direction.add(right);
 
     if (direction.lengthSq() > 0) {
       direction.normalize();
@@ -236,8 +244,12 @@ function MuseumRoom({
     player.position.x = THREE.MathUtils.clamp(player.position.x + velocity.x * delta, -5.8, 5.8);
     player.position.z = THREE.MathUtils.clamp(player.position.z + velocity.z * delta, -5.25, 4.2);
 
-    targetCamera.set(player.position.x, 3.7, player.position.z + 6.2);
-    targetLookAt.set(player.position.x, 1.45, player.position.z - 1.2);
+    targetCamera.set(
+      player.position.x - forward.x * 6.1,
+      3.75,
+      player.position.z - forward.z * 6.1,
+    );
+    targetLookAt.set(player.position.x + forward.x * 1.6, 1.45, player.position.z + forward.z * 1.6);
     camera.position.lerp(targetCamera, 0.08);
     camera.lookAt(targetLookAt);
 
@@ -328,6 +340,8 @@ function MuseumRoom({
 
 function MiniMuseum() {
   const keysRef = useRef<Record<string, boolean>>({});
+  const yawRef = useRef(0);
+  const viewDragRef = useRef({ active: false, x: 0 });
   const [activeArtwork, setActiveArtwork] = useState<MuseumArtwork | null>(null);
 
   const setKey = (key: string, isPressed: boolean) => {
@@ -352,22 +366,38 @@ function MiniMuseum() {
       }}
       onBlur={() => {
         keysRef.current = {};
+        viewDragRef.current.active = false;
       }}
       onPointerDown={(event) => {
         event.currentTarget.focus();
+        event.currentTarget.setPointerCapture(event.pointerId);
+        viewDragRef.current = { active: true, x: event.clientX };
       }}
-      className="relative min-h-[590px] overflow-hidden border border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
+      onPointerMove={(event) => {
+        if (!viewDragRef.current.active) return;
+        const deltaX = event.clientX - viewDragRef.current.x;
+        viewDragRef.current = { active: true, x: event.clientX };
+        yawRef.current -= deltaX * 0.006;
+      }}
+      onPointerUp={(event) => {
+        viewDragRef.current.active = false;
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }}
+      onPointerCancel={() => {
+        viewDragRef.current.active = false;
+      }}
+      className="relative min-h-[76vh] select-none overflow-hidden border border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
     >
       <Canvas
         camera={{ position: [0, 3.7, 8.6], fov: 46 }}
         dpr={[0.75, 1.4]}
         gl={{ antialias: true, alpha: false, powerPreference: "low-power" }}
       >
-        <MuseumRoom keysRef={keysRef} onActiveArtworkChange={setActiveArtwork} />
+        <MuseumRoom keysRef={keysRef} yawRef={yawRef} onActiveArtworkChange={setActiveArtwork} />
       </Canvas>
 
       <div className="pointer-events-none absolute left-5 top-5 rounded-full border border-[#8fc7dd]/34 bg-white/78 px-4 py-2 font-mono text-[0.64rem] uppercase tracking-[0.18em] text-black/46 backdrop-blur-sm">
-        Click this room, then use WASD
+        Click room: WASD to walk / drag to look
       </div>
 
       <div className="pointer-events-none absolute bottom-5 left-5 right-5 grid gap-3 sm:left-auto sm:w-[360px]">
@@ -540,8 +570,8 @@ export function ContactSection() {
       </section>
 
       <section className="bg-white px-5 pb-20 pt-8 text-[#1d1d1f] sm:px-10 lg:px-16">
-        <div className="mx-auto max-w-[1320px] border-t border-[#8fc7dd]/28 pt-14">
-          <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr]">
+        <div className="mx-auto max-w-[1480px] border-t border-[#8fc7dd]/28 pt-14">
+          <div className="grid gap-8 lg:grid-cols-[1fr_420px]">
             <div>
               <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Portfolio checkout</p>
               <h2 className="mt-3 font-display text-4xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-6xl">
@@ -552,33 +582,33 @@ export function ContactSection() {
               </p>
             </div>
 
-            <div className="grid gap-5 xl:grid-cols-[0.82fr_1.18fr]">
-              <div className="border border-[#8fc7dd]/38 bg-[#fbfdfe] p-5 font-mono text-xs uppercase tracking-[0.12em] text-black/58 shadow-[0_18px_60px_rgba(95,159,186,0.1)]">
-                <div className="mb-5 border-b border-[#8fc7dd]/28 pb-4 text-center">
-                  <p className="text-[#2f718a]">portfolio receipt</p>
-                  <p className="mt-1 text-[0.62rem] text-black/34">ko-yamasaki.vercel.app</p>
-                </div>
-                {[
-                  ["Terraplot", "GPS territory game"],
-                  ["App development", "iOS / web products"],
-                  ["Graph research", "nodes / queries / AI"],
-                  ["3D interface", "x-ray suitcase hero"],
-                  ["Human side", "curiosity + humor"],
-                ].map(([name, detail]) => (
-                  <div key={name} className="flex justify-between gap-4 border-b border-[#8fc7dd]/18 py-2">
-                    <span>{name}</span>
-                    <span className="text-right text-black/36">{detail}</span>
-                  </div>
-                ))}
-                <div className="mt-5 flex justify-between border-t border-[#8fc7dd]/34 pt-4 text-[#2f718a]">
-                  <span>Total</span>
-                  <span>Thank you</span>
-                </div>
-                <div className="mt-5 h-8 bg-[repeating-linear-gradient(90deg,#111_0,#111_2px,transparent_2px,transparent_5px)] opacity-25" />
+            <div className="border border-[#8fc7dd]/38 bg-[#fbfdfe] p-5 font-mono text-xs uppercase tracking-[0.12em] text-black/58 shadow-[0_18px_60px_rgba(95,159,186,0.1)]">
+              <div className="mb-5 border-b border-[#8fc7dd]/28 pb-4 text-center">
+                <p className="text-[#2f718a]">portfolio receipt</p>
+                <p className="mt-1 text-[0.62rem] text-black/34">ko-yamasaki.vercel.app</p>
               </div>
-
-              <MiniMuseum />
+              {[
+                ["Terraplot", "GPS territory game"],
+                ["App development", "iOS / web products"],
+                ["Graph research", "nodes / queries / AI"],
+                ["3D interface", "x-ray suitcase hero"],
+                ["Human side", "curiosity + humor"],
+              ].map(([name, detail]) => (
+                <div key={name} className="flex justify-between gap-4 border-b border-[#8fc7dd]/18 py-2">
+                  <span>{name}</span>
+                  <span className="text-right text-black/36">{detail}</span>
+                </div>
+              ))}
+              <div className="mt-5 flex justify-between border-t border-[#8fc7dd]/34 pt-4 text-[#2f718a]">
+                <span>Total</span>
+                <span>Thank you</span>
+              </div>
+              <div className="mt-5 h-8 bg-[repeating-linear-gradient(90deg,#111_0,#111_2px,transparent_2px,transparent_5px)] opacity-25" />
             </div>
+          </div>
+
+          <div className="mt-10">
+            <MiniMuseum />
           </div>
         </div>
       </section>
