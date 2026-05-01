@@ -348,6 +348,18 @@ export function AboutSection() {
               ))}
             </div>
             <div className="max-h-[430px] space-y-5 overflow-y-auto pr-2">
+              <div className="mb-6 grid gap-3 border border-white/10 bg-white/[0.025] p-4 text-xs leading-5 text-white/46 sm:grid-cols-2">
+                <div>
+                  <p className="mb-2 text-[0.62rem] uppercase tracking-[0.18em] text-[#6fb6d3]">profile signal</p>
+                  <p>CS student / Hiroshima</p>
+                  <p>AI, graph data, app development</p>
+                </div>
+                <div>
+                  <p className="mb-2 text-[0.62rem] uppercase tracking-[0.18em] text-[#6fb6d3]">current mode</p>
+                  <p>building products around movement</p>
+                  <p>maps, systems, and small interactions</p>
+                </div>
+              </div>
               {entries.map((entry, index) => (
                 <div key={`${entry.command ?? "init"}-${index}`}>
                   {entry.command ? (

@@ -380,8 +380,8 @@ function DeliveryTrolleyScene() {
     const time = clock.getElapsedTime();
 
     if (trolleyRef.current) {
-      const loop = (time * 0.15) % 1;
-      trolleyRef.current.position.x = THREE.MathUtils.lerp(-4.8, 4.2, loop);
+      const loop = (time * 0.105) % 1;
+      trolleyRef.current.position.x = THREE.MathUtils.lerp(-8.2, 8.4, loop);
       trolleyRef.current.position.y = -0.72 + Math.sin(time * 2.1) * 0.02;
       trolleyRef.current.position.z = 0.4 + Math.sin(time * 0.6) * 0.08;
       trolleyRef.current.rotation.y = -0.2 + Math.sin(time * 0.7) * 0.035;
@@ -390,7 +390,7 @@ function DeliveryTrolleyScene() {
 
   return (
     <group>
-      <group ref={trolleyRef} position={[-4.8, -0.72, 0.4]} rotation={[0, -0.2, 0]}>
+      <group ref={trolleyRef} position={[-8.2, -0.72, 0.4]} rotation={[0, -0.2, 0]}>
         <RawDeliveryModel path="/models/trolley.glb" targetSize={7.4} />
       </group>
     </group>
@@ -1231,10 +1231,10 @@ export function ContactSection() {
           <div className="max-w-2xl">
             <p className="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-white/54">Final frame</p>
             <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.08] tracking-[-0.055em] text-white sm:text-6xl">
-              日常の中の、美しい違和感。
+              Small happiness, found in ordinary days.
             </h2>
             <p className="mt-5 max-w-md text-base leading-7 text-white/72 sm:text-lg">
-              Life, time, and small moments I do not want to miss.
+              Life, time, and the quiet moments I do not want to miss.
             </p>
           </div>
         </div>
