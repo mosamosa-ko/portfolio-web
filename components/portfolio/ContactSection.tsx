@@ -322,50 +322,75 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
 function VendingShopModels({ selectedIndex }: { selectedIndex: number }) {
   const trolleyRef = useRef<THREE.Group>(null);
   const vendingRef = useRef<THREE.Group>(null);
+  const packageRef = useRef<THREE.Group>(null);
 
   useFrame(({ clock }, delta) => {
     const time = clock.getElapsedTime();
 
     if (vendingRef.current) {
-      vendingRef.current.rotation.y = -0.18 + Math.sin(time * 0.45) * 0.025;
+      vendingRef.current.rotation.y = -0.36 + Math.sin(time * 0.45) * 0.025;
     }
 
     if (trolleyRef.current) {
-      const targetX = -1.25 + selectedIndex * 0.82;
+      const targetX = -1.1 + selectedIndex * 0.72;
       trolleyRef.current.position.x = THREE.MathUtils.lerp(trolleyRef.current.position.x, targetX, delta * 2.8);
-      trolleyRef.current.rotation.y = THREE.MathUtils.lerp(trolleyRef.current.rotation.y, -0.24 + selectedIndex * 0.07, delta * 2.4);
-      trolleyRef.current.position.y = 0.05 + Math.sin(time * 2.2) * 0.015;
+      trolleyRef.current.rotation.y = THREE.MathUtils.lerp(trolleyRef.current.rotation.y, -0.08 + selectedIndex * 0.035, delta * 2.4);
+      trolleyRef.current.position.y = -1.28 + Math.sin(time * 2.2) * 0.025;
+    }
+
+    if (packageRef.current) {
+      packageRef.current.rotation.y = time * 0.2;
+      packageRef.current.position.y = 0.82 + Math.sin(time * 2.2) * 0.012;
     }
   });
 
   return (
     <group>
-      <group ref={vendingRef} position={[-1.55, -0.44, -0.52]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.53, 0.42]}>
+        <planeGeometry args={[6.8, 2.55]} />
+        <meshBasicMaterial color="#d8edf6" transparent opacity={0.32} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.51, 0.42]}>
+        <ringGeometry args={[1.38, 1.43, 96]} />
+        <meshBasicMaterial color="#8fc7dd" transparent opacity={0.28} />
+      </mesh>
+
+      <group ref={vendingRef} position={[-2.1, -1.22, -0.42]}>
         <GarageModel
           path="/models/vending_machine.glb"
           color="#c5d8df"
           emissive="#6f97a8"
-          targetSize={4.85}
+          targetSize={21}
           position={[0, 0, 0]}
-          rotation={[0, -0.18, 0]}
+          rotation={[0, -0.12, 0]}
           opacity={0.92}
         />
       </group>
-      <group ref={trolleyRef} position={[-1.55, -1.22, 1.2]}>
+      <group ref={trolleyRef} position={[-1.1, -1.28, 1.02]}>
         <GarageModel
           path="/models/trolley.glb"
           color="#b9ccd5"
           emissive="#5f9fba"
-          targetSize={2.85}
+          targetSize={16}
           position={[0, 0, 0]}
-          rotation={[0, -0.3, 0]}
+          rotation={[0, 0.08, 0]}
           opacity={0.98}
         />
+        <group ref={packageRef} position={[0.08, 0.82, 0.02]}>
+          <mesh>
+            <boxGeometry args={[0.68, 0.44, 0.58]} />
+            <meshStandardMaterial color="#d7c3a1" roughness={0.68} metalness={0.02} />
+          </mesh>
+          <mesh position={[0, 0.225, 0]}>
+            <boxGeometry args={[0.72, 0.018, 0.62]} />
+            <meshBasicMaterial color="#a98f67" transparent opacity={0.45} />
+          </mesh>
+          <mesh position={[0, 0, 0.296]}>
+            <boxGeometry args={[0.18, 0.46, 0.018]} />
+            <meshBasicMaterial color="#a98f67" transparent opacity={0.38} />
+          </mesh>
+        </group>
       </group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.2, -1.16, 0.02]}>
-        <circleGeometry args={[3.15, 72]} />
-        <meshBasicMaterial color="#8fc7dd" transparent opacity={0.13} />
-      </mesh>
     </group>
   );
 }
@@ -824,16 +849,16 @@ function PortfolioVendingMachine({
         </div>
       </div>
 
-      <div className="relative min-h-[560px] overflow-hidden rounded-[2rem] border border-[#8fc7dd]/36 bg-[radial-gradient(circle_at_52%_45%,rgba(143,199,221,0.18),transparent_34%),linear-gradient(135deg,#ffffff_0%,#f4fbfd_100%)] shadow-[0_28px_90px_rgba(95,159,186,0.14)]">
+      <div className="relative min-h-[640px] overflow-hidden rounded-[2rem] border border-[#8fc7dd]/36 bg-[radial-gradient(circle_at_52%_45%,rgba(143,199,221,0.18),transparent_34%),linear-gradient(135deg,#ffffff_0%,#f4fbfd_100%)] shadow-[0_28px_90px_rgba(95,159,186,0.14)]">
         <Canvas
           className="absolute inset-0"
-          camera={{ position: [0, 0.82, 7.2], fov: 33 }}
+          camera={{ position: [0, 0.08, 5.25], fov: 28 }}
           dpr={[0.75, 1.25]}
           gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
         >
-          <ambientLight intensity={1.4} />
-          <directionalLight position={[3, 4, 5]} intensity={1.0} />
-          <directionalLight position={[-3, 2, 3]} intensity={0.38} color="#d8edf6" />
+          <ambientLight intensity={1.55} />
+          <directionalLight position={[3, 4, 5]} intensity={1.08} />
+          <directionalLight position={[-3, 2, 3]} intensity={0.44} color="#d8edf6" />
           {shouldLoadModels ? (
             <GarageErrorBoundary>
               <Suspense fallback={null}>
@@ -864,12 +889,16 @@ export function ContactSection() {
   const [receiptName, setReceiptName] = useState("");
   const [selectedVendingItem, setSelectedVendingItem] = useState(vendingItems[0]);
   const [receiptPrinted, setReceiptPrinted] = useState(false);
+  const [printProgress, setPrintProgress] = useState(0);
   const displayReceiptName = receiptName.trim() || "GUEST";
   const receiptNameAscii = useMemo(() => renderReceiptNameAscii(displayReceiptName), [displayReceiptName]);
 
   const printReceipt = () => {
     setReceiptPrinted(false);
-    window.setTimeout(() => setReceiptPrinted(true), 80);
+    setPrintProgress(0);
+    window.setTimeout(() => {
+      setReceiptPrinted(true);
+    }, 80);
   };
 
   useEffect(() => {
@@ -885,6 +914,27 @@ export function ContactSection() {
 
     setReceiptMeta({ date, order });
   }, []);
+
+  useEffect(() => {
+    if (!receiptPrinted) return undefined;
+
+    let animationFrame = 0;
+    const startedAt = performance.now();
+    const duration = 6200;
+
+    const tick = (now: number) => {
+      const nextProgress = Math.min((now - startedAt) / duration, 1);
+      setPrintProgress(nextProgress);
+      if (nextProgress < 1) {
+        animationFrame = window.requestAnimationFrame(tick);
+      }
+    };
+
+    setPrintProgress(0);
+    animationFrame = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [receiptPrinted]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -1100,9 +1150,12 @@ export function ContactSection() {
                 </div>
               ) : null}
               <div
-                className={`mx-auto w-full max-w-[390px] origin-top overflow-hidden transition-[max-height,transform,opacity] duration-[1800ms] ease-out ${
-                  receiptPrinted ? "max-h-[1400px] translate-y-0 opacity-100" : "max-h-0 translate-y-0 opacity-0"
-                }`}
+                className="mx-auto w-full max-w-[390px] origin-top overflow-hidden"
+                style={{
+                  height: receiptPrinted ? `${Math.max(24, Math.round(printProgress * 1120))}px` : 0,
+                  opacity: receiptPrinted ? 1 : 0,
+                  transition: receiptPrinted ? "none" : "opacity 200ms ease",
+                }}
               >
             <div className="relative bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62 shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
               <div
