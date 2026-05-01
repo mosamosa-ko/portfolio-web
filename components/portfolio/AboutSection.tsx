@@ -289,9 +289,28 @@ export function AboutSection() {
               <span>ASCII portrait</span>
               <span>KO-YAMASAKI</span>
             </div>
-            <pre className="max-h-[270px] max-w-full overflow-hidden font-mono text-[0.28rem] leading-[0.34rem] tracking-[-0.055em] text-[#2f718a]/72 sm:text-[0.38rem] sm:leading-[0.45rem] lg:text-[0.42rem] lg:leading-[0.5rem]">
-              {faceAscii}
-            </pre>
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_210px]">
+              <pre className="max-h-[270px] max-w-full overflow-hidden font-mono text-[0.28rem] leading-[0.34rem] tracking-[-0.055em] text-[#2f718a]/72 sm:text-[0.38rem] sm:leading-[0.45rem] lg:text-[0.42rem] lg:leading-[0.5rem]">
+                {faceAscii}
+              </pre>
+              <div className="hidden border-l border-[#8fc7dd]/18 pl-4 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-black/42 lg:block">
+                <p className="text-[#2f718a]">profile signal</p>
+                <div className="mt-5 space-y-3">
+                  <p>id: ko-yamasaki</p>
+                  <p>field: computer science</p>
+                  <p>focus: ai / graph / app</p>
+                  <p>base: hiroshima</p>
+                </div>
+                <div className="mt-7 space-y-1 text-[#2f718a]/64">
+                  <p>|||| || |||| ||| ||</p>
+                  <p>|| ||||| || ||| ||||</p>
+                  <p>||| || |||| || |||||</p>
+                </div>
+                <p className="mt-7 leading-5 text-black/30">
+                  everyday systems, small interactions, and products around movement.
+                </p>
+              </div>
+            </div>
           </div>
           <p className="mt-7 max-w-2xl text-[1.65rem] leading-[1.25] tracking-[-0.04em] text-black/68 sm:text-3xl sm:leading-[1.35]">
             Computer Science student interested in AI, graph data, app development, and location-based products.
@@ -348,18 +367,6 @@ export function AboutSection() {
               ))}
             </div>
             <div className="max-h-[430px] space-y-5 overflow-y-auto pr-2">
-              <div className="mb-6 grid gap-3 border border-white/10 bg-white/[0.025] p-4 text-xs leading-5 text-white/46 sm:grid-cols-2">
-                <div>
-                  <p className="mb-2 text-[0.62rem] uppercase tracking-[0.18em] text-[#6fb6d3]">profile signal</p>
-                  <p>CS student / Hiroshima</p>
-                  <p>AI, graph data, app development</p>
-                </div>
-                <div>
-                  <p className="mb-2 text-[0.62rem] uppercase tracking-[0.18em] text-[#6fb6d3]">current mode</p>
-                  <p>building products around movement</p>
-                  <p>maps, systems, and small interactions</p>
-                </div>
-              </div>
               {entries.map((entry, index) => (
                 <div key={`${entry.command ?? "init"}-${index}`}>
                   {entry.command ? (
