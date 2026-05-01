@@ -241,6 +241,48 @@ function GarageModel({ path, color, emissive, targetSize, position, rotation, op
   );
 }
 
+function RawGarageModel({
+  path,
+  targetSize,
+  position,
+  rotation,
+}: {
+  path: string;
+  targetSize: number;
+  position: [number, number, number];
+  rotation: [number, number, number];
+}) {
+  const { scene } = useGLTF(path);
+
+  const normalized = useMemo(() => {
+    const model = scene.clone(true);
+
+    model.traverse((child) => {
+      if (!(child instanceof THREE.Mesh)) return;
+      child.geometry.computeVertexNormals();
+      child.castShadow = false;
+      child.receiveShadow = false;
+    });
+
+    const box = new THREE.Box3().setFromObject(model);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const maxDimension = Math.max(size.x, size.y, size.z) || 1;
+
+    return {
+      model,
+      scale: targetSize / maxDimension,
+      offset: center.multiplyScalar(-1),
+    };
+  }, [path, scene, targetSize]);
+
+  return (
+    <group position={position} rotation={rotation} scale={normalized.scale}>
+      <primitive object={normalized.model} position={[normalized.offset.x, normalized.offset.y, normalized.offset.z]} />
+    </group>
+  );
+}
+
 function RawDeliveryModel({ path, targetSize }: { path: string; targetSize: number }) {
   const { scene } = useGLTF(path);
 
@@ -307,10 +349,8 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
         pointer.x * 0.12 + drag.x * 0.14,
       ]}
     >
-      <GarageModel
+      <RawGarageModel
         path="/models/Alternator.glb"
-        color="#a8bdc7"
-        emissive="#6f97a8"
         targetSize={6.6}
         position={[1.75 + pointer.x * 0.22, 0.05 + pointer.y * 0.12, -0.25]}
         rotation={[
@@ -318,12 +358,9 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
           -0.48 + pointer.x * 0.28 + drag.x * 0.3,
           -0.08 + pointer.x * 0.08 + drag.x * 0.1,
         ]}
-        opacity={0.62}
       />
-      <GarageModel
+      <RawGarageModel
         path="/models/bic.glb"
-        color="#c7d7df"
-        emissive="#7ea8b8"
         targetSize={3.2}
         position={[-2.85 - pointer.x * 0.2, -0.95 - pointer.y * 0.1, 0.2]}
         rotation={[
@@ -331,7 +368,6 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
           0.22 - pointer.x * 0.22 - drag.x * 0.26,
           -0.4 + pointer.x * 0.12 + drag.x * 0.1,
         ]}
-        opacity={0.46}
       />
     </group>
   );
