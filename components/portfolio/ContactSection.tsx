@@ -341,17 +341,17 @@ function DeliveryTrolleyScene() {
 
     if (trolleyRef.current) {
       const loop = (time * 0.15) % 1;
-      trolleyRef.current.position.x = THREE.MathUtils.lerp(-6.2, 5.2, loop);
-      trolleyRef.current.position.y = -0.42 + Math.sin(time * 2.1) * 0.02;
-      trolleyRef.current.position.z = 0.35 + Math.sin(time * 0.6) * 0.08;
+      trolleyRef.current.position.x = THREE.MathUtils.lerp(-5.2, 4.6, loop);
+      trolleyRef.current.position.y = -0.6 + Math.sin(time * 2.1) * 0.02;
+      trolleyRef.current.position.z = 0.4 + Math.sin(time * 0.6) * 0.08;
       trolleyRef.current.rotation.y = -0.2 + Math.sin(time * 0.7) * 0.035;
     }
   });
 
   return (
     <group>
-      <group ref={trolleyRef} position={[-6.2, -0.42, 0.35]} rotation={[0, -0.2, 0]}>
-        <RawDeliveryModel path="/models/trolley.glb" targetSize={24} />
+      <group ref={trolleyRef} position={[-5.2, -0.6, 0.4]} rotation={[0, -0.2, 0]}>
+        <RawDeliveryModel path="/models/trolley.glb" targetSize={13.5} />
       </group>
     </group>
   );
@@ -363,7 +363,7 @@ function DeliveryShowcase({ shouldLoadModels }: { shouldLoadModels: boolean }) {
       <div className="absolute inset-0">
         <Canvas
           className="pointer-events-none"
-          camera={{ position: [0, 0.1, 4.8], fov: 25 }}
+          camera={{ position: [0, 0.18, 6.4], fov: 28 }}
           dpr={[0.75, 1.25]}
           gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
         >
