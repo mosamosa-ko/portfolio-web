@@ -2,8 +2,8 @@
 
 import { Component, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { Canvas } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Text, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
 const links = [
@@ -31,45 +31,59 @@ type DragState = {
   y: number;
 };
 
-type MuseumPoint = {
-  x: number;
-  y: number;
+type MuseumArtwork = {
+  id: string;
+  title: string;
+  type: string;
+  description: string;
+  link: string;
+  position: [number, number, number];
+  rotation: [number, number, number];
+  accent: string;
 };
 
 const museumExhibits = [
   {
     id: "terraplot",
     title: "TerraPlot",
-    caption: "Movement becomes territory. A map product about walking, play, and place.",
-    x: 20,
-    y: 24,
-    size: "large",
+    type: "GPS Territory Game",
+    description: "Movement becomes territory. A map product about walking, play, and place.",
+    link: "https://terraplot-chi.vercel.app/en",
+    position: [-4.6, 2.2, -6.82],
+    rotation: [0, 0, 0],
+    accent: "#8fc7dd",
   },
   {
     id: "portfolio",
     title: "Portfolio Website",
-    caption: "A scroll-based interface with baggage, terminal play, and desktop UI.",
-    x: 74,
-    y: 22,
-    size: "wide",
+    type: "Web / Design",
+    description: "A scroll-based interface with baggage, terminal play, desktop UI, and small interactive scenes.",
+    link: "https://github.com/mosamosa-ko/portfolio-web",
+    position: [0, 2.2, -6.82],
+    rotation: [0, 0, 0],
+    accent: "#d8edf6",
   },
   {
     id: "graph",
     title: "Graph / AI Research",
-    caption: "Nodes, edges, queries, and machine learning as a research direction.",
-    x: 28,
-    y: 70,
-    size: "wide",
+    type: "Research",
+    description: "Nodes, edges, queries, and machine learning as a research direction.",
+    link: "https://github.com/mosamosa-ko",
+    position: [4.6, 2.2, -6.82],
+    rotation: [0, 0, 0],
+    accent: "#b8d6e6",
   },
   {
     id: "app",
     title: "App Development",
-    caption: "Small product systems across iOS, web, maps, and interaction.",
-    x: 78,
-    y: 68,
-    size: "large",
+    type: "iOS / Web",
+    description: "Small product systems across iOS, web, maps, and interaction.",
+    link: "https://github.com/mosamosa-ko",
+    position: [-6.82, 2.2, -1.2],
+    rotation: [0, Math.PI / 2, 0],
+    accent: "#9fd3e6",
   },
-];
+] satisfies MuseumArtwork[];
 
 class GarageErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
@@ -186,131 +200,197 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
   );
 }
 
-function getClosestExhibit(visitor: MuseumPoint) {
-  return museumExhibits.reduce((closest, exhibit) => {
-    const closestDistance = Math.hypot(visitor.x - closest.x, visitor.y - closest.y);
-    const distance = Math.hypot(visitor.x - exhibit.x, visitor.y - exhibit.y);
-    return distance < closestDistance ? exhibit : closest;
-  }, museumExhibits[0]);
+function MuseumRoom({
+  keysRef,
+  onActiveArtworkChange,
+}: {
+  keysRef: React.MutableRefObject<Record<string, boolean>>;
+  onActiveArtworkChange: (artwork: MuseumArtwork | null) => void;
+}) {
+  const playerRef = useRef<THREE.Group>(null);
+  const activeIdRef = useRef<string | null>(null);
+  const velocity = useMemo(() => new THREE.Vector3(), []);
+  const direction = useMemo(() => new THREE.Vector3(), []);
+  const targetCamera = useMemo(() => new THREE.Vector3(), []);
+  const targetLookAt = useMemo(() => new THREE.Vector3(), []);
+
+  useFrame(({ camera }, delta) => {
+    const player = playerRef.current;
+    if (!player) return;
+
+    direction.set(0, 0, 0);
+
+    if (keysRef.current.w || keysRef.current.arrowup) direction.z -= 1;
+    if (keysRef.current.s || keysRef.current.arrowdown) direction.z += 1;
+    if (keysRef.current.a || keysRef.current.arrowleft) direction.x -= 1;
+    if (keysRef.current.d || keysRef.current.arrowright) direction.x += 1;
+
+    if (direction.lengthSq() > 0) {
+      direction.normalize();
+      velocity.lerp(direction.multiplyScalar(4.2), 0.18);
+      player.rotation.y = Math.atan2(velocity.x, velocity.z);
+    } else {
+      velocity.lerp(new THREE.Vector3(0, 0, 0), 0.16);
+    }
+
+    player.position.x = THREE.MathUtils.clamp(player.position.x + velocity.x * delta, -5.8, 5.8);
+    player.position.z = THREE.MathUtils.clamp(player.position.z + velocity.z * delta, -5.25, 4.2);
+
+    targetCamera.set(player.position.x, 3.7, player.position.z + 6.2);
+    targetLookAt.set(player.position.x, 1.45, player.position.z - 1.2);
+    camera.position.lerp(targetCamera, 0.08);
+    camera.lookAt(targetLookAt);
+
+    const activeArtwork =
+      museumExhibits.find((artwork) => {
+        const artworkPosition = new THREE.Vector3(...artwork.position);
+        return artworkPosition.distanceTo(player.position) < 3.15;
+      }) ?? null;
+
+    if (activeIdRef.current !== (activeArtwork?.id ?? null)) {
+      activeIdRef.current = activeArtwork?.id ?? null;
+      onActiveArtworkChange(activeArtwork);
+    }
+  });
+
+  return (
+    <>
+      <color attach="background" args={["#f8fcfd"]} />
+      <ambientLight intensity={1.4} />
+      <directionalLight position={[2, 7, 4]} intensity={0.8} color="#ffffff" />
+      <directionalLight position={[-5, 3, 2]} intensity={0.22} color="#d8edf6" />
+
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -0.6]} receiveShadow>
+        <planeGeometry args={[14.5, 13]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.78} />
+      </mesh>
+
+      <mesh position={[0, 2.15, -7.05]}>
+        <boxGeometry args={[14.5, 4.3, 0.18]} />
+        <meshStandardMaterial color="#f7fbfc" roughness={0.8} />
+      </mesh>
+      <mesh position={[-7.15, 2.15, -0.6]}>
+        <boxGeometry args={[0.18, 4.3, 13]} />
+        <meshStandardMaterial color="#f8fbfc" roughness={0.8} />
+      </mesh>
+      <mesh position={[7.15, 2.15, -0.6]}>
+        <boxGeometry args={[0.18, 4.3, 13]} />
+        <meshStandardMaterial color="#f8fbfc" roughness={0.8} />
+      </mesh>
+
+      <gridHelper args={[14, 14, "#d8edf6", "#eef7fa"]} position={[0, 0.01, -0.6]} />
+
+      {museumExhibits.map((artwork) => (
+        <group key={artwork.id} position={artwork.position} rotation={artwork.rotation}>
+          <mesh position={[0, 0, 0]}>
+            <boxGeometry args={[2.35, 1.55, 0.08]} />
+            <meshStandardMaterial color="#ffffff" roughness={0.45} />
+          </mesh>
+          <mesh position={[0, 0, 0.05]}>
+            <planeGeometry args={[2.08, 1.18]} />
+            <meshBasicMaterial color={artwork.accent} transparent opacity={0.42} />
+          </mesh>
+          <mesh position={[0, -1.12, 0.08]}>
+            <boxGeometry args={[1.4, 0.42, 0.04]} />
+            <meshBasicMaterial color="#ffffff" />
+          </mesh>
+          <Text
+            position={[0, -1.12, 0.12]}
+            fontSize={0.12}
+            maxWidth={1.18}
+            textAlign="center"
+            color="#2f718a"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {artwork.title.toUpperCase()}
+          </Text>
+        </group>
+      ))}
+
+      <group ref={playerRef} position={[0, 0.05, 2.5]}>
+        <mesh position={[0, 0.82, 0]}>
+          <capsuleGeometry args={[0.22, 0.78, 8, 16]} />
+          <meshStandardMaterial color="#d8edf6" roughness={0.55} />
+        </mesh>
+        <mesh position={[0, 1.42, 0]}>
+          <sphereGeometry args={[0.24, 20, 16]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.48} />
+        </mesh>
+        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
+          <ringGeometry args={[0.42, 0.52, 32]} />
+          <meshBasicMaterial color="#8fc7dd" transparent opacity={0.34} />
+        </mesh>
+      </group>
+    </>
+  );
 }
 
 function MiniMuseum() {
-  const [visitor, setVisitor] = useState<MuseumPoint>({ x: 50, y: 52 });
-  const targetRef = useRef<MuseumPoint>({ x: 50, y: 52 });
-  const closest = getClosestExhibit(visitor);
+  const keysRef = useRef<Record<string, boolean>>({});
+  const [activeArtwork, setActiveArtwork] = useState<MuseumArtwork | null>(null);
 
-  useEffect(() => {
-    let frame = 0;
-
-    const tick = () => {
-      setVisitor((current) => {
-        const target = targetRef.current;
-        const next = {
-          x: current.x + (target.x - current.x) * 0.08,
-          y: current.y + (target.y - current.y) * 0.08,
-        };
-
-        if (Math.abs(next.x - current.x) < 0.02 && Math.abs(next.y - current.y) < 0.02) {
-          return current;
-        }
-
-        return next;
-      });
-
-      frame = requestAnimationFrame(tick);
-    };
-
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
-  }, []);
-
-  const moveTo = (point: MuseumPoint) => {
-    targetRef.current = {
-      x: THREE.MathUtils.clamp(point.x, 8, 92),
-      y: THREE.MathUtils.clamp(point.y, 12, 88),
-    };
+  const setKey = (key: string, isPressed: boolean) => {
+    const normalized = key.toLowerCase();
+    if (!["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(normalized)) return;
+    keysRef.current[normalized] = isPressed;
   };
 
   return (
-    <div className="grid gap-4">
-      <div
-        role="application"
-        tabIndex={0}
-        aria-label="Interactive portfolio museum"
-        onPointerDown={(event) => {
-          const rect = event.currentTarget.getBoundingClientRect();
-          moveTo({
-            x: ((event.clientX - rect.left) / rect.width) * 100,
-            y: ((event.clientY - rect.top) / rect.height) * 100,
-          });
-        }}
-        onKeyDown={(event) => {
-          const step = event.shiftKey ? 12 : 7;
-          if (event.key === "ArrowUp" || event.key.toLowerCase() === "w") {
-            event.preventDefault();
-            moveTo({ x: targetRef.current.x, y: targetRef.current.y - step });
-          }
-          if (event.key === "ArrowDown" || event.key.toLowerCase() === "s") {
-            event.preventDefault();
-            moveTo({ x: targetRef.current.x, y: targetRef.current.y + step });
-          }
-          if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
-            event.preventDefault();
-            moveTo({ x: targetRef.current.x - step, y: targetRef.current.y });
-          }
-          if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
-            event.preventDefault();
-            moveTo({ x: targetRef.current.x + step, y: targetRef.current.y });
-          }
-        }}
-        className="relative min-h-[520px] cursor-crosshair overflow-hidden border border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
+    <div
+      role="application"
+      tabIndex={0}
+      aria-label="Third-person portfolio museum"
+      onKeyDown={(event) => {
+        setKey(event.key, true);
+        if (["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(event.key.toLowerCase())) {
+          event.preventDefault();
+        }
+      }}
+      onKeyUp={(event) => {
+        setKey(event.key, false);
+      }}
+      onBlur={() => {
+        keysRef.current = {};
+      }}
+      onPointerDown={(event) => {
+        event.currentTarget.focus();
+      }}
+      className="relative min-h-[590px] overflow-hidden border border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
+    >
+      <Canvas
+        camera={{ position: [0, 3.7, 8.6], fov: 46 }}
+        dpr={[0.75, 1.4]}
+        gl={{ antialias: true, alpha: false, powerPreference: "low-power" }}
       >
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(143,199,221,0.12)_1px,transparent_1px),linear-gradient(180deg,rgba(143,199,221,0.1)_1px,transparent_1px)] bg-[size:42px_42px]" />
-        <div className="pointer-events-none absolute inset-6 border border-[#8fc7dd]/22" />
-        <div className="pointer-events-none absolute left-[50%] top-8 h-[calc(100%-64px)] w-px bg-[#8fc7dd]/18" />
-        <div className="pointer-events-none absolute left-8 top-[50%] h-px w-[calc(100%-64px)] bg-[#8fc7dd]/18" />
+        <MuseumRoom keysRef={keysRef} onActiveArtworkChange={setActiveArtwork} />
+      </Canvas>
 
-        <div className="pointer-events-none absolute left-6 top-5 font-mono text-[0.64rem] uppercase tracking-[0.18em] text-black/38">
-          Click floor or use WASD / arrow keys
-        </div>
-
-        {museumExhibits.map((exhibit) => (
-          <button
-            key={exhibit.id}
-            type="button"
-            onClick={(event) => {
-              event.stopPropagation();
-              moveTo({ x: exhibit.x, y: exhibit.y + 12 });
-            }}
-            className={`absolute -translate-x-1/2 -translate-y-1/2 border border-[#6faec7]/36 bg-white/86 p-3 text-left shadow-[8px_10px_0_rgba(143,199,221,0.08)] transition hover:border-[#2f718a]/50 ${
-              exhibit.size === "wide" ? "w-44" : "w-36"
-            }`}
-            style={{ left: `${exhibit.x}%`, top: `${exhibit.y}%` }}
-          >
-            <span className="block h-16 border border-[#8fc7dd]/22 bg-[radial-gradient(circle_at_38%_34%,rgba(111,166,194,0.24),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.9),rgba(232,246,250,0.82))]" />
-            <span className="mt-3 block font-mono text-[0.66rem] uppercase tracking-[0.14em] text-[#2f718a]">
-              {exhibit.title}
-            </span>
-          </button>
-        ))}
-
-        <div
-          className="pointer-events-none absolute h-8 w-8 -translate-x-1/2 -translate-y-1/2 transition-[filter] duration-300"
-          style={{ left: `${visitor.x}%`, top: `${visitor.y}%`, filter: "drop-shadow(0 8px 12px rgba(47,113,138,0.18))" }}
-        >
-          <span className="absolute left-1/2 top-0 h-3.5 w-3.5 -translate-x-1/2 rounded-full border border-[#2f718a]/55 bg-white" />
-          <span className="absolute left-1/2 top-3 h-4 w-3 -translate-x-1/2 rounded-t-full border border-[#2f718a]/55 bg-[#d8edf6]" />
-          <span className="absolute left-2 top-6 h-3 w-px rotate-12 bg-[#2f718a]/55" />
-          <span className="absolute right-2 top-6 h-3 w-px -rotate-12 bg-[#2f718a]/55" />
-        </div>
+      <div className="pointer-events-none absolute left-5 top-5 rounded-full border border-[#8fc7dd]/34 bg-white/78 px-4 py-2 font-mono text-[0.64rem] uppercase tracking-[0.18em] text-black/46 backdrop-blur-sm">
+        Click this room, then use WASD
       </div>
 
-      <div className="grid gap-4 border border-[#8fc7dd]/28 bg-white p-5 sm:grid-cols-[0.8fr_1.2fr]">
-        <div>
-          <p className="font-mono text-xs uppercase tracking-[0.16em] text-black/42">now viewing</p>
-          <p className="mt-2 text-2xl font-semibold tracking-[-0.05em]">{closest.title}</p>
-        </div>
-        <p className="text-sm leading-6 text-black/56">{closest.caption}</p>
+      <div className="pointer-events-none absolute bottom-5 left-5 right-5 grid gap-3 sm:left-auto sm:w-[360px]">
+        {activeArtwork ? (
+          <div className="border border-[#8fc7dd]/38 bg-white/86 p-5 shadow-[0_18px_60px_rgba(95,159,186,0.14)] backdrop-blur-sm">
+            <p className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-[#2f718a]">near artwork</p>
+            <h3 className="mt-2 text-3xl font-semibold tracking-[-0.055em]">{activeArtwork.title}</h3>
+            <p className="mt-1 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-black/38">{activeArtwork.type}</p>
+            <p className="mt-4 text-sm leading-6 text-black/58">{activeArtwork.description}</p>
+            <a
+              href={activeArtwork.link}
+              target="_blank"
+              rel="noreferrer"
+              className="pointer-events-auto mt-5 inline-flex rounded-full border border-[#8fc7dd]/54 bg-white px-4 py-2 text-sm font-medium text-[#2f718a] transition hover:border-[#2f718a]/60 hover:text-[#164d61]"
+            >
+              Open project
+            </a>
+          </div>
+        ) : (
+          <div className="border border-[#8fc7dd]/28 bg-white/72 p-4 font-mono text-xs uppercase tracking-[0.14em] text-black/42 backdrop-blur-sm">
+            Walk close to an artwork to inspect it.
+          </div>
+        )}
       </div>
     </div>
   );
