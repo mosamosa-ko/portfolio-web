@@ -260,11 +260,15 @@ function RawDeliveryModel({ path, targetSize }: { path: string; targetSize: numb
         meshSize.z > fullSize.z * 0.55 &&
         meshSize.y < Math.max(0.08, fullSize.y * 0.08);
       const isFloatingCargo =
-        meshSize.x > fullSize.x * 0.18 &&
-        meshSize.y > fullSize.y * 0.12 &&
-        center.y > fullBox.min.y + fullSize.y * 0.62;
+        meshSize.x > fullSize.x * 0.12 &&
+        meshSize.y > fullSize.y * 0.1 &&
+        meshSize.z > fullSize.z * 0.1 &&
+        center.y > fullBox.min.y + fullSize.y * 0.42;
+      const isLargePanel =
+        (meshSize.x > fullSize.x * 0.3 || meshSize.z > fullSize.z * 0.3) &&
+        meshSize.y > fullSize.y * 0.16;
 
-      if (isLargeFloor || isFloatingCargo) {
+      if (isLargeFloor || isFloatingCargo || isLargePanel) {
         child.visible = false;
         return;
       }
@@ -341,8 +345,8 @@ function DeliveryTrolleyScene() {
 
     if (trolleyRef.current) {
       const loop = (time * 0.15) % 1;
-      trolleyRef.current.position.x = THREE.MathUtils.lerp(-5.2, 4.6, loop);
-      trolleyRef.current.position.y = -0.6 + Math.sin(time * 2.1) * 0.02;
+      trolleyRef.current.position.x = THREE.MathUtils.lerp(-4.8, 4.2, loop);
+      trolleyRef.current.position.y = -0.72 + Math.sin(time * 2.1) * 0.02;
       trolleyRef.current.position.z = 0.4 + Math.sin(time * 0.6) * 0.08;
       trolleyRef.current.rotation.y = -0.2 + Math.sin(time * 0.7) * 0.035;
     }
@@ -350,8 +354,8 @@ function DeliveryTrolleyScene() {
 
   return (
     <group>
-      <group ref={trolleyRef} position={[-5.2, -0.6, 0.4]} rotation={[0, -0.2, 0]}>
-        <RawDeliveryModel path="/models/trolley.glb" targetSize={13.5} />
+      <group ref={trolleyRef} position={[-4.8, -0.72, 0.4]} rotation={[0, -0.2, 0]}>
+        <RawDeliveryModel path="/models/trolley.glb" targetSize={7.4} />
       </group>
     </group>
   );
@@ -363,7 +367,7 @@ function DeliveryShowcase({ shouldLoadModels }: { shouldLoadModels: boolean }) {
       <div className="absolute inset-0">
         <Canvas
           className="pointer-events-none"
-          camera={{ position: [0, 0.18, 6.4], fov: 28 }}
+          camera={{ position: [0, 0.42, 9.2], fov: 34 }}
           dpr={[0.75, 1.25]}
           gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
         >
