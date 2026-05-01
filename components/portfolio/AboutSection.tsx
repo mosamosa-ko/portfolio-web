@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 const focusItems = [
   { label: "AI / Machine Learning", code: "ml.pipeline.train()" },
@@ -22,16 +22,6 @@ const nameAscii = String.raw`
  ::  :::  ::::: ::         ::    ::   :::  :::     ::   ::   :::  :::: ::   ::   :::   ::  :::   ::
  :   :::   : :  :          :      :   : :   :      :     :   : :  :: : :     :   : :   :   :::  :
 `;
-
-const idCardAscii = String.raw`
-+------------------------------------------------+
-| ID: KO-YAMASAKI                                |
-| FIELD: COMPUTER SCIENCE                        |
-| FOCUS: AI / GRAPH / APP DEV                    |
-| BASE: HIROSHIMA                                |
-|                                                |
-| ||| || |||| ||| || ||||| || ||| |||| |||       |
-+------------------------------------------------+`;
 
 const initialLines = [
   "boot portfolio terminal...",
@@ -233,6 +223,24 @@ type TerminalEntry = {
 export function AboutSection() {
   const [input, setInput] = useState("");
   const [entries, setEntries] = useState<TerminalEntry[]>([{ output: initialLines }]);
+  const [faceAscii, setFaceAscii] = useState("");
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("/face_ascii.txt")
+      .then((response) => (response.ok ? response.text() : ""))
+      .then((text) => {
+        if (active) setFaceAscii(text.trimEnd());
+      })
+      .catch(() => {
+        if (active) setFaceAscii("");
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const runCommand = (command: string) => {
     const normalizedCommand = normalizeCommand(command);
@@ -276,9 +284,15 @@ export function AboutSection() {
           <pre className="max-w-full overflow-hidden font-mono text-[0.34rem] font-semibold leading-[1.05] tracking-[-0.08em] text-[#1d1d1f] sm:text-[0.46rem] lg:text-[0.5rem] xl:text-[0.58rem]">
             {nameAscii}
           </pre>
-          <pre className="mt-8 max-w-full overflow-x-auto font-mono text-[0.68rem] leading-[1.35] text-black/46 sm:max-w-2xl sm:text-[0.8rem]">
-            {idCardAscii}
-          </pre>
+          <div className="mt-8 max-w-2xl border border-[#8fc7dd]/28 bg-white/70 p-4 shadow-[0_18px_55px_rgba(95,159,186,0.08)]">
+            <div className="mb-3 flex items-center justify-between border-b border-[#8fc7dd]/18 pb-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-black/34">
+              <span>ASCII portrait</span>
+              <span>KO-YAMASAKI</span>
+            </div>
+            <pre className="max-h-[270px] max-w-full overflow-hidden font-mono text-[0.28rem] leading-[0.34rem] tracking-[-0.055em] text-[#2f718a]/72 sm:text-[0.38rem] sm:leading-[0.45rem] lg:text-[0.42rem] lg:leading-[0.5rem]">
+              {faceAscii}
+            </pre>
+          </div>
           <p className="mt-7 max-w-2xl text-[1.65rem] leading-[1.25] tracking-[-0.04em] text-black/68 sm:text-3xl sm:leading-[1.35]">
             Computer Science student interested in AI, graph data, app development, and location-based products.
           </p>

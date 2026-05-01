@@ -1220,6 +1220,26 @@ export function ContactSection() {
         </div>
       </section>
 
+      <section className="relative min-h-[76vh] overflow-hidden bg-[#111] text-white">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/woman.jpg')" }}
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.18)_42%,rgba(0,0,0,0.54)_100%)]" />
+        <div className="relative z-10 flex min-h-[76vh] items-end px-6 py-12 sm:px-10 sm:py-16 lg:px-16">
+          <div className="max-w-2xl">
+            <p className="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-white/54">Final frame</p>
+            <h2 className="mt-4 font-display text-4xl font-semibold leading-[1.08] tracking-[-0.055em] text-white sm:text-6xl">
+              日常の中の、美しい違和感。
+            </h2>
+            <p className="mt-5 max-w-md text-base leading-7 text-white/72 sm:text-lg">
+              Life, time, and small moments I do not want to miss.
+            </p>
+          </div>
+        </div>
+      </section>
+
       <footer className="bg-white px-6 py-10 text-[#1d1d1f] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-[1440px] border-t border-black/12 pt-6">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
