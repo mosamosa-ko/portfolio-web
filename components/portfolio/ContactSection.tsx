@@ -579,17 +579,19 @@ function MuseumRoom({
       </Suspense>
 
       <group ref={playerRef} position={[0, 0.05, 2.5]}>
-        <Suspense fallback={null}>
-          <GarageModel
-            path="/models/human.glb"
-            color="#d8edf6"
-            emissive="#6f97a8"
-            targetSize={1.72}
-            position={[0, 0.88, 0]}
-            rotation={[0, Math.PI, 0]}
-            opacity={0.96}
-          />
-        </Suspense>
+        <GarageErrorBoundary>
+          <Suspense fallback={null}>
+            <GarageModel
+              path="/models/human.glb"
+              color="#d8edf6"
+              emissive="#6f97a8"
+              targetSize={1.72}
+              position={[0, 0.88, 0]}
+              rotation={[0, Math.PI, 0]}
+              opacity={0.96}
+            />
+          </Suspense>
+        </GarageErrorBoundary>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
           <ringGeometry args={[0.42, 0.52, 32]} />
           <meshBasicMaterial color="#8fc7dd" transparent opacity={0.34} />
@@ -833,9 +835,11 @@ function PortfolioVendingMachine({
           <directionalLight position={[3, 4, 5]} intensity={1.0} />
           <directionalLight position={[-3, 2, 3]} intensity={0.38} color="#d8edf6" />
           {shouldLoadModels ? (
-            <Suspense fallback={null}>
-              <VendingShopModels selectedIndex={selectedIndex} />
-            </Suspense>
+            <GarageErrorBoundary>
+              <Suspense fallback={null}>
+                <VendingShopModels selectedIndex={selectedIndex} />
+              </Suspense>
+            </GarageErrorBoundary>
           ) : null}
         </Canvas>
         <div className="pointer-events-none absolute left-5 top-5 rounded-full border border-[#8fc7dd]/36 bg-white/78 px-4 py-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-black/42 backdrop-blur-sm">

@@ -7,5 +7,8 @@ build/
 public/models/*
 !public/models/new_suitcase.glb
 !public/models/ad.png
+!public/models/human.glb
+!public/models/vending_machine.glb
+!public/models/trolley.glb
 suitcase.fbx
 x-ray_image.png
