@@ -287,10 +287,22 @@ function MuseumRoom({
       <ambientLight intensity={1.4} />
       <directionalLight position={[2, 7, 4]} intensity={0.8} color="#ffffff" />
       <directionalLight position={[-5, 3, 2]} intensity={0.22} color="#d8edf6" />
+      <pointLight position={[-4, 3.2, -4.8]} intensity={0.95} color="#ffffff" distance={7} />
+      <pointLight position={[0, 3.2, -4.8]} intensity={0.75} color="#e8f7fb" distance={7} />
+      <pointLight position={[4, 3.2, -4.8]} intensity={0.95} color="#ffffff" distance={7} />
 
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, -0.6]} receiveShadow>
         <planeGeometry args={[14.5, 13]} />
-        <meshStandardMaterial color="#ffffff" roughness={0.78} />
+        <meshStandardMaterial color="#fbfeff" roughness={0.78} />
+      </mesh>
+
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.025, -1.35]}>
+        <planeGeometry args={[9.4, 7.8]} />
+        <meshBasicMaterial color="#eef7fa" transparent opacity={0.58} />
+      </mesh>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.035, -1.35]}>
+        <ringGeometry args={[2.05, 2.1, 96]} />
+        <meshBasicMaterial color="#8fc7dd" transparent opacity={0.28} />
       </mesh>
 
       <mesh position={[0, 2.15, -7.05]}>
@@ -308,15 +320,71 @@ function MuseumRoom({
 
       <gridHelper args={[14, 14, "#d8edf6", "#eef7fa"]} position={[0, 0.01, -0.6]} />
 
+      {[-4.6, 0, 4.6].map((x) => (
+        <group key={x} position={[x, 4.08, -5.35]}>
+          <mesh>
+            <boxGeometry args={[1.4, 0.12, 0.5]} />
+            <meshStandardMaterial color="#ffffff" roughness={0.45} />
+          </mesh>
+          <mesh position={[0, -0.1, 0]}>
+            <coneGeometry args={[0.62, 0.36, 32, 1, true]} />
+            <meshBasicMaterial color="#d8edf6" transparent opacity={0.36} side={THREE.DoubleSide} />
+          </mesh>
+        </group>
+      ))}
+
+      <group position={[0, 0.22, -2.1]}>
+        <mesh>
+          <boxGeometry args={[2.75, 0.25, 0.72]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.62} />
+        </mesh>
+        <mesh position={[-1.08, -0.24, -0.18]}>
+          <boxGeometry args={[0.16, 0.48, 0.16]} />
+          <meshStandardMaterial color="#d8edf6" roughness={0.6} />
+        </mesh>
+        <mesh position={[1.08, -0.24, 0.18]}>
+          <boxGeometry args={[0.16, 0.48, 0.16]} />
+          <meshStandardMaterial color="#d8edf6" roughness={0.6} />
+        </mesh>
+      </group>
+
+      <group position={[3.75, 0.72, -1.1]}>
+        <mesh>
+          <cylinderGeometry args={[0.52, 0.62, 0.92, 32]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.56} />
+        </mesh>
+        <mesh position={[0, 0.54, 0]}>
+          <sphereGeometry args={[0.36, 32, 16]} />
+          <meshBasicMaterial color="#9fd3e6" transparent opacity={0.52} />
+        </mesh>
+        <Text
+          position={[0, -0.03, 0.54]}
+          fontSize={0.1}
+          color="#2f718a"
+          anchorX="center"
+          anchorY="middle"
+        >
+          OBJECT
+        </Text>
+      </group>
+
       {museumExhibits.map((artwork) => (
         <group key={artwork.id} position={artwork.position} rotation={artwork.rotation}>
+          <mesh position={[0, 0, -0.035]}>
+            <boxGeometry args={[2.7, 1.9, 0.1]} />
+            <meshStandardMaterial color="#d8edf6" roughness={0.6} />
+          </mesh>
           <mesh position={[0, 0, 0]}>
-            <boxGeometry args={[2.35, 1.55, 0.08]} />
+            <boxGeometry args={[2.42, 1.62, 0.08]} />
             <meshStandardMaterial color="#ffffff" roughness={0.45} />
           </mesh>
           <mesh position={[0, 0, 0.05]}>
             <planeGeometry args={[2.08, 1.18]} />
             <meshBasicMaterial color={artwork.accent} transparent opacity={0.42} />
+          </mesh>
+          <mesh position={[0, 0, 0.095]}>
+            <ringGeometry args={[0.25, 0.27, 48]} />
+            <meshBasicMaterial color="#ffffff" transparent opacity={0.45} />
           </mesh>
           <mesh position={[0, -1.12, 0.08]}>
             <boxGeometry args={[1.4, 0.42, 0.04]} />
@@ -337,13 +405,45 @@ function MuseumRoom({
       ))}
 
       <group ref={playerRef} position={[0, 0.05, 2.5]}>
-        <mesh position={[0, 0.82, 0]}>
-          <capsuleGeometry args={[0.22, 0.78, 8, 16]} />
-          <meshStandardMaterial color="#d8edf6" roughness={0.55} />
+        <mesh position={[0, 0.72, 0]}>
+          <capsuleGeometry args={[0.28, 0.62, 12, 20]} />
+          <meshStandardMaterial color="#d8edf6" roughness={0.58} />
         </mesh>
-        <mesh position={[0, 1.42, 0]}>
-          <sphereGeometry args={[0.24, 20, 16]} />
+        <mesh position={[0, 1.32, 0]}>
+          <sphereGeometry args={[0.34, 32, 20]} />
           <meshStandardMaterial color="#ffffff" roughness={0.48} />
+        </mesh>
+        <mesh position={[-0.23, 1.36, 0.02]}>
+          <sphereGeometry args={[0.1, 16, 12]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.5} />
+        </mesh>
+        <mesh position={[0.23, 1.36, 0.02]}>
+          <sphereGeometry args={[0.1, 16, 12]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.5} />
+        </mesh>
+        <mesh position={[-0.34, 0.78, 0.02]} rotation={[0, 0, -0.28]}>
+          <capsuleGeometry args={[0.055, 0.36, 8, 12]} />
+          <meshStandardMaterial color="#b8d6e6" roughness={0.5} />
+        </mesh>
+        <mesh position={[0.34, 0.78, 0.02]} rotation={[0, 0, 0.28]}>
+          <capsuleGeometry args={[0.055, 0.36, 8, 12]} />
+          <meshStandardMaterial color="#b8d6e6" roughness={0.5} />
+        </mesh>
+        <mesh position={[-0.12, 0.22, 0.02]}>
+          <capsuleGeometry args={[0.065, 0.35, 8, 12]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.5} />
+        </mesh>
+        <mesh position={[0.12, 0.22, 0.02]}>
+          <capsuleGeometry args={[0.065, 0.35, 8, 12]} />
+          <meshStandardMaterial color="#ffffff" roughness={0.5} />
+        </mesh>
+        <mesh position={[-0.1, 1.35, -0.31]}>
+          <sphereGeometry args={[0.035, 8, 8]} />
+          <meshBasicMaterial color="#2f718a" />
+        </mesh>
+        <mesh position={[0.1, 1.35, -0.31]}>
+          <sphereGeometry args={[0.035, 8, 8]} />
+          <meshBasicMaterial color="#2f718a" />
         </mesh>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
           <ringGeometry args={[0.42, 0.52, 32]} />
