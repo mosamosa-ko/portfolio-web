@@ -1,7 +1,7 @@
 "use client";
 
 import { Component, Suspense, useEffect, useMemo, useRef, useState } from "react";
-import type { ReactNode } from "react";
+import type { PointerEvent, ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -331,10 +331,12 @@ function ArtworkFrame({ artwork }: { artwork: MuseumArtwork }) {
 function MuseumRoom({
   keysRef,
   yawRef,
+  avatarYawRef,
   onActiveArtworkChange,
 }: {
   keysRef: React.MutableRefObject<Record<string, boolean>>;
   yawRef: React.MutableRefObject<number>;
+  avatarYawRef: React.MutableRefObject<number>;
   onActiveArtworkChange: (artwork: MuseumArtwork | null) => void;
 }) {
   const playerRef = useRef<THREE.Group>(null);
@@ -345,14 +347,13 @@ function MuseumRoom({
   const right = useMemo(() => new THREE.Vector3(), []);
   const targetCamera = useMemo(() => new THREE.Vector3(), []);
   const targetLookAt = useMemo(() => new THREE.Vector3(), []);
-  const playerYawRef = useRef(0);
-
   useFrame(({ camera }, delta) => {
     const player = playerRef.current;
     if (!player) return;
 
     if (keysRef.current.q) yawRef.current += delta * 1.65;
     if (keysRef.current.e) yawRef.current -= delta * 1.65;
+    if (keysRef.current.q || keysRef.current.e) avatarYawRef.current = -yawRef.current;
 
     const yaw = yawRef.current;
 
@@ -367,7 +368,7 @@ function MuseumRoom({
 
     if (direction.lengthSq() > 0) {
       direction.normalize();
-      playerYawRef.current = Math.atan2(direction.x, -direction.z);
+      avatarYawRef.current = Math.atan2(-direction.x, -direction.z);
       velocity.lerp(direction.multiplyScalar(4.2), 0.18);
     } else {
       velocity.lerp(new THREE.Vector3(0, 0, 0), 0.16);
@@ -375,7 +376,7 @@ function MuseumRoom({
 
     player.position.x = THREE.MathUtils.clamp(player.position.x + velocity.x * delta, -5.8, 5.8);
     player.position.z = THREE.MathUtils.clamp(player.position.z + velocity.z * delta, -5.25, 4.2);
-    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, playerYawRef.current, 0.18);
+    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, avatarYawRef.current, 0.18);
 
     targetCamera.set(
       player.position.x - forward.x * 6.1,
@@ -545,6 +546,7 @@ function MiniMuseum() {
   const museumRef = useRef<HTMLDivElement>(null);
   const keysRef = useRef<Record<string, boolean>>({});
   const yawRef = useRef(0);
+  const avatarYawRef = useRef(0);
   const viewDragRef = useRef({ active: false, x: 0 });
   const [activeArtwork, setActiveArtwork] = useState<MuseumArtwork | null>(null);
 
@@ -552,6 +554,19 @@ function MiniMuseum() {
     const normalized = key.toLowerCase();
     if (!["w", "a", "s", "d", "q", "e", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(normalized)) return;
     keysRef.current[normalized] = isPressed;
+  };
+
+  const pressControl = (key: string) => (event: PointerEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    museumRef.current?.focus();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setKey(key, true);
+  };
+
+  const releaseControl = (key: string) => (event: PointerEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setKey(key, false);
+    event.currentTarget.releasePointerCapture(event.pointerId);
   };
 
   useEffect(() => {
@@ -598,7 +613,12 @@ function MiniMuseum() {
         dpr={[0.75, 1.4]}
         gl={{ antialias: true, alpha: false, powerPreference: "low-power" }}
       >
-        <MuseumRoom keysRef={keysRef} yawRef={yawRef} onActiveArtworkChange={setActiveArtwork} />
+        <MuseumRoom
+          keysRef={keysRef}
+          yawRef={yawRef}
+          avatarYawRef={avatarYawRef}
+          onActiveArtworkChange={setActiveArtwork}
+        />
       </Canvas>
 
       <div
@@ -616,6 +636,7 @@ function MiniMuseum() {
           const deltaX = event.clientX - viewDragRef.current.x;
           viewDragRef.current = { active: true, x: event.clientX };
           yawRef.current -= deltaX * 0.0075;
+          avatarYawRef.current = -yawRef.current;
         }}
         onPointerUp={(event) => {
           viewDragRef.current.active = false;
@@ -628,6 +649,51 @@ function MiniMuseum() {
 
       <div className="pointer-events-none absolute left-5 top-5 z-20 rounded-full border border-[#8fc7dd]/34 bg-white/78 px-4 py-2 font-mono text-[0.64rem] uppercase tracking-[0.18em] text-black/46 backdrop-blur-sm">
         WASD to walk / drag or Q E to turn camera
+      </div>
+
+      <div className="absolute bottom-5 left-5 z-30 grid grid-cols-3 gap-2 sm:hidden">
+        <span />
+        <button
+          type="button"
+          aria-label="Move forward"
+          onPointerDown={pressControl("w")}
+          onPointerUp={releaseControl("w")}
+          onPointerCancel={releaseControl("w")}
+          className="h-14 w-14 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
+        >
+          W
+        </button>
+        <span />
+        <button
+          type="button"
+          aria-label="Move left"
+          onPointerDown={pressControl("a")}
+          onPointerUp={releaseControl("a")}
+          onPointerCancel={releaseControl("a")}
+          className="h-14 w-14 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
+        >
+          A
+        </button>
+        <button
+          type="button"
+          aria-label="Move backward"
+          onPointerDown={pressControl("s")}
+          onPointerUp={releaseControl("s")}
+          onPointerCancel={releaseControl("s")}
+          className="h-14 w-14 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
+        >
+          S
+        </button>
+        <button
+          type="button"
+          aria-label="Move right"
+          onPointerDown={pressControl("d")}
+          onPointerUp={releaseControl("d")}
+          onPointerCancel={releaseControl("d")}
+          className="h-14 w-14 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
+        >
+          D
+        </button>
       </div>
 
       <div className="pointer-events-none absolute bottom-5 left-5 right-5 z-20 grid gap-3 sm:left-auto sm:w-[390px]">
