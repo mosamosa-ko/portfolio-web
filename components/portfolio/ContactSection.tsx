@@ -11,6 +11,9 @@ const links = [
   { label: "Email", href: "mailto:hello@example.com" },
 ];
 
+const portfolioUrl = "https://ko-yamasaki.vercel.app";
+const receiptQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=132x132&margin=1&data=${encodeURIComponent(portfolioUrl)}`;
+
 const receiptLogoAscii = String.raw`
 @@@  @@@   @@@@@@       @@@ @@@   @@@@@@   @@@@@@@@@@    @@@@@@    @@@@@@    @@@@@@   @@@  @@@  @@@
 @@@ @@@   @@@@@@@@      @@@ @@@  @@@@@@@@  @@@@@@@@@@@  @@@@@@@@  @@@@@@@   @@@@@@@@  @@@ @@@   @@@
@@ -23,6 +26,50 @@ const receiptLogoAscii = String.raw`
  ::  :::  ::::: ::         ::    ::   :::  :::     ::   ::   :::  :::: ::   ::   :::   ::  :::   ::
  :   :::   : :  :          :      :   : :   :      :     :   : :  :: : :     :   : :   :   :::  :
 `;
+
+const receiptLetterMap: Record<string, string[]> = {
+  A: [" @@@ ", "@   @", "@@@@@", "@   @", "@   @"],
+  B: ["@@@@ ", "@   @", "@@@@ ", "@   @", "@@@@ "],
+  C: [" @@@@", "@    ", "@    ", "@    ", " @@@@"],
+  D: ["@@@@ ", "@   @", "@   @", "@   @", "@@@@ "],
+  E: ["@@@@@", "@    ", "@@@@ ", "@    ", "@@@@@"],
+  F: ["@@@@@", "@    ", "@@@@ ", "@    ", "@    "],
+  G: [" @@@@", "@    ", "@ @@@", "@   @", " @@@@"],
+  H: ["@   @", "@   @", "@@@@@", "@   @", "@   @"],
+  I: ["@@@@@", "  @  ", "  @  ", "  @  ", "@@@@@"],
+  J: ["@@@@@", "   @ ", "   @ ", "@  @ ", " @@  "],
+  K: ["@   @", "@  @ ", "@@@  ", "@  @ ", "@   @"],
+  L: ["@    ", "@    ", "@    ", "@    ", "@@@@@"],
+  M: ["@   @", "@@ @@", "@ @ @", "@   @", "@   @"],
+  N: ["@   @", "@@  @", "@ @ @", "@  @@", "@   @"],
+  O: [" @@@ ", "@   @", "@   @", "@   @", " @@@ "],
+  P: ["@@@@ ", "@   @", "@@@@ ", "@    ", "@    "],
+  Q: [" @@@ ", "@   @", "@ @ @", "@  @ ", " @@ @"],
+  R: ["@@@@ ", "@   @", "@@@@ ", "@  @ ", "@   @"],
+  S: [" @@@@", "@    ", " @@@ ", "    @", "@@@@ "],
+  T: ["@@@@@", "  @  ", "  @  ", "  @  ", "  @  "],
+  U: ["@   @", "@   @", "@   @", "@   @", " @@@ "],
+  V: ["@   @", "@   @", "@   @", " @ @ ", "  @  "],
+  W: ["@   @", "@   @", "@ @ @", "@@ @@", "@   @"],
+  X: ["@   @", " @ @ ", "  @  ", " @ @ ", "@   @"],
+  Y: ["@   @", " @ @ ", "  @  ", "  @  ", "  @  "],
+  Z: ["@@@@@", "   @ ", "  @  ", " @   ", "@@@@@"],
+  " ": ["     ", "     ", "     ", "     ", "     "],
+};
+
+function renderReceiptNameAscii(name: string) {
+  const safeName = (name || "GUEST").toUpperCase().replace(/[^A-Z ]/g, "").slice(0, 12) || "GUEST";
+  const rows = ["", "", "", "", ""];
+
+  for (const character of safeName) {
+    const glyph = receiptLetterMap[character] ?? receiptLetterMap[" "];
+    glyph.forEach((line, index) => {
+      rows[index] += `${line}  `;
+    });
+  }
+
+  return rows.join("\n");
+}
 
 type GarageModelProps = {
   path: string;
@@ -602,6 +649,9 @@ export function ContactSection() {
   const [pointer, setPointer] = useState<PointerState>({ x: 0, y: 0 });
   const [drag, setDrag] = useState<DragState>({ x: 0, y: 0 });
   const [receiptMeta, setReceiptMeta] = useState({ date: "loading...", order: "#----" });
+  const [receiptName, setReceiptName] = useState("");
+  const displayReceiptName = receiptName.trim() || "GUEST";
+  const receiptNameAscii = useMemo(() => renderReceiptNameAscii(displayReceiptName), [displayReceiptName]);
 
   useEffect(() => {
     const openedAt = new Date();
@@ -780,6 +830,22 @@ export function ContactSection() {
               <p className="mt-5 max-w-md text-[17px] leading-7 text-black/54">
                 The final counter turns the visit into a small checkout slip, like buying a print from the museum shop.
               </p>
+              <label className="mt-8 block max-w-sm">
+                <span className="font-mono text-[0.66rem] uppercase tracking-[0.18em] text-black/36">
+                  Add your name to the receipt
+                </span>
+                <input
+                  value={receiptName}
+                  onChange={(event) => {
+                    setReceiptName(event.target.value.replace(/[^a-zA-Z ]/g, "").slice(0, 14));
+                  }}
+                  placeholder="TYPE YOUR NAME"
+                  className="mt-3 w-full border border-[#8fc7dd]/42 bg-white px-4 py-3 font-mono text-xs uppercase tracking-[0.14em] text-black/72 shadow-[0_16px_40px_rgba(95,159,186,0.08)] outline-none transition placeholder:text-black/24 focus:border-[#2f718a]/58"
+                />
+                <p className="mt-2 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-black/30">
+                  Alphabet only / printed as receipt ASCII.
+                </p>
+              </label>
             </div>
 
             <div className="mx-auto w-full max-w-[390px] bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62 shadow-[0_22px_70px_rgba(95,159,186,0.16)]">
@@ -798,6 +864,16 @@ export function ContactSection() {
               <div className="relative my-5 h-[76px] overflow-hidden border-y border-dashed border-black/18" translate="no">
                 <pre className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-[0.32] whitespace-pre text-center font-mono text-[0.56rem] leading-[0.62rem] tracking-[-0.08em] text-black/42" translate="no">
                   {receiptLogoAscii}
+                </pre>
+              </div>
+
+              <div className="my-5 border-y border-dashed border-black/18 py-4 text-center" translate="no">
+                <p className="text-[0.58rem] tracking-[0.2em] text-black/34">issued to</p>
+                <p className="mt-2 text-[0.82rem] tracking-[0.18em] text-[#2f718a]">
+                  {displayReceiptName.toUpperCase()}
+                </p>
+                <pre className="mx-auto mt-3 max-w-full overflow-hidden whitespace-pre text-center font-mono text-[0.34rem] leading-[0.43rem] tracking-[-0.05em] text-black/42">
+                  {receiptNameAscii}
                 </pre>
               </div>
 
@@ -851,7 +927,24 @@ export function ContactSection() {
               <p className="mt-6 text-center text-[0.62rem] leading-5 tracking-[0.16em] text-black/38">
                 no refund needed. please keep building.
               </p>
-              <div className="mt-6 h-10 bg-[repeating-linear-gradient(90deg,#111_0,#111_1px,transparent_1px,transparent_4px,#111_4px,#111_6px,transparent_6px,transparent_9px)] opacity-28" />
+              <a
+                href={portfolioUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mx-auto mt-6 block w-fit border border-black/10 bg-white p-2 transition hover:border-[#2f718a]/42"
+                aria-label="Open portfolio website"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={receiptQrUrl}
+                  alt="QR code for ko-yamasaki.vercel.app"
+                  width={112}
+                  height={112}
+                  className="block"
+                />
+              </a>
+              <p className="mt-2 text-center text-[0.56rem] tracking-[0.18em] text-black/32">SCAN TO OPEN SITE</p>
+              <div className="mt-4 h-8 bg-[repeating-linear-gradient(90deg,#111_0,#111_1px,transparent_1px,transparent_4px,#111_4px,#111_6px,transparent_6px,transparent_9px)] opacity-22" />
               <p className="mt-3 text-center text-[0.56rem] tracking-[0.22em] text-black/30">THANK YOU FOR VISITING</p>
 
               <div className="-mx-5 -mb-7 mt-7 flex h-4 rotate-180 overflow-hidden">
