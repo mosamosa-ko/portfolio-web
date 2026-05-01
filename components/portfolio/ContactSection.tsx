@@ -11,9 +11,6 @@ const links = [
   { label: "Email", href: "mailto:hello@example.com" },
 ];
 
-const portfolioUrl = "https://ko-yamasaki.vercel.app";
-const receiptQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=96x96&margin=1&data=${encodeURIComponent(portfolioUrl)}`;
-
 const receiptLogoAscii = String.raw`
 @@@  @@@   @@@@@@       @@@ @@@   @@@@@@   @@@@@@@@@@    @@@@@@    @@@@@@    @@@@@@   @@@  @@@  @@@
 @@@ @@@   @@@@@@@@      @@@ @@@  @@@@@@@@  @@@@@@@@@@@  @@@@@@@@  @@@@@@@   @@@@@@@@  @@@ @@@   @@@
@@ -317,51 +314,23 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
 
 function DeliveryTrolleyScene() {
   const trolleyRef = useRef<THREE.Group>(null);
-  const packageRef = useRef<THREE.Group>(null);
 
   useFrame(({ clock }) => {
     const time = clock.getElapsedTime();
 
     if (trolleyRef.current) {
       const loop = (time * 0.15) % 1;
-      trolleyRef.current.position.x = THREE.MathUtils.lerp(-4.5, 4.2, loop);
-      trolleyRef.current.position.y = -1.12 + Math.sin(time * 2.1) * 0.025;
-      trolleyRef.current.rotation.y = -0.12 + Math.sin(time * 0.7) * 0.035;
-    }
-
-    if (packageRef.current) {
-      packageRef.current.rotation.y = time * 0.2;
-      packageRef.current.position.y = 0.82 + Math.sin(time * 2.2) * 0.012;
+      trolleyRef.current.position.x = THREE.MathUtils.lerp(-5.6, 4.6, loop);
+      trolleyRef.current.position.y = -0.84 + Math.sin(time * 2.1) * 0.02;
+      trolleyRef.current.position.z = 0.65 + Math.sin(time * 0.6) * 0.08;
+      trolleyRef.current.rotation.y = -0.2 + Math.sin(time * 0.7) * 0.035;
     }
   });
 
   return (
     <group>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.34, 0.2]}>
-        <planeGeometry args={[9.8, 2.6]} />
-        <meshBasicMaterial color="#d8edf6" transparent opacity={0.28} />
-      </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.31, 0.2]}>
-        <planeGeometry args={[9.2, 0.035]} />
-        <meshBasicMaterial color="#5f9fba" transparent opacity={0.36} />
-      </mesh>
-
-      <group ref={trolleyRef} position={[-4.5, -1.12, 0.75]} rotation={[0, -0.12, 0]}>
-        <RawDeliveryModel path="/models/trolley.glb" targetSize={6.2} />
-        <group ref={packageRef} position={[0.12, 0.92, 0.02]}>
-          <mesh>
-            <boxGeometry args={[0.72, 0.48, 0.62]} />
-            <meshStandardMaterial color="#d7c3a1" roughness={0.68} metalness={0.02} />
-          </mesh>
-          <mesh position={[0, 0.225, 0]}>
-            <boxGeometry args={[0.72, 0.018, 0.62]} />
-            <meshBasicMaterial color="#a98f67" transparent opacity={0.45} />
-          </mesh>
-          <mesh position={[0, 0, 0.296]}>
-            <boxGeometry args={[0.18, 0.46, 0.018]} />
-            <meshBasicMaterial color="#a98f67" transparent opacity={0.38} />
-          </mesh>
-        </group>
+      <group ref={trolleyRef} position={[-5.6, -0.84, 0.65]} rotation={[0, -0.2, 0]}>
+        <RawDeliveryModel path="/models/trolley.glb" targetSize={11.5} />
       </group>
     </group>
   );
@@ -373,7 +342,7 @@ function DeliveryShowcase({ shouldLoadModels }: { shouldLoadModels: boolean }) {
       <div className="absolute inset-0">
         <Canvas
           className="pointer-events-none"
-          camera={{ position: [0, 0.25, 7.8], fov: 32 }}
+          camera={{ position: [0, -0.05, 5.7], fov: 28 }}
           dpr={[0.75, 1.25]}
           gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
         >
@@ -390,7 +359,7 @@ function DeliveryShowcase({ shouldLoadModels }: { shouldLoadModels: boolean }) {
         </Canvas>
       </div>
 
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.94)_0%,rgba(255,255,255,0.78)_38%,rgba(255,255,255,0.18)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.96)_0%,rgba(255,255,255,0.8)_36%,rgba(255,255,255,0.08)_100%)]" />
 
       <div className="relative z-10 flex min-h-[520px] max-w-xl flex-col justify-center">
         <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Delivery system</p>
@@ -1083,7 +1052,7 @@ export function ContactSection() {
               <div
                 className="mx-auto w-full max-w-[390px] origin-top overflow-hidden"
                 style={{
-                  height: receiptPrinted ? `${Math.max(24, Math.round(printProgress * 1120))}px` : 0,
+                  height: receiptPrinted ? `${Math.max(24, Math.round(printProgress * 970))}px` : 0,
                   opacity: receiptPrinted ? 1 : 0,
                   transition: receiptPrinted ? "none" : "opacity 200ms ease",
                 }}
@@ -1173,24 +1142,7 @@ export function ContactSection() {
               <p className="mt-6 text-center text-[0.62rem] leading-5 tracking-[0.16em] text-black/38">
                 no refund needed. please keep building.
               </p>
-              <a
-                href={portfolioUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mx-auto mt-6 block w-fit border border-black/10 bg-white p-2 transition hover:border-[#2f718a]/42"
-                aria-label="Open portfolio website"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={receiptQrUrl}
-                  alt="QR code for ko-yamasaki.vercel.app"
-                  width={84}
-                  height={84}
-                  className="block"
-                />
-              </a>
-              <p className="mt-2 text-center text-[0.56rem] tracking-[0.18em] text-black/32">SCAN TO OPEN SITE</p>
-              <div className="mt-4 h-8 bg-[repeating-linear-gradient(90deg,#111_0,#111_1px,transparent_1px,transparent_4px,#111_4px,#111_6px,transparent_6px,transparent_9px)] opacity-22" />
+              <div className="mt-6 h-10 bg-[repeating-linear-gradient(90deg,#111_0,#111_1px,transparent_1px,transparent_4px,#111_4px,#111_6px,transparent_6px,transparent_9px)] opacity-22" />
               <p className="mt-3 text-center text-[0.56rem] tracking-[0.22em] text-black/30">THANK YOU FOR VISITING</p>
 
               <div className="-mx-5 -mb-7 mt-7 flex h-4 rotate-180 overflow-hidden">
