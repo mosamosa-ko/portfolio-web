@@ -331,40 +331,40 @@ function VendingShopModels({ selectedIndex }: { selectedIndex: number }) {
     }
 
     if (trolleyRef.current) {
-      const targetX = -1.55 + selectedIndex * 0.62;
+      const targetX = -1.25 + selectedIndex * 0.82;
       trolleyRef.current.position.x = THREE.MathUtils.lerp(trolleyRef.current.position.x, targetX, delta * 2.8);
-      trolleyRef.current.rotation.y = THREE.MathUtils.lerp(trolleyRef.current.rotation.y, -0.38 + selectedIndex * 0.08, delta * 2.4);
+      trolleyRef.current.rotation.y = THREE.MathUtils.lerp(trolleyRef.current.rotation.y, -0.24 + selectedIndex * 0.07, delta * 2.4);
       trolleyRef.current.position.y = 0.05 + Math.sin(time * 2.2) * 0.015;
     }
   });
 
   return (
     <group>
-      <group ref={vendingRef} position={[-0.88, -0.28, -0.25]}>
+      <group ref={vendingRef} position={[-1.55, -0.44, -0.52]}>
         <GarageModel
           path="/models/vending_machine.glb"
-          color="#d8edf6"
+          color="#c5d8df"
           emissive="#6f97a8"
-          targetSize={2.78}
+          targetSize={4.85}
           position={[0, 0, 0]}
-          rotation={[0, -0.12, 0]}
-          opacity={0.74}
+          rotation={[0, -0.18, 0]}
+          opacity={0.92}
         />
       </group>
-      <group ref={trolleyRef} position={[-1.55, -1.08, 1.08]}>
+      <group ref={trolleyRef} position={[-1.55, -1.22, 1.2]}>
         <GarageModel
           path="/models/trolley.glb"
-          color="#b8d6e6"
+          color="#b9ccd5"
           emissive="#5f9fba"
-          targetSize={1.18}
+          targetSize={2.85}
           position={[0, 0, 0]}
-          rotation={[0, -0.34, 0]}
-          opacity={0.82}
+          rotation={[0, -0.3, 0]}
+          opacity={0.98}
         />
       </group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.2, -1.16, 0.02]}>
-        <circleGeometry args={[2.35, 72]} />
-        <meshBasicMaterial color="#8fc7dd" transparent opacity={0.1} />
+        <circleGeometry args={[3.15, 72]} />
+        <meshBasicMaterial color="#8fc7dd" transparent opacity={0.13} />
       </mesh>
     </group>
   );
@@ -824,10 +824,10 @@ function PortfolioVendingMachine({
         </div>
       </div>
 
-      <div className="relative min-h-[420px] overflow-hidden rounded-[2rem] border border-[#8fc7dd]/36 bg-[radial-gradient(circle_at_52%_45%,rgba(143,199,221,0.18),transparent_34%),linear-gradient(135deg,#ffffff_0%,#f4fbfd_100%)] shadow-[0_28px_90px_rgba(95,159,186,0.14)]">
+      <div className="relative min-h-[560px] overflow-hidden rounded-[2rem] border border-[#8fc7dd]/36 bg-[radial-gradient(circle_at_52%_45%,rgba(143,199,221,0.18),transparent_34%),linear-gradient(135deg,#ffffff_0%,#f4fbfd_100%)] shadow-[0_28px_90px_rgba(95,159,186,0.14)]">
         <Canvas
           className="absolute inset-0"
-          camera={{ position: [0, 0.55, 6.1], fov: 36 }}
+          camera={{ position: [0, 0.82, 7.2], fov: 33 }}
           dpr={[0.75, 1.25]}
           gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
         >
@@ -863,7 +863,7 @@ export function ContactSection() {
   const [receiptMeta, setReceiptMeta] = useState({ date: "loading...", order: "#----" });
   const [receiptName, setReceiptName] = useState("");
   const [selectedVendingItem, setSelectedVendingItem] = useState(vendingItems[0]);
-  const [receiptPrinted, setReceiptPrinted] = useState(true);
+  const [receiptPrinted, setReceiptPrinted] = useState(false);
   const displayReceiptName = receiptName.trim() || "GUEST";
   const receiptNameAscii = useMemo(() => renderReceiptNameAscii(displayReceiptName), [displayReceiptName]);
 
@@ -1090,9 +1090,18 @@ export function ContactSection() {
                   receipt printer
                 </p>
               </div>
+              {!receiptPrinted ? (
+                <div className="mx-auto grid min-h-[360px] w-full max-w-[390px] place-items-center border border-dashed border-[#8fc7dd]/36 bg-white/64 p-8 text-center font-mono text-[0.62rem] uppercase tracking-[0.18em] text-black/34">
+                  <span>
+                    receipt not printed
+                    <br />
+                    press print receipt
+                  </span>
+                </div>
+              ) : null}
               <div
                 className={`mx-auto w-full max-w-[390px] origin-top overflow-hidden transition-[max-height,transform,opacity] duration-[1800ms] ease-out ${
-                  receiptPrinted ? "max-h-[1400px] translate-y-0 opacity-100" : "max-h-0 -translate-y-4 opacity-80"
+                  receiptPrinted ? "max-h-[1400px] translate-y-0 opacity-100" : "max-h-0 translate-y-0 opacity-0"
                 }`}
               >
             <div className="relative bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62 shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
