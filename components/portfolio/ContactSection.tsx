@@ -367,6 +367,23 @@ function MiniMuseum() {
     keysRef.current[normalized] = isPressed;
   };
 
+  useEffect(() => {
+    const stopMovement = (event: KeyboardEvent) => {
+      setKey(event.key, false);
+    };
+    const clearMovement = () => {
+      keysRef.current = {};
+      viewDragRef.current.active = false;
+    };
+
+    window.addEventListener("keyup", stopMovement);
+    window.addEventListener("blur", clearMovement);
+    return () => {
+      window.removeEventListener("keyup", stopMovement);
+      window.removeEventListener("blur", clearMovement);
+    };
+  }, []);
+
   return (
     <div
       ref={museumRef}
@@ -402,12 +419,15 @@ function MiniMuseum() {
       <div
         className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing"
         onPointerDown={(event) => {
+          event.preventDefault();
           museumRef.current?.focus();
+          keysRef.current = {};
           event.currentTarget.setPointerCapture(event.pointerId);
           viewDragRef.current = { active: true, x: event.clientX };
         }}
         onPointerMove={(event) => {
           if (!viewDragRef.current.active) return;
+          event.preventDefault();
           const deltaX = event.clientX - viewDragRef.current.x;
           viewDragRef.current = { active: true, x: event.clientX };
           yawRef.current -= deltaX * 0.0075;
@@ -651,13 +671,13 @@ export function ContactSection() {
                 <p className="mt-1 text-[0.62rem] tracking-[0.16em] text-black/34">ko-yamasaki.vercel.app</p>
               </div>
 
-              <div className="my-6 overflow-hidden border-y border-dashed border-black/18 py-4">
-                <pre className="origin-top-left scale-[0.36] whitespace-pre font-mono text-[0.56rem] leading-[0.62rem] tracking-[-0.08em] text-black/42">
+              <div className="relative my-5 h-[76px] overflow-hidden border-y border-dashed border-black/18" translate="no">
+                <pre className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-[0.32] whitespace-pre text-center font-mono text-[0.56rem] leading-[0.62rem] tracking-[-0.08em] text-black/42" translate="no">
                   {receiptLogoAscii}
                 </pre>
               </div>
 
-              <div className="my-6 border-y border-dashed border-black/22 py-3 text-[0.64rem] leading-5 text-black/44">
+              <div className="my-5 border-y border-dashed border-black/22 py-3 text-[0.64rem] leading-5 text-black/44">
                 <div className="flex justify-between">
                   <span>date</span>
                   <span className="text-right">{receiptMeta.date}</span>
