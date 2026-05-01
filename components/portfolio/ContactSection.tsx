@@ -376,7 +376,7 @@ function MiniMuseum() {
         keysRef.current = {};
         viewDragRef.current.active = false;
       }}
-      className="relative min-h-[76vh] select-none overflow-hidden border border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
+      className="relative min-h-[92vh] select-none overflow-hidden border-y border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
     >
       <Canvas
         camera={{ position: [0, 3.7, 8.6], fov: 46 }}
@@ -412,7 +412,7 @@ function MiniMuseum() {
         WASD to walk / drag or Q E to look
       </div>
 
-      <div className="pointer-events-none absolute bottom-5 left-5 right-5 z-20 grid gap-3 sm:left-auto sm:w-[360px]">
+      <div className="pointer-events-none absolute bottom-5 left-5 right-5 z-20 grid gap-3 sm:left-auto sm:w-[390px]">
         {activeArtwork ? (
           <div className="border border-[#8fc7dd]/38 bg-white/86 p-5 shadow-[0_18px_60px_rgba(95,159,186,0.14)] backdrop-blur-sm">
             <p className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-[#2f718a]">near artwork</p>
@@ -595,11 +595,11 @@ export function ContactSection() {
             </div>
           </div>
 
-          <div className="mt-10">
+          <div className="mx-[calc(50%-50vw)] mt-10">
             <MiniMuseum />
           </div>
 
-          <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_420px] lg:items-start">
+          <div className="mt-16 grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
             <div>
               <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Museum shop</p>
               <h3 className="mt-3 font-display text-4xl font-semibold leading-[1.06] tracking-[-0.055em] sm:text-5xl">
@@ -610,28 +610,77 @@ export function ContactSection() {
               </p>
             </div>
 
-            <div className="border border-[#8fc7dd]/38 bg-[#fbfdfe] p-5 font-mono text-xs uppercase tracking-[0.12em] text-black/58 shadow-[0_18px_60px_rgba(95,159,186,0.1)]">
-              <div className="mb-5 border-b border-[#8fc7dd]/28 pb-4 text-center">
-                <p className="text-[#2f718a]">portfolio receipt</p>
-                <p className="mt-1 text-[0.62rem] text-black/34">ko-yamasaki.vercel.app</p>
+            <div className="mx-auto w-full max-w-[360px] bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62 shadow-[0_22px_70px_rgba(95,159,186,0.16)]">
+              <div className="-mx-5 -mt-7 mb-6 flex h-4 overflow-hidden">
+                {Array.from({ length: 18 }).map((_, index) => (
+                  <span key={index} className="h-4 flex-1 rounded-b-full bg-white" />
+                ))}
               </div>
+
+              <div className="text-center">
+                <p className="text-[0.95rem] tracking-[0.24em] text-[#2f718a]">PORTFOLIO RECEIPT</p>
+                <p className="mt-2 text-[0.62rem] tracking-[0.16em] text-black/42">museum shop / checkout 01</p>
+                <p className="mt-1 text-[0.62rem] tracking-[0.16em] text-black/34">ko-yamasaki.vercel.app</p>
+              </div>
+
+              <div className="my-6 border-y border-dashed border-black/22 py-3 text-[0.64rem] leading-5 text-black/44">
+                <div className="flex justify-between">
+                  <span>date</span>
+                  <span>2026-05-01</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>cashier</span>
+                  <span>ko yamasaki</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>order</span>
+                  <span>#0004</span>
+                </div>
+              </div>
+
               {[
-                ["Terraplot", "GPS territory game"],
-                ["App development", "iOS / web products"],
-                ["Graph research", "nodes / queries / AI"],
-                ["3D interface", "x-ray suitcase hero"],
-                ["Human side", "curiosity + humor"],
-              ].map(([name, detail]) => (
-                <div key={name} className="flex justify-between gap-4 border-b border-[#8fc7dd]/18 py-2">
-                  <span>{name}</span>
-                  <span className="text-right text-black/36">{detail}</span>
+                ["01", "Terraplot", "GPS territory game", "¥ 000"],
+                ["02", "App Dev", "iOS / web products", "¥ 000"],
+                ["03", "Graph AI", "nodes / queries", "¥ 000"],
+                ["04", "3D Interface", "x-ray suitcase", "¥ 000"],
+                ["05", "Human Side", "curiosity + humor", "¥ 000"],
+              ].map(([id, item, description, price]) => (
+                <div key={id} className="grid grid-cols-[2.2rem_1fr_auto] gap-3 border-b border-dashed border-black/18 py-3">
+                  <span className="text-black/34">{id}</span>
+                  <span>
+                    <span className="block text-black/74">{item}</span>
+                    <span className="mt-1 block text-[0.58rem] tracking-[0.14em] text-black/34">{description}</span>
+                  </span>
+                  <span className="text-right text-black/42">{price}</span>
                 </div>
               ))}
-              <div className="mt-5 flex justify-between border-t border-[#8fc7dd]/34 pt-4 text-[#2f718a]">
-                <span>Total</span>
-                <span>Thank you</span>
+
+              <div className="mt-6 space-y-2 border-y border-dashed border-black/22 py-4">
+                <div className="flex justify-between text-black/46">
+                  <span>subtotal</span>
+                  <span>¥ 000</span>
+                </div>
+                <div className="flex justify-between text-black/46">
+                  <span>tax</span>
+                  <span>curiosity</span>
+                </div>
+                <div className="flex justify-between pt-2 text-base tracking-[0.16em] text-[#2f718a]">
+                  <span>total</span>
+                  <span>thank you</span>
+                </div>
               </div>
-              <div className="mt-5 h-8 bg-[repeating-linear-gradient(90deg,#111_0,#111_2px,transparent_2px,transparent_5px)] opacity-25" />
+
+              <p className="mt-6 text-center text-[0.62rem] leading-5 tracking-[0.16em] text-black/38">
+                no refund needed. please keep building.
+              </p>
+              <div className="mt-6 h-10 bg-[repeating-linear-gradient(90deg,#111_0,#111_1px,transparent_1px,transparent_4px,#111_4px,#111_6px,transparent_6px,transparent_9px)] opacity-28" />
+              <p className="mt-3 text-center text-[0.56rem] tracking-[0.22em] text-black/30">THANK YOU FOR VISITING</p>
+
+              <div className="-mx-5 -mb-7 mt-7 flex h-4 rotate-180 overflow-hidden">
+                {Array.from({ length: 18 }).map((_, index) => (
+                  <span key={index} className="h-4 flex-1 rounded-b-full bg-white" />
+                ))}
+              </div>
             </div>
           </div>
         </div>
