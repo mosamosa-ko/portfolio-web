@@ -3,7 +3,7 @@
 import { Component, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Text, useGLTF } from "@react-three/drei";
+import { Text, useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
 const links = [
@@ -50,6 +50,8 @@ type MuseumArtwork = {
   type: string;
   description: string;
   link: string;
+  image: string;
+  size: [number, number];
   position: [number, number, number];
   rotation: [number, number, number];
   accent: string;
@@ -62,6 +64,8 @@ const museumExhibits = [
     type: "GPS Territory Game",
     description: "Movement becomes territory. A map product about walking, play, and place.",
     link: "https://terraplot-chi.vercel.app/en",
+    image: "/Terraplot_logo.png",
+    size: [1.58, 1.58],
     position: [-4.6, 2.2, -6.82],
     rotation: [0, 0, 0],
     accent: "#8fc7dd",
@@ -72,6 +76,8 @@ const museumExhibits = [
     type: "Web / Design",
     description: "A scroll-based interface with baggage, terminal play, desktop UI, and small interactive scenes.",
     link: "https://github.com/mosamosa-ko/portfolio-web",
+    image: "/portfolio.png",
+    size: [2.28, 1.52],
     position: [0, 2.2, -6.82],
     rotation: [0, 0, 0],
     accent: "#d8edf6",
@@ -82,6 +88,8 @@ const museumExhibits = [
     type: "Research",
     description: "Nodes, edges, queries, and machine learning as a research direction.",
     link: "https://github.com/mosamosa-ko",
+    image: "/graph.png",
+    size: [2.28, 1.52],
     position: [4.6, 2.2, -6.82],
     rotation: [0, 0, 0],
     accent: "#b8d6e6",
@@ -92,6 +100,8 @@ const museumExhibits = [
     type: "iOS / Web",
     description: "Small product systems across iOS, web, maps, and interaction.",
     link: "https://github.com/mosamosa-ko",
+    image: "/app_dev.png",
+    size: [2.28, 1.52],
     position: [-6.82, 2.2, -1.2],
     rotation: [0, Math.PI / 2, 0],
     accent: "#9fd3e6",
@@ -213,6 +223,50 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
   );
 }
 
+function ArtworkFrame({ artwork }: { artwork: MuseumArtwork }) {
+  const texture = useTexture(artwork.image);
+  const [imageWidth, imageHeight] = artwork.size;
+  const frameWidth = imageWidth + 0.34;
+  const frameHeight = imageHeight + 0.34;
+
+  useEffect(() => {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 4;
+  }, [texture]);
+
+  return (
+    <group position={artwork.position} rotation={artwork.rotation}>
+      <mesh position={[0, 0, -0.045]}>
+        <boxGeometry args={[frameWidth + 0.26, frameHeight + 0.26, 0.1]} />
+        <meshStandardMaterial color="#d8edf6" roughness={0.6} />
+      </mesh>
+      <mesh position={[0, 0, 0]}>
+        <boxGeometry args={[frameWidth, frameHeight, 0.08]} />
+        <meshStandardMaterial color="#ffffff" roughness={0.45} />
+      </mesh>
+      <mesh position={[0, 0, 0.065]}>
+        <planeGeometry args={[imageWidth, imageHeight]} />
+        <meshBasicMaterial map={texture} toneMapped={false} />
+      </mesh>
+      <mesh position={[0, -frameHeight / 2 - 0.36, 0.08]}>
+        <boxGeometry args={[1.42, 0.42, 0.04]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
+      <Text
+        position={[0, -frameHeight / 2 - 0.36, 0.12]}
+        fontSize={0.12}
+        maxWidth={1.18}
+        textAlign="center"
+        color="#2f718a"
+        anchorX="center"
+        anchorY="middle"
+      >
+        {artwork.title.toUpperCase()}
+      </Text>
+    </group>
+  );
+}
+
 function MuseumRoom({
   keysRef,
   yawRef,
@@ -249,7 +303,6 @@ function MuseumRoom({
     if (direction.lengthSq() > 0) {
       direction.normalize();
       velocity.lerp(direction.multiplyScalar(4.2), 0.18);
-      player.rotation.y = Math.atan2(velocity.x, velocity.z);
     } else {
       velocity.lerp(new THREE.Vector3(0, 0, 0), 0.16);
     }
@@ -259,6 +312,7 @@ function MuseumRoom({
 
     player.position.x = THREE.MathUtils.clamp(player.position.x + velocity.x * delta, -5.8, 5.8);
     player.position.z = THREE.MathUtils.clamp(player.position.z + velocity.z * delta, -5.25, 4.2);
+    player.rotation.y = yaw;
 
     targetCamera.set(
       player.position.x - forward.x * 6.1,
@@ -368,41 +422,11 @@ function MuseumRoom({
         </Text>
       </group>
 
-      {museumExhibits.map((artwork) => (
-        <group key={artwork.id} position={artwork.position} rotation={artwork.rotation}>
-          <mesh position={[0, 0, -0.035]}>
-            <boxGeometry args={[2.7, 1.9, 0.1]} />
-            <meshStandardMaterial color="#d8edf6" roughness={0.6} />
-          </mesh>
-          <mesh position={[0, 0, 0]}>
-            <boxGeometry args={[2.42, 1.62, 0.08]} />
-            <meshStandardMaterial color="#ffffff" roughness={0.45} />
-          </mesh>
-          <mesh position={[0, 0, 0.05]}>
-            <planeGeometry args={[2.08, 1.18]} />
-            <meshBasicMaterial color={artwork.accent} transparent opacity={0.42} />
-          </mesh>
-          <mesh position={[0, 0, 0.095]}>
-            <ringGeometry args={[0.25, 0.27, 48]} />
-            <meshBasicMaterial color="#ffffff" transparent opacity={0.45} />
-          </mesh>
-          <mesh position={[0, -1.12, 0.08]}>
-            <boxGeometry args={[1.4, 0.42, 0.04]} />
-            <meshBasicMaterial color="#ffffff" />
-          </mesh>
-          <Text
-            position={[0, -1.12, 0.12]}
-            fontSize={0.12}
-            maxWidth={1.18}
-            textAlign="center"
-            color="#2f718a"
-            anchorX="center"
-            anchorY="middle"
-          >
-            {artwork.title.toUpperCase()}
-          </Text>
-        </group>
-      ))}
+      <Suspense fallback={null}>
+        {museumExhibits.map((artwork) => (
+          <ArtworkFrame key={artwork.id} artwork={artwork} />
+        ))}
+      </Suspense>
 
       <group ref={playerRef} position={[0, 0.05, 2.5]}>
         <mesh position={[0, 0.72, 0]}>
