@@ -11,6 +11,19 @@ const links = [
   { label: "Email", href: "mailto:hello@example.com" },
 ];
 
+const receiptLogoAscii = String.raw`
+@@@  @@@   @@@@@@       @@@ @@@   @@@@@@   @@@@@@@@@@    @@@@@@    @@@@@@    @@@@@@   @@@  @@@  @@@
+@@@ @@@   @@@@@@@@      @@@ @@@  @@@@@@@@  @@@@@@@@@@@  @@@@@@@@  @@@@@@@   @@@@@@@@  @@@ @@@   @@@
+@@!@@!    @@!  @@@      @@! !@@  @@!  @@@  @@! @@! @@!  @@!  @@@  !@@       @@!  @@@  @@! !@@   @@!
+!@!!@!    !@!  @!@      !@! @!!  !@!  @!@  !@! !@! !@!  !@!  @!@  !@!       !@!  @!@  !@! @!!   !@!
+@!@!@!    @!@  !@!       !@!@!   @!@!@!@!  @!! !!@ @!@  @!@!@!@!  !!@@!!    @!@!@!@!  @!@@!@!   !!@
+!!!@!!!   !@!  !!!        @!!!   !!!@!!!!  !@!   ! !@!  !!!@!!!!   !!@!!!   !!!@!!!!  !!@!!!    !!!
+!!: :!!   !!:  !!!        !!:    !!:  !!!  !!:     !!:  !!:  !!!       !:!  !!:  !!!  !!: :!!   !!:
+:!:  !:!  :!:  !:!        :!:    :!:  !:!  :!:     :!:  :!:  !:!      !:!   :!:  !:!  :!:  !:!  :!:
+ ::  :::  ::::: ::         ::    ::   :::  :::     ::   ::   :::  :::: ::   ::   :::   ::  :::   ::
+ :   :::   : :  :          :      :   : :   :      :     :   : :  :: : :     :   : :   :   :::  :
+`;
+
 type GarageModelProps = {
   path: string;
   color: string;
@@ -376,7 +389,7 @@ function MiniMuseum() {
         keysRef.current = {};
         viewDragRef.current.active = false;
       }}
-      className="relative min-h-[92vh] select-none overflow-hidden border-y border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
+      className="relative h-[100svh] min-h-[760px] select-none overflow-hidden border-y border-[#8fc7dd]/34 bg-[#f8fcfd] shadow-[0_24px_80px_rgba(95,159,186,0.12)] outline-none"
     >
       <Canvas
         camera={{ position: [0, 3.7, 8.6], fov: 46 }}
@@ -444,6 +457,21 @@ export function ContactSection() {
   const [shouldLoadGarage, setShouldLoadGarage] = useState(false);
   const [pointer, setPointer] = useState<PointerState>({ x: 0, y: 0 });
   const [drag, setDrag] = useState<DragState>({ x: 0, y: 0 });
+  const [receiptMeta, setReceiptMeta] = useState({ date: "loading...", order: "#----" });
+
+  useEffect(() => {
+    const openedAt = new Date();
+    const date = new Intl.DateTimeFormat(undefined, {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(openedAt);
+    const order = `#${String(openedAt.getMonth() + 1).padStart(2, "0")}${String(openedAt.getDate()).padStart(2, "0")}${String(openedAt.getHours()).padStart(2, "0")}${String(openedAt.getMinutes()).padStart(2, "0")}`;
+
+    setReceiptMeta({ date, order });
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -610,7 +638,7 @@ export function ContactSection() {
               </p>
             </div>
 
-            <div className="mx-auto w-full max-w-[360px] bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62 shadow-[0_22px_70px_rgba(95,159,186,0.16)]">
+            <div className="mx-auto w-full max-w-[390px] bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62 shadow-[0_22px_70px_rgba(95,159,186,0.16)]">
               <div className="-mx-5 -mt-7 mb-6 flex h-4 overflow-hidden">
                 {Array.from({ length: 18 }).map((_, index) => (
                   <span key={index} className="h-4 flex-1 rounded-b-full bg-white" />
@@ -623,10 +651,16 @@ export function ContactSection() {
                 <p className="mt-1 text-[0.62rem] tracking-[0.16em] text-black/34">ko-yamasaki.vercel.app</p>
               </div>
 
+              <div className="my-6 overflow-hidden border-y border-dashed border-black/18 py-4">
+                <pre className="origin-top-left scale-[0.36] whitespace-pre font-mono text-[0.56rem] leading-[0.62rem] tracking-[-0.08em] text-black/42">
+                  {receiptLogoAscii}
+                </pre>
+              </div>
+
               <div className="my-6 border-y border-dashed border-black/22 py-3 text-[0.64rem] leading-5 text-black/44">
                 <div className="flex justify-between">
                   <span>date</span>
-                  <span>2026-05-01</span>
+                  <span className="text-right">{receiptMeta.date}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>cashier</span>
@@ -634,7 +668,7 @@ export function ContactSection() {
                 </div>
                 <div className="flex justify-between">
                   <span>order</span>
-                  <span>#0004</span>
+                  <span>{receiptMeta.order}</span>
                 </div>
               </div>
 
