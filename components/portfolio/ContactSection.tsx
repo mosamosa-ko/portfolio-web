@@ -345,10 +345,14 @@ function MuseumRoom({
   const right = useMemo(() => new THREE.Vector3(), []);
   const targetCamera = useMemo(() => new THREE.Vector3(), []);
   const targetLookAt = useMemo(() => new THREE.Vector3(), []);
+  const playerYawRef = useRef(0);
 
   useFrame(({ camera }, delta) => {
     const player = playerRef.current;
     if (!player) return;
+
+    if (keysRef.current.q) yawRef.current += delta * 1.65;
+    if (keysRef.current.e) yawRef.current -= delta * 1.65;
 
     const yaw = yawRef.current;
 
@@ -363,17 +367,15 @@ function MuseumRoom({
 
     if (direction.lengthSq() > 0) {
       direction.normalize();
+      playerYawRef.current = Math.atan2(direction.x, -direction.z);
       velocity.lerp(direction.multiplyScalar(4.2), 0.18);
     } else {
       velocity.lerp(new THREE.Vector3(0, 0, 0), 0.16);
     }
 
-    if (keysRef.current.q) yawRef.current += delta * 1.65;
-    if (keysRef.current.e) yawRef.current -= delta * 1.65;
-
     player.position.x = THREE.MathUtils.clamp(player.position.x + velocity.x * delta, -5.8, 5.8);
     player.position.z = THREE.MathUtils.clamp(player.position.z + velocity.z * delta, -5.25, 4.2);
-    player.rotation.y = yaw;
+    player.rotation.y = THREE.MathUtils.lerp(player.rotation.y, playerYawRef.current, 0.18);
 
     targetCamera.set(
       player.position.x - forward.x * 6.1,
@@ -578,8 +580,6 @@ function MiniMuseum() {
       onKeyDown={(event) => {
         setKey(event.key, true);
         const normalized = event.key.toLowerCase();
-        if (normalized === "q") yawRef.current += 0.12;
-        if (normalized === "e") yawRef.current -= 0.12;
         if (["w", "a", "s", "d", "q", "e", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(normalized)) {
           event.preventDefault();
         }
@@ -627,7 +627,7 @@ function MiniMuseum() {
       />
 
       <div className="pointer-events-none absolute left-5 top-5 z-20 rounded-full border border-[#8fc7dd]/34 bg-white/78 px-4 py-2 font-mono text-[0.64rem] uppercase tracking-[0.18em] text-black/46 backdrop-blur-sm">
-        WASD to walk / drag or Q E to look
+        WASD to walk / drag or Q E to turn camera
       </div>
 
       <div className="pointer-events-none absolute bottom-5 left-5 right-5 z-20 grid gap-3 sm:left-auto sm:w-[390px]">
