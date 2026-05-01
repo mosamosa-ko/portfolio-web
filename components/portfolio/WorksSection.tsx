@@ -484,6 +484,7 @@ function RetroMacDesktop() {
     })),
   );
   const [dragging, setDragging] = useState<DragState | null>(null);
+  const openWindowCount = windows.filter((windowItem) => windowItem.open).length;
 
   const focusWindow = (id: string) => {
     setWindows((current) => {
@@ -558,6 +559,10 @@ function RetroMacDesktop() {
           <span>Special</span>
         </div>
         <span>Portfolio Macintosh</span>
+        <div className="flex items-center gap-4 text-black/54">
+          <span>{openWindowCount} windows</span>
+          <span>{new Date().getFullYear()}</span>
+        </div>
       </div>
 
       <div
@@ -605,6 +610,21 @@ function RetroMacDesktop() {
               </button>
             );
           })}
+        </div>
+
+        <div className="absolute bottom-6 right-6 w-[320px] border border-[#8fc7dd]/36 bg-white/78 p-4 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-black/44 shadow-[4px_4px_0_rgba(95,159,186,0.12)]">
+          <div className="flex items-center justify-between border-b border-[#8fc7dd]/30 pb-2">
+            <span>System status</span>
+            <span className="text-[#2f718a]">active</span>
+          </div>
+          <div className="mt-3 grid grid-cols-[1fr_auto] gap-y-2">
+            <span>folders mounted</span>
+            <span>{desktopApps.length}</span>
+            <span>windows open</span>
+            <span>{openWindowCount}</span>
+            <span>mode</span>
+            <span>portfolio os</span>
+          </div>
         </div>
 
         {windows

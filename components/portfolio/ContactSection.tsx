@@ -169,6 +169,41 @@ const museumExhibits = [
   },
 ] satisfies MuseumArtwork[];
 
+const vendingItems = [
+  {
+    id: "terraplot",
+    code: "01",
+    title: "Terraplot",
+    label: "GPS Territory Game",
+    flavor: "movement / map / cells",
+    color: "#d8edf6",
+  },
+  {
+    id: "app",
+    code: "02",
+    title: "App Dev",
+    label: "iOS + Web Product",
+    flavor: "swiftui / ui / systems",
+    color: "#e8f4f8",
+  },
+  {
+    id: "portfolio",
+    code: "03",
+    title: "Portfolio",
+    label: "Interactive Web",
+    flavor: "3d / terminal / desktop",
+    color: "#f2fafc",
+  },
+  {
+    id: "research",
+    code: "04",
+    title: "Graph AI",
+    label: "Research Direction",
+    flavor: "nodes / queries / learning",
+    color: "#eef7fa",
+  },
+];
+
 class GarageErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
 
@@ -722,6 +757,96 @@ function MiniMuseum() {
   );
 }
 
+function PortfolioVendingMachine({
+  selectedItem,
+  onSelectItem,
+}: {
+  selectedItem: (typeof vendingItems)[number];
+  onSelectItem: (item: (typeof vendingItems)[number]) => void;
+}) {
+  return (
+    <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+      <div>
+        <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Museum vending</p>
+        <h3 className="mt-3 font-display text-4xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-5xl">
+          Pick a project can.
+        </h3>
+        <p className="mt-5 max-w-md text-[17px] leading-7 text-black/54">
+          A small shop machine for the portfolio: press a number and it dispenses one compressed project souvenir.
+        </p>
+      </div>
+
+      <div className="rounded-[2rem] border border-[#8fc7dd]/36 bg-[#f8fcfd] p-5 shadow-[0_28px_90px_rgba(95,159,186,0.14)]">
+        <div className="grid gap-4 sm:grid-cols-[1fr_150px]">
+          <div className="relative min-h-[320px] overflow-hidden rounded-[1.45rem] border border-[#8fc7dd]/28 bg-white p-5">
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(143,199,221,0.1)_1px,transparent_1px),linear-gradient(rgba(143,199,221,0.1)_1px,transparent_1px)] bg-[length:22px_22px]" />
+            <div className="relative grid grid-cols-2 gap-4">
+              {vendingItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => onSelectItem(item)}
+                  className={`group min-h-[118px] border p-4 text-left transition ${
+                    selectedItem.id === item.id
+                      ? "border-[#2f718a]/50 bg-[#eef7fa]"
+                      : "border-[#8fc7dd]/28 bg-white/86 hover:border-[#8fc7dd]/60"
+                  }`}
+                >
+                  <span className="font-mono text-[0.64rem] uppercase tracking-[0.18em] text-[#2f718a]">
+                    {item.code}
+                  </span>
+                  <span className="mt-5 block text-2xl font-semibold tracking-[-0.06em]">{item.title}</span>
+                  <span className="mt-2 block font-mono text-[0.58rem] uppercase tracking-[0.12em] text-black/38">
+                    {item.flavor}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[1.35rem] border border-[#8fc7dd]/28 bg-white p-4">
+            <div className="grid grid-cols-2 gap-2">
+              {vendingItems.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => onSelectItem(item)}
+                  className={`h-14 rounded-full border font-mono text-xs font-bold tracking-[0.16em] transition ${
+                    selectedItem.id === item.id
+                      ? "border-[#2f718a]/46 bg-[#d8edf6] text-[#164d61]"
+                      : "border-[#8fc7dd]/34 bg-white text-black/48 hover:border-[#2f718a]/38"
+                  }`}
+                >
+                  {item.code}
+                </button>
+              ))}
+            </div>
+            <div className="mt-5 h-3 rounded-full bg-black/80" />
+            <div className="mt-5 min-h-[144px] rounded-b-[1.4rem] border border-[#8fc7dd]/26 bg-[#f8fcfd] p-4">
+              <div
+                key={selectedItem.id}
+                className="mx-auto grid h-28 w-24 place-items-center rounded-[1.3rem] border border-[#2f718a]/22 shadow-[0_18px_35px_rgba(95,159,186,0.18)] transition"
+                style={{ backgroundColor: selectedItem.color }}
+              >
+                <span className="text-center font-mono text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-[#2f718a]">
+                  {selectedItem.title}
+                  <br />
+                  can
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-5 flex flex-col gap-2 border-t border-[#8fc7dd]/28 pt-4 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-black/44 sm:flex-row sm:items-center sm:justify-between">
+          <span>dispensed: {selectedItem.label}</span>
+          <span className="text-[#2f718a]">price: curiosity</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ContactSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const dragRef = useRef({ active: false, x: 0, y: 0 });
@@ -730,8 +855,15 @@ export function ContactSection() {
   const [drag, setDrag] = useState<DragState>({ x: 0, y: 0 });
   const [receiptMeta, setReceiptMeta] = useState({ date: "loading...", order: "#----" });
   const [receiptName, setReceiptName] = useState("");
+  const [selectedVendingItem, setSelectedVendingItem] = useState(vendingItems[0]);
+  const [receiptPrinted, setReceiptPrinted] = useState(true);
   const displayReceiptName = receiptName.trim() || "GUEST";
   const receiptNameAscii = useMemo(() => renderReceiptNameAscii(displayReceiptName), [displayReceiptName]);
+
+  const printReceipt = () => {
+    setReceiptPrinted(false);
+    window.setTimeout(() => setReceiptPrinted(true), 120);
+  };
 
   useEffect(() => {
     const openedAt = new Date();
@@ -901,7 +1033,11 @@ export function ContactSection() {
             <MiniMuseum />
           </div>
 
-          <div className="mt-16 grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
+          <div className="mt-20">
+            <PortfolioVendingMachine selectedItem={selectedVendingItem} onSelectItem={setSelectedVendingItem} />
+          </div>
+
+          <div className="mt-20 grid gap-8 lg:grid-cols-[1fr_430px] lg:items-start">
             <div>
               <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Museum shop</p>
               <h3 className="mt-3 font-display text-4xl font-semibold leading-[1.06] tracking-[-0.055em] sm:text-5xl">
@@ -926,9 +1062,24 @@ export function ContactSection() {
                   A-Z / 0-9 / @ _ , . / printed as receipt ASCII.
                 </p>
               </label>
+
+              <button
+                type="button"
+                onClick={printReceipt}
+                className="mt-8 inline-flex rounded-full border border-[#8fc7dd]/46 bg-white px-5 py-3 font-mono text-xs uppercase tracking-[0.16em] text-[#2f718a] shadow-[0_16px_42px_rgba(95,159,186,0.1)] transition hover:border-[#2f718a]/58"
+              >
+                Print receipt
+              </button>
             </div>
 
-            <div className="mx-auto w-full max-w-[390px] bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62 shadow-[0_22px_70px_rgba(95,159,186,0.16)]">
+            <div className="mx-auto w-full max-w-[430px] rounded-t-[1.4rem] border border-[#8fc7dd]/30 bg-[#f8fcfd] p-4 shadow-[0_22px_70px_rgba(95,159,186,0.16)]">
+              <div className="mx-auto mb-4 h-5 w-3/4 rounded-full bg-black/82 shadow-inner" />
+              <div
+                className={`mx-auto w-full max-w-[390px] overflow-hidden transition-all duration-700 ease-out ${
+                  receiptPrinted ? "max-h-[1200px] translate-y-0 opacity-100" : "max-h-10 -translate-y-7 opacity-40"
+                }`}
+              >
+            <div className="bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62">
               <div className="-mx-5 -mt-7 mb-6 flex h-4 overflow-hidden">
                 {Array.from({ length: 18 }).map((_, index) => (
                   <span key={index} className="h-4 flex-1 rounded-b-full bg-white" />
@@ -958,6 +1109,10 @@ export function ContactSection() {
                 <div className="flex justify-between">
                   <span>date</span>
                   <span className="text-right">{receiptMeta.date}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>souvenir</span>
+                  <span>{selectedVendingItem.title}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>cashier</span>
@@ -1028,6 +1183,8 @@ export function ContactSection() {
                 {Array.from({ length: 18 }).map((_, index) => (
                   <span key={index} className="h-4 flex-1 rounded-b-full bg-white" />
                 ))}
+              </div>
+            </div>
               </div>
             </div>
           </div>
