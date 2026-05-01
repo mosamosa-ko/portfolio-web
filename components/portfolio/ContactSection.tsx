@@ -246,14 +246,35 @@ function RawDeliveryModel({ path, targetSize }: { path: string; targetSize: numb
 
   const normalized = useMemo(() => {
     const model = scene.clone(true);
+    const fullBox = new THREE.Box3().setFromObject(model);
+    const fullSize = fullBox.getSize(new THREE.Vector3());
+    const visibleBox = new THREE.Box3();
 
     model.traverse((child) => {
       if (!(child instanceof THREE.Mesh)) return;
+      const meshBox = new THREE.Box3().setFromObject(child);
+      const meshSize = meshBox.getSize(new THREE.Vector3());
+      const center = meshBox.getCenter(new THREE.Vector3());
+      const isLargeFloor =
+        meshSize.x > fullSize.x * 0.55 &&
+        meshSize.z > fullSize.z * 0.55 &&
+        meshSize.y < Math.max(0.08, fullSize.y * 0.08);
+      const isFloatingCargo =
+        meshSize.x > fullSize.x * 0.18 &&
+        meshSize.y > fullSize.y * 0.12 &&
+        center.y > fullBox.min.y + fullSize.y * 0.62;
+
+      if (isLargeFloor || isFloatingCargo) {
+        child.visible = false;
+        return;
+      }
+
       child.castShadow = false;
       child.receiveShadow = false;
+      visibleBox.union(meshBox);
     });
 
-    const box = new THREE.Box3().setFromObject(model);
+    const box = visibleBox.isEmpty() ? new THREE.Box3().setFromObject(model) : visibleBox;
     const size = box.getSize(new THREE.Vector3());
     const center = box.getCenter(new THREE.Vector3());
     const maxDimension = Math.max(size.x, size.y, size.z) || 1;
@@ -320,17 +341,17 @@ function DeliveryTrolleyScene() {
 
     if (trolleyRef.current) {
       const loop = (time * 0.15) % 1;
-      trolleyRef.current.position.x = THREE.MathUtils.lerp(-5.6, 4.6, loop);
-      trolleyRef.current.position.y = -0.84 + Math.sin(time * 2.1) * 0.02;
-      trolleyRef.current.position.z = 0.65 + Math.sin(time * 0.6) * 0.08;
+      trolleyRef.current.position.x = THREE.MathUtils.lerp(-6.2, 5.2, loop);
+      trolleyRef.current.position.y = -0.42 + Math.sin(time * 2.1) * 0.02;
+      trolleyRef.current.position.z = 0.35 + Math.sin(time * 0.6) * 0.08;
       trolleyRef.current.rotation.y = -0.2 + Math.sin(time * 0.7) * 0.035;
     }
   });
 
   return (
     <group>
-      <group ref={trolleyRef} position={[-5.6, -0.84, 0.65]} rotation={[0, -0.2, 0]}>
-        <RawDeliveryModel path="/models/trolley.glb" targetSize={11.5} />
+      <group ref={trolleyRef} position={[-6.2, -0.42, 0.35]} rotation={[0, -0.2, 0]}>
+        <RawDeliveryModel path="/models/trolley.glb" targetSize={24} />
       </group>
     </group>
   );
@@ -338,11 +359,11 @@ function DeliveryTrolleyScene() {
 
 function DeliveryShowcase({ shouldLoadModels }: { shouldLoadModels: boolean }) {
   return (
-    <section className="relative min-h-[660px] overflow-hidden rounded-[2rem] border border-[#8fc7dd]/30 bg-[radial-gradient(circle_at_74%_48%,rgba(143,199,221,0.2),transparent_36%),linear-gradient(135deg,#ffffff_0%,#f4fbfd_100%)] px-5 py-16 shadow-[0_28px_90px_rgba(95,159,186,0.12)] sm:px-10 lg:px-14">
+    <section className="relative min-h-[760px] overflow-hidden bg-[radial-gradient(circle_at_74%_48%,rgba(143,199,221,0.22),transparent_36%),linear-gradient(135deg,#ffffff_0%,#f4fbfd_100%)] px-5 py-16 sm:px-10 lg:px-16">
       <div className="absolute inset-0">
         <Canvas
           className="pointer-events-none"
-          camera={{ position: [0, -0.05, 5.7], fov: 28 }}
+          camera={{ position: [0, 0.1, 4.8], fov: 25 }}
           dpr={[0.75, 1.25]}
           gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
         >
@@ -361,7 +382,8 @@ function DeliveryShowcase({ shouldLoadModels }: { shouldLoadModels: boolean }) {
 
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.96)_0%,rgba(255,255,255,0.8)_36%,rgba(255,255,255,0.08)_100%)]" />
 
-      <div className="relative z-10 flex min-h-[520px] max-w-xl flex-col justify-center">
+      <div className="relative z-10 mx-auto flex min-h-[620px] max-w-[1480px] flex-col justify-center">
+        <div className="max-w-xl">
         <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Delivery system</p>
         <h3 className="mt-3 font-display text-4xl font-semibold leading-[1.03] tracking-[-0.055em] sm:text-6xl">
           Systems delivered, not just displayed.
@@ -373,6 +395,7 @@ function DeliveryShowcase({ shouldLoadModels }: { shouldLoadModels: boolean }) {
           <span className="rounded-full border border-[#8fc7dd]/42 bg-white/76 px-4 py-2">auto delivery</span>
           <span className="rounded-full border border-[#8fc7dd]/42 bg-white/76 px-4 py-2">project cargo</span>
           <span className="rounded-full border border-[#8fc7dd]/42 bg-white/76 px-4 py-2">system in motion</span>
+        </div>
         </div>
       </div>
     </section>
@@ -1000,7 +1023,7 @@ export function ContactSection() {
             <MiniMuseum />
           </div>
 
-          <div className="mt-20">
+          <div className="mx-[calc(50%-50vw)] mt-20">
             <DeliveryShowcase shouldLoadModels={shouldLoadGarage} />
           </div>
 
