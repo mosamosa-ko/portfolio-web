@@ -319,6 +319,57 @@ function GarageBackgroundModels({ pointer, drag }: { pointer: PointerState; drag
   );
 }
 
+function VendingShopModels({ selectedIndex }: { selectedIndex: number }) {
+  const trolleyRef = useRef<THREE.Group>(null);
+  const vendingRef = useRef<THREE.Group>(null);
+
+  useFrame(({ clock }, delta) => {
+    const time = clock.getElapsedTime();
+
+    if (vendingRef.current) {
+      vendingRef.current.rotation.y = -0.18 + Math.sin(time * 0.45) * 0.025;
+    }
+
+    if (trolleyRef.current) {
+      const targetX = -1.55 + selectedIndex * 0.62;
+      trolleyRef.current.position.x = THREE.MathUtils.lerp(trolleyRef.current.position.x, targetX, delta * 2.8);
+      trolleyRef.current.rotation.y = THREE.MathUtils.lerp(trolleyRef.current.rotation.y, -0.38 + selectedIndex * 0.08, delta * 2.4);
+      trolleyRef.current.position.y = 0.05 + Math.sin(time * 2.2) * 0.015;
+    }
+  });
+
+  return (
+    <group>
+      <group ref={vendingRef} position={[-0.88, -0.28, -0.25]}>
+        <GarageModel
+          path="/models/vending_machine.glb"
+          color="#d8edf6"
+          emissive="#6f97a8"
+          targetSize={2.78}
+          position={[0, 0, 0]}
+          rotation={[0, -0.12, 0]}
+          opacity={0.74}
+        />
+      </group>
+      <group ref={trolleyRef} position={[-1.55, -1.08, 1.08]}>
+        <GarageModel
+          path="/models/trolley.glb"
+          color="#b8d6e6"
+          emissive="#5f9fba"
+          targetSize={1.18}
+          position={[0, 0, 0]}
+          rotation={[0, -0.34, 0]}
+          opacity={0.82}
+        />
+      </group>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.2, -1.16, 0.02]}>
+        <circleGeometry args={[2.35, 72]} />
+        <meshBasicMaterial color="#8fc7dd" transparent opacity={0.1} />
+      </mesh>
+    </group>
+  );
+}
+
 function ArtworkFrame({ artwork }: { artwork: MuseumArtwork }) {
   const texture = useTexture(artwork.image);
   const [imageWidth, imageHeight] = artwork.size;
@@ -760,85 +811,66 @@ function MiniMuseum() {
 function PortfolioVendingMachine({
   selectedItem,
   onSelectItem,
+  shouldLoadModels,
 }: {
   selectedItem: (typeof vendingItems)[number];
   onSelectItem: (item: (typeof vendingItems)[number]) => void;
+  shouldLoadModels: boolean;
 }) {
+  const selectedIndex = Math.max(0, vendingItems.findIndex((item) => item.id === selectedItem.id));
+
   return (
-    <div className="grid gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+    <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
       <div>
         <p className="text-sm font-medium tracking-[-0.01em] text-black/42">Museum vending</p>
         <h3 className="mt-3 font-display text-4xl font-semibold leading-[1.04] tracking-[-0.055em] sm:text-5xl">
-          Pick a project can.
+          Order a project.
         </h3>
         <p className="mt-5 max-w-md text-[17px] leading-7 text-black/54">
-          A small shop machine for the portfolio: press a number and it dispenses one compressed project souvenir.
+          Press a number and the small trolley prepares the project souvenir before the receipt is printed.
         </p>
+        <div className="mt-7 grid max-w-md grid-cols-2 gap-3">
+          {vendingItems.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => onSelectItem(item)}
+              className={`border px-4 py-3 text-left transition ${
+                selectedItem.id === item.id
+                  ? "border-[#2f718a]/48 bg-[#eef7fa]"
+                  : "border-[#8fc7dd]/30 bg-white hover:border-[#8fc7dd]/70"
+              }`}
+            >
+              <span className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[#2f718a]">{item.code}</span>
+              <span className="mt-2 block text-lg font-semibold tracking-[-0.04em]">{item.title}</span>
+              <span className="mt-1 block font-mono text-[0.55rem] uppercase tracking-[0.12em] text-black/34">
+                {item.flavor}
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="rounded-[2rem] border border-[#8fc7dd]/36 bg-[#f8fcfd] p-5 shadow-[0_28px_90px_rgba(95,159,186,0.14)]">
-        <div className="grid gap-4 sm:grid-cols-[1fr_150px]">
-          <div className="relative min-h-[320px] overflow-hidden rounded-[1.45rem] border border-[#8fc7dd]/28 bg-white p-5">
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(143,199,221,0.1)_1px,transparent_1px),linear-gradient(rgba(143,199,221,0.1)_1px,transparent_1px)] bg-[length:22px_22px]" />
-            <div className="relative grid grid-cols-2 gap-4">
-              {vendingItems.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => onSelectItem(item)}
-                  className={`group min-h-[118px] border p-4 text-left transition ${
-                    selectedItem.id === item.id
-                      ? "border-[#2f718a]/50 bg-[#eef7fa]"
-                      : "border-[#8fc7dd]/28 bg-white/86 hover:border-[#8fc7dd]/60"
-                  }`}
-                >
-                  <span className="font-mono text-[0.64rem] uppercase tracking-[0.18em] text-[#2f718a]">
-                    {item.code}
-                  </span>
-                  <span className="mt-5 block text-2xl font-semibold tracking-[-0.06em]">{item.title}</span>
-                  <span className="mt-2 block font-mono text-[0.58rem] uppercase tracking-[0.12em] text-black/38">
-                    {item.flavor}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-[1.35rem] border border-[#8fc7dd]/28 bg-white p-4">
-            <div className="grid grid-cols-2 gap-2">
-              {vendingItems.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => onSelectItem(item)}
-                  className={`h-14 rounded-full border font-mono text-xs font-bold tracking-[0.16em] transition ${
-                    selectedItem.id === item.id
-                      ? "border-[#2f718a]/46 bg-[#d8edf6] text-[#164d61]"
-                      : "border-[#8fc7dd]/34 bg-white text-black/48 hover:border-[#2f718a]/38"
-                  }`}
-                >
-                  {item.code}
-                </button>
-              ))}
-            </div>
-            <div className="mt-5 h-3 rounded-full bg-black/80" />
-            <div className="mt-5 min-h-[144px] rounded-b-[1.4rem] border border-[#8fc7dd]/26 bg-[#f8fcfd] p-4">
-              <div
-                key={selectedItem.id}
-                className="mx-auto grid h-28 w-24 place-items-center rounded-[1.3rem] border border-[#2f718a]/22 shadow-[0_18px_35px_rgba(95,159,186,0.18)] transition"
-                style={{ backgroundColor: selectedItem.color }}
-              >
-                <span className="text-center font-mono text-[0.58rem] uppercase leading-4 tracking-[0.14em] text-[#2f718a]">
-                  {selectedItem.title}
-                  <br />
-                  can
-                </span>
-              </div>
-            </div>
-          </div>
+      <div className="relative min-h-[420px] overflow-hidden rounded-[2rem] border border-[#8fc7dd]/36 bg-[radial-gradient(circle_at_52%_45%,rgba(143,199,221,0.18),transparent_34%),linear-gradient(135deg,#ffffff_0%,#f4fbfd_100%)] shadow-[0_28px_90px_rgba(95,159,186,0.14)]">
+        <Canvas
+          className="absolute inset-0"
+          camera={{ position: [0, 0.55, 6.1], fov: 36 }}
+          dpr={[0.75, 1.25]}
+          gl={{ antialias: true, alpha: true, powerPreference: "low-power" }}
+        >
+          <ambientLight intensity={1.4} />
+          <directionalLight position={[3, 4, 5]} intensity={1.0} />
+          <directionalLight position={[-3, 2, 3]} intensity={0.38} color="#d8edf6" />
+          {shouldLoadModels ? (
+            <Suspense fallback={null}>
+              <VendingShopModels selectedIndex={selectedIndex} />
+            </Suspense>
+          ) : null}
+        </Canvas>
+        <div className="pointer-events-none absolute left-5 top-5 rounded-full border border-[#8fc7dd]/36 bg-white/78 px-4 py-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-black/42 backdrop-blur-sm">
+          project vending / trolley delivery
         </div>
-
-        <div className="mt-5 flex flex-col gap-2 border-t border-[#8fc7dd]/28 pt-4 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-black/44 sm:flex-row sm:items-center sm:justify-between">
+        <div className="absolute bottom-5 left-5 right-5 flex flex-col gap-2 border-t border-[#8fc7dd]/28 bg-white/72 p-4 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-black/44 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
           <span>dispensed: {selectedItem.label}</span>
           <span className="text-[#2f718a]">price: curiosity</span>
         </div>
@@ -862,7 +894,7 @@ export function ContactSection() {
 
   const printReceipt = () => {
     setReceiptPrinted(false);
-    window.setTimeout(() => setReceiptPrinted(true), 120);
+    window.setTimeout(() => setReceiptPrinted(true), 80);
   };
 
   useEffect(() => {
@@ -1034,7 +1066,11 @@ export function ContactSection() {
           </div>
 
           <div className="mt-20">
-            <PortfolioVendingMachine selectedItem={selectedVendingItem} onSelectItem={setSelectedVendingItem} />
+            <PortfolioVendingMachine
+              selectedItem={selectedVendingItem}
+              onSelectItem={setSelectedVendingItem}
+              shouldLoadModels={shouldLoadGarage}
+            />
           </div>
 
           <div className="mt-20 grid gap-8 lg:grid-cols-[1fr_430px] lg:items-start">
@@ -1073,13 +1109,23 @@ export function ContactSection() {
             </div>
 
             <div className="mx-auto w-full max-w-[430px] rounded-t-[1.4rem] border border-[#8fc7dd]/30 bg-[#f8fcfd] p-4 shadow-[0_22px_70px_rgba(95,159,186,0.16)]">
-              <div className="mx-auto mb-4 h-5 w-3/4 rounded-full bg-black/82 shadow-inner" />
+              <div className="relative mx-auto mb-4 h-16 w-full max-w-[360px] rounded-t-[1.2rem] border border-black/10 bg-[#111] shadow-[inset_0_-10px_20px_rgba(255,255,255,0.06)]">
+                <div className="absolute left-1/2 top-1/2 h-3 w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-black shadow-[0_2px_16px_rgba(255,255,255,0.18)]" />
+                <p className="absolute bottom-2 left-1/2 -translate-x-1/2 font-mono text-[0.52rem] uppercase tracking-[0.18em] text-white/38">
+                  receipt printer
+                </p>
+              </div>
               <div
-                className={`mx-auto w-full max-w-[390px] overflow-hidden transition-all duration-700 ease-out ${
-                  receiptPrinted ? "max-h-[1200px] translate-y-0 opacity-100" : "max-h-10 -translate-y-7 opacity-40"
+                className={`mx-auto w-full max-w-[390px] origin-top overflow-hidden transition-[max-height,transform,opacity] duration-[1800ms] ease-out ${
+                  receiptPrinted ? "max-h-[1400px] translate-y-0 opacity-100" : "max-h-0 -translate-y-4 opacity-80"
                 }`}
               >
-            <div className="bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62">
+            <div className="relative bg-white px-5 py-7 font-mono text-[0.72rem] uppercase tracking-[0.1em] text-black/62 shadow-[0_18px_40px_rgba(0,0,0,0.08)]">
+              <div
+                className={`pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#8fc7dd]/18 to-transparent transition-opacity delay-300 duration-500 ${
+                  receiptPrinted ? "opacity-100" : "opacity-0"
+                }`}
+              />
               <div className="-mx-5 -mt-7 mb-6 flex h-4 overflow-hidden">
                 {Array.from({ length: 18 }).map((_, index) => (
                   <span key={index} className="h-4 flex-1 rounded-b-full bg-white" />
