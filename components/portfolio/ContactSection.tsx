@@ -579,46 +579,17 @@ function MuseumRoom({
       </Suspense>
 
       <group ref={playerRef} position={[0, 0.05, 2.5]}>
-        <mesh position={[0, 0.72, 0]}>
-          <capsuleGeometry args={[0.28, 0.62, 12, 20]} />
-          <meshStandardMaterial color="#d8edf6" roughness={0.58} />
-        </mesh>
-        <mesh position={[0, 1.32, 0]}>
-          <sphereGeometry args={[0.34, 32, 20]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.48} />
-        </mesh>
-        <mesh position={[-0.23, 1.36, 0.02]}>
-          <sphereGeometry args={[0.1, 16, 12]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.5} />
-        </mesh>
-        <mesh position={[0.23, 1.36, 0.02]}>
-          <sphereGeometry args={[0.1, 16, 12]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.5} />
-        </mesh>
-        <mesh position={[-0.34, 0.78, 0.02]} rotation={[0, 0, -0.28]}>
-          <capsuleGeometry args={[0.055, 0.36, 8, 12]} />
-          <meshStandardMaterial color="#b8d6e6" roughness={0.5} />
-        </mesh>
-        <mesh position={[0.34, 0.78, 0.02]} rotation={[0, 0, 0.28]}>
-          <capsuleGeometry args={[0.055, 0.36, 8, 12]} />
-          <meshStandardMaterial color="#b8d6e6" roughness={0.5} />
-        </mesh>
-        <mesh position={[-0.12, 0.22, 0.02]}>
-          <capsuleGeometry args={[0.065, 0.35, 8, 12]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.5} />
-        </mesh>
-        <mesh position={[0.12, 0.22, 0.02]}>
-          <capsuleGeometry args={[0.065, 0.35, 8, 12]} />
-          <meshStandardMaterial color="#ffffff" roughness={0.5} />
-        </mesh>
-        <mesh position={[-0.1, 1.35, -0.31]}>
-          <sphereGeometry args={[0.035, 8, 8]} />
-          <meshBasicMaterial color="#2f718a" />
-        </mesh>
-        <mesh position={[0.1, 1.35, -0.31]}>
-          <sphereGeometry args={[0.035, 8, 8]} />
-          <meshBasicMaterial color="#2f718a" />
-        </mesh>
+        <Suspense fallback={null}>
+          <GarageModel
+            path="/models/human.glb"
+            color="#d8edf6"
+            emissive="#6f97a8"
+            targetSize={1.72}
+            position={[0, 0.88, 0]}
+            rotation={[0, Math.PI, 0]}
+            opacity={0.96}
+          />
+        </Suspense>
         <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.03, 0]}>
           <ringGeometry args={[0.42, 0.52, 32]} />
           <meshBasicMaterial color="#8fc7dd" transparent opacity={0.34} />
