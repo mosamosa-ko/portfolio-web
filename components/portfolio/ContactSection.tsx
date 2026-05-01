@@ -54,11 +54,25 @@ const receiptLetterMap: Record<string, string[]> = {
   X: ["@   @", " @ @ ", "  @  ", " @ @ ", "@   @"],
   Y: ["@   @", " @ @ ", "  @  ", "  @  ", "  @  "],
   Z: ["@@@@@", "   @ ", "  @  ", " @   ", "@@@@@"],
+  "0": [" @@@ ", "@  @@", "@ @ @", "@@  @", " @@@ "],
+  "1": ["  @  ", " @@  ", "  @  ", "  @  ", "@@@@@"],
+  "2": [" @@@ ", "@   @", "   @ ", "  @  ", "@@@@@"],
+  "3": ["@@@@ ", "    @", " @@@ ", "    @", "@@@@ "],
+  "4": ["@   @", "@   @", "@@@@@", "    @", "    @"],
+  "5": ["@@@@@", "@    ", "@@@@ ", "    @", "@@@@ "],
+  "6": [" @@@ ", "@    ", "@@@@ ", "@   @", " @@@ "],
+  "7": ["@@@@@", "   @ ", "  @  ", " @   ", "@    "],
+  "8": [" @@@ ", "@   @", " @@@ ", "@   @", " @@@ "],
+  "9": [" @@@ ", "@   @", " @@@@", "    @", " @@@ "],
+  "@": [" @@@ ", "@ @ @", "@ @@@", "@    ", " @@@@"],
+  "_": ["     ", "     ", "     ", "     ", "@@@@@"],
+  ",": ["     ", "     ", "     ", " @@  ", " @   "],
+  ".": ["     ", "     ", "     ", " @@  ", " @@  "],
   " ": ["     ", "     ", "     ", "     ", "     "],
 };
 
 function renderReceiptNameAscii(name: string) {
-  const safeName = (name || "GUEST").toUpperCase().replace(/[^A-Z ]/g, "").slice(0, 12) || "GUEST";
+  const safeName = (name || "GUEST").toUpperCase().replace(/[^A-Z0-9@_,. ]/g, "").slice(0, 14) || "GUEST";
   const rows = ["", "", "", "", ""];
 
   for (const character of safeName) {
@@ -837,13 +851,13 @@ export function ContactSection() {
                 <input
                   value={receiptName}
                   onChange={(event) => {
-                    setReceiptName(event.target.value.replace(/[^a-zA-Z ]/g, "").slice(0, 14));
+                    setReceiptName(event.target.value.replace(/[^a-zA-Z0-9@_,. ]/g, "").slice(0, 14));
                   }}
                   placeholder="TYPE YOUR NAME"
                   className="mt-3 w-full border border-[#8fc7dd]/42 bg-white px-4 py-3 font-mono text-xs uppercase tracking-[0.14em] text-black/72 shadow-[0_16px_40px_rgba(95,159,186,0.08)] outline-none transition placeholder:text-black/24 focus:border-[#2f718a]/58"
                 />
                 <p className="mt-2 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-black/30">
-                  Alphabet only / printed as receipt ASCII.
+                  A-Z / 0-9 / @ _ , . / printed as receipt ASCII.
                 </p>
               </label>
             </div>
@@ -869,10 +883,7 @@ export function ContactSection() {
 
               <div className="my-5 border-y border-dashed border-black/18 py-4 text-center" translate="no">
                 <p className="text-[0.58rem] tracking-[0.2em] text-black/34">issued to</p>
-                <p className="mt-2 text-[0.82rem] tracking-[0.18em] text-[#2f718a]">
-                  {displayReceiptName.toUpperCase()}
-                </p>
-                <pre className="mx-auto mt-3 max-w-full overflow-hidden whitespace-pre text-center font-mono text-[0.34rem] leading-[0.43rem] tracking-[-0.05em] text-black/42">
+                <pre className="mx-auto mt-3 max-w-full overflow-hidden whitespace-pre text-center font-mono text-[0.34rem] leading-[0.43rem] tracking-[-0.05em] text-[#2f718a]/78">
                   {receiptNameAscii}
                 </pre>
               </div>
