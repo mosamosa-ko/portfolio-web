@@ -653,14 +653,11 @@ function MuseumRoom({
       <group ref={playerRef} position={[0, 0.05, 2.5]}>
         <GarageErrorBoundary>
           <Suspense fallback={null}>
-            <GarageModel
+            <RawGarageModel
               path="/models/human.glb"
-              color="#d8edf6"
-              emissive="#6f97a8"
               targetSize={1.72}
               position={[0, 0.88, 0]}
               rotation={[0, Math.PI, 0]}
-              opacity={0.96}
             />
           </Suspense>
         </GarageErrorBoundary>

@@ -290,7 +290,7 @@ export function AboutSection() {
               <span>KO-YAMASAKI</span>
             </div>
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_210px]">
-              <pre className="max-h-[270px] max-w-full overflow-hidden font-mono text-[0.28rem] leading-[0.34rem] tracking-[-0.055em] text-[#2f718a]/72 sm:text-[0.38rem] sm:leading-[0.45rem] lg:text-[0.42rem] lg:leading-[0.5rem]">
+              <pre className="max-w-full overflow-x-auto overflow-y-visible font-mono text-[0.22rem] leading-[0.27rem] tracking-[-0.055em] text-[#2f718a]/72 sm:text-[0.31rem] sm:leading-[0.36rem] lg:text-[0.34rem] lg:leading-[0.39rem]">
                 {faceAscii}
               </pre>
               <div className="hidden border-l border-[#8fc7dd]/18 pl-4 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-black/42 lg:block">

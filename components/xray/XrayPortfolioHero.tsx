@@ -89,7 +89,13 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
               </div>
             </div>
 
-            <div className="min-w-0 border border-white/12 bg-black/22 p-4 sm:p-5">
+            <div className="relative min-w-0 overflow-hidden border border-white/12 bg-black/22 p-4 sm:p-5">
+              <img
+                src="/BDFM_face.svg"
+                alt=""
+                aria-hidden="true"
+                className="pointer-events-none absolute right-4 top-4 h-20 w-20 opacity-[0.09] grayscale invert sm:h-28 sm:w-28"
+              />
               <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.2em] text-white/34">
                 <span>boot manifest</span>
                 <span>{ready ? "ready" : "scanning"}</span>
