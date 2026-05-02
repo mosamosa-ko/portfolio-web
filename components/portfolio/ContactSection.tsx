@@ -775,11 +775,12 @@ function MiniMuseum() {
         }}
       />
 
-      <div className="pointer-events-none absolute left-5 top-5 z-20 rounded-full border border-[#8fc7dd]/34 bg-white/78 px-4 py-2 font-mono text-[0.64rem] uppercase tracking-[0.18em] text-black/46 backdrop-blur-sm">
-        WASD to walk / drag or Q E to turn camera
+      <div className="pointer-events-none absolute left-4 top-4 z-20 rounded-full border border-[#8fc7dd]/34 bg-white/78 px-3 py-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-black/46 backdrop-blur-sm sm:left-5 sm:top-5 sm:px-4 sm:text-[0.64rem] sm:tracking-[0.18em]">
+        <span className="sm:hidden">Drag to look / buttons to walk</span>
+        <span className="hidden sm:inline">WASD to walk / drag or Q E to turn camera</span>
       </div>
 
-      <div className="absolute bottom-5 left-5 z-30 grid grid-cols-3 gap-2 sm:hidden">
+      <div className="absolute bottom-4 left-4 z-30 grid grid-cols-3 gap-2 sm:hidden">
         <span />
         <button
           type="button"
@@ -787,7 +788,7 @@ function MiniMuseum() {
           onPointerDown={pressControl("w")}
           onPointerUp={releaseControl("w")}
           onPointerCancel={releaseControl("w")}
-          className="h-14 w-14 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
+          className="h-12 w-12 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
         >
           W
         </button>
@@ -798,7 +799,7 @@ function MiniMuseum() {
           onPointerDown={pressControl("a")}
           onPointerUp={releaseControl("a")}
           onPointerCancel={releaseControl("a")}
-          className="h-14 w-14 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
+          className="h-12 w-12 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
         >
           A
         </button>
@@ -808,7 +809,7 @@ function MiniMuseum() {
           onPointerDown={pressControl("s")}
           onPointerUp={releaseControl("s")}
           onPointerCancel={releaseControl("s")}
-          className="h-14 w-14 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
+          className="h-12 w-12 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
         >
           S
         </button>
@@ -818,24 +819,24 @@ function MiniMuseum() {
           onPointerDown={pressControl("d")}
           onPointerUp={releaseControl("d")}
           onPointerCancel={releaseControl("d")}
-          className="h-14 w-14 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
+          className="h-12 w-12 rounded-full border border-[#8fc7dd]/46 bg-white/82 font-mono text-xs uppercase tracking-[0.12em] text-[#2f718a] shadow-[0_12px_30px_rgba(95,159,186,0.16)] backdrop-blur-sm"
         >
           D
         </button>
       </div>
 
-      <div className="pointer-events-none absolute bottom-5 left-5 right-5 z-20 grid gap-3 sm:left-auto sm:w-[390px]">
+      <div className="pointer-events-none absolute left-4 right-4 top-[4.6rem] z-20 grid gap-3 sm:bottom-5 sm:left-auto sm:right-5 sm:top-auto sm:w-[390px]">
         {activeArtwork ? (
-          <div className="border border-[#8fc7dd]/38 bg-white/86 p-5 shadow-[0_18px_60px_rgba(95,159,186,0.14)] backdrop-blur-sm">
+          <div className="border border-[#8fc7dd]/38 bg-white/88 p-4 shadow-[0_18px_60px_rgba(95,159,186,0.14)] backdrop-blur-sm sm:p-5">
             <p className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-[#2f718a]">near artwork</p>
-            <h3 className="mt-2 text-3xl font-semibold tracking-[-0.055em]">{activeArtwork.title}</h3>
+            <h3 className="mt-2 text-2xl font-semibold tracking-[-0.055em] sm:text-3xl">{activeArtwork.title}</h3>
             <p className="mt-1 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-black/38">{activeArtwork.type}</p>
-            <p className="mt-4 text-sm leading-6 text-black/58">{activeArtwork.description}</p>
+            <p className="mt-3 text-sm leading-5 text-black/58 sm:mt-4 sm:leading-6">{activeArtwork.description}</p>
             <a
               href={activeArtwork.link}
               target="_blank"
               rel="noreferrer"
-              className="pointer-events-auto mt-5 inline-flex rounded-full border border-[#8fc7dd]/54 bg-white px-4 py-2 text-sm font-medium text-[#2f718a] transition hover:border-[#2f718a]/60 hover:text-[#164d61]"
+              className="pointer-events-auto mt-4 inline-flex rounded-full border border-[#8fc7dd]/54 bg-white px-4 py-2 text-sm font-medium text-[#2f718a] transition hover:border-[#2f718a]/60 hover:text-[#164d61] sm:mt-5"
             >
               Open project
             </a>

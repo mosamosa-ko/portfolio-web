@@ -293,20 +293,20 @@ export function AboutSection() {
               <pre className="max-w-full overflow-x-auto overflow-y-visible font-mono text-[0.22rem] leading-[0.27rem] tracking-[-0.055em] text-[#2f718a]/72 sm:text-[0.31rem] sm:leading-[0.36rem] lg:text-[0.34rem] lg:leading-[0.39rem]">
                 {faceAscii}
               </pre>
-              <div className="hidden border-l border-[#8fc7dd]/18 pl-4 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-black/42 lg:block">
+              <div className="border-t border-[#8fc7dd]/18 pt-4 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-black/42 lg:border-l lg:border-t-0 lg:pl-4 lg:pt-0 lg:text-[0.62rem] lg:tracking-[0.16em]">
                 <p className="text-[#2f718a]">profile signal</p>
-                <div className="mt-5 space-y-3">
+                <div className="mt-4 space-y-2 lg:mt-5 lg:space-y-3">
                   <p>id: ko-yamasaki</p>
                   <p>field: computer science</p>
                   <p>focus: ai / graph / app</p>
                   <p>base: hiroshima</p>
                 </div>
-                <div className="mt-7 space-y-1 text-[#2f718a]/64">
+                <div className="mt-5 space-y-1 text-[#2f718a]/64 lg:mt-7">
                   <p>|||| || |||| ||| ||</p>
                   <p>|| ||||| || ||| ||||</p>
                   <p>||| || |||| || |||||</p>
                 </div>
-                <p className="mt-7 leading-5 text-black/30">
+                <p className="mt-5 leading-5 text-black/30 lg:mt-7">
                   everyday systems, small interactions, and products around movement.
                 </p>
               </div>
