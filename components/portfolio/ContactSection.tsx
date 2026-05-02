@@ -11,19 +11,6 @@ const links = [
   { label: "Email", href: "mailto:hello@example.com" },
 ];
 
-const receiptLogoAscii = String.raw`
-@@@  @@@   @@@@@@       @@@ @@@   @@@@@@   @@@@@@@@@@    @@@@@@    @@@@@@    @@@@@@   @@@  @@@  @@@
-@@@ @@@   @@@@@@@@      @@@ @@@  @@@@@@@@  @@@@@@@@@@@  @@@@@@@@  @@@@@@@   @@@@@@@@  @@@ @@@   @@@
-@@!@@!    @@!  @@@      @@! !@@  @@!  @@@  @@! @@! @@!  @@!  @@@  !@@       @@!  @@@  @@! !@@   @@!
-!@!!@!    !@!  @!@      !@! @!!  !@!  @!@  !@! !@! !@!  !@!  @!@  !@!       !@!  @!@  !@! @!!   !@!
-@!@!@!    @!@  !@!       !@!@!   @!@!@!@!  @!! !!@ @!@  @!@!@!@!  !!@@!!    @!@!@!@!  @!@@!@!   !!@
-!!!@!!!   !@!  !!!        @!!!   !!!@!!!!  !@!   ! !@!  !!!@!!!!   !!@!!!   !!!@!!!!  !!@!!!    !!!
-!!: :!!   !!:  !!!        !!:    !!:  !!!  !!:     !!:  !!:  !!!       !:!  !!:  !!!  !!: :!!   !!:
-:!:  !:!  :!:  !:!        :!:    :!:  !:!  :!:     :!:  :!:  !:!      !:!   :!:  !:!  :!:  !:!  :!:
- ::  :::  ::::: ::         ::    ::   :::  :::     ::   ::   :::  :::: ::   ::   :::   ::  :::   ::
- :   :::   : :  :          :      :   : :   :      :     :   : :  :: : :     :   : :   :   :::  :
-`;
-
 const receiptLetterMap: Record<string, string[]> = {
   A: [" @@@ ", "@   @", "@@@@@", "@   @", "@   @"],
   B: ["@@@@ ", "@   @", "@@@@ ", "@   @", "@@@@ "],
@@ -1133,13 +1120,15 @@ export function ContactSection() {
               <div className="text-center">
                 <p className="text-[0.95rem] tracking-[0.24em] text-[#2f718a]">PORTFOLIO RECEIPT</p>
                 <p className="mt-2 text-[0.62rem] tracking-[0.16em] text-black/42">museum shop / checkout 01</p>
-                <p className="mt-1 text-[0.62rem] tracking-[0.16em] text-black/34">ko-yamasaki.vercel.app</p>
+                <p className="mt-1 text-[0.62rem] tracking-[0.16em] text-black/34">koyamasaki.com</p>
               </div>
 
-              <div className="relative my-5 h-[76px] overflow-hidden border-y border-dashed border-black/18" translate="no">
-                <pre className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-[0.32] whitespace-pre text-center font-mono text-[0.56rem] leading-[0.62rem] tracking-[-0.08em] text-black/42" translate="no">
-                  {receiptLogoAscii}
-                </pre>
+              <div className="my-5 flex justify-center border-y border-dashed border-black/18 py-4" translate="no">
+                <img
+                  src="/name_logo_transparent.png"
+                  alt="Ko Yamasaki"
+                  className="h-16 w-auto object-contain opacity-70"
+                />
               </div>
 
               <div className="my-5 border-y border-dashed border-black/18 py-4 text-center" translate="no">
