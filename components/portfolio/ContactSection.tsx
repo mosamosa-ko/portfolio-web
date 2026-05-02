@@ -8,7 +8,7 @@ import * as THREE from "three";
 
 const links = [
   { label: "GitHub", href: "https://github.com/mosamosa-ko", icon: "github" },
-  { label: "Email", href: "mailto:hello@example.com" },
+  { label: "Email", href: "mailto:byt3craft3r.dev@gmail.com" },
 ];
 
 const receiptLetterMap: Record<string, string[]> = {
@@ -1237,6 +1237,9 @@ export function ContactSection() {
               <span className="text-xs uppercase tracking-[0.16em] text-black/36">© 2026 Ko Yamasaki</span>
             </div>
             <div className="flex flex-wrap gap-3">
+              <p className="w-full text-sm leading-6 text-black/46 md:w-auto md:pr-2">
+                For work, collaboration, or inquiries.
+              </p>
               {links.map((link) => (
                 <a
                   key={link.label}

@@ -285,7 +285,7 @@ export function XrayPortfolioHero() {
     >
       <div className="relative h-screen overflow-hidden">
         <div className="absolute inset-0">
-          <Canvas dpr={[0.6, 0.9]} frameloop="demand" gl={{ antialias: false, alpha: false, powerPreference: "low-power" }}>
+          <Canvas dpr={[0.6, 0.9]} frameloop="always" gl={{ antialias: false, alpha: false, powerPreference: "low-power" }}>
             <SceneContent progress={progress} onModelReady={() => setModelReady(true)} />
           </Canvas>
         </div>

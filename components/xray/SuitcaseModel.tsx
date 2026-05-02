@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense, useEffect, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
+import { useFrame } from "@react-three/fiber";
 import { useGLTF } from "@react-three/drei";
 import {
   Box3,
@@ -8,6 +9,7 @@ import {
   EdgesGeometry,
   LineBasicMaterial,
   LineSegments,
+  MathUtils,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
@@ -167,6 +169,7 @@ function clamp01(value: number) {
 }
 
 function GlbSuitcase({ scanProgress, onReady }: SuitcaseModelProps) {
+  const groupRef = useRef<Object3D>(null);
   const { scene } = useGLTF("/models/new_suitcase.glb");
   const model = useMemo(() => scene.clone(true), [scene]);
   const normalized = useMemo(() => normalizeScene(model), [model]);
@@ -180,8 +183,15 @@ function GlbSuitcase({ scanProgress, onReady }: SuitcaseModelProps) {
     onReady?.();
   }, [model, onReady]);
 
+  useFrame((_, delta) => {
+    if (!groupRef.current) return;
+
+    groupRef.current.position.x = MathUtils.damp(groupRef.current.position.x, x, 8.5, delta);
+    groupRef.current.position.y = MathUtils.damp(groupRef.current.position.y, -0.2, 8.5, delta);
+  });
+
   return (
-    <group position={[x, -0.2, 0]}>
+    <group ref={groupRef} position={[x, -0.2, 0]}>
       <group rotation={[0, -Math.PI / 2, 0]} scale={normalized.scale}>
         <primitive object={model} position={[normalized.offset.x, normalized.offset.y, normalized.offset.z]} />
       </group>

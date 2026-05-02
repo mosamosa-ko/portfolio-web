@@ -369,8 +369,8 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
             <a href="https://github.com/mosamosa-ko" target="_blank" rel="noreferrer" className="block hover:underline">
               github.com/mosamosa-ko
             </a>
-            <a href="mailto:hello@example.com" className="block hover:underline">
-              hello@example.com
+            <a href="mailto:byt3craft3r.dev@gmail.com" className="block hover:underline">
+              byt3craft3r.dev@gmail.com
             </a>
           </div>
         </div>
@@ -411,7 +411,10 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
       <a href="https://github.com/mosamosa-ko" target="_blank" rel="noreferrer" className="block border border-black bg-white p-3 hover:bg-black hover:text-white">
         GitHub / mosamosa-ko
       </a>
-      <p className="text-black/60">Contact links can be added here.</p>
+      <a href="mailto:byt3craft3r.dev@gmail.com" className="block border border-black bg-white p-3 hover:bg-black hover:text-white">
+        Email / byt3craft3r.dev@gmail.com
+      </a>
+      <p className="text-black/60">For work, collaboration, or inquiries.</p>
     </div>
   );
 }
