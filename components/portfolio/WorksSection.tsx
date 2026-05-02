@@ -41,12 +41,12 @@ const projects = [
 const desktopApps = [
   { id: "projects", label: "Projects", title: "Projects", x: 188, y: 60, width: 560, color: "#edf3f6" },
   { id: "terraplot", label: "TerraPlot", title: "TerraPlot", x: 260, y: 112, width: 640, color: "#9fd3e6" },
-  { id: "about", label: "About", title: "About Ko", x: 340, y: 86, width: 470, color: "#eef7fa" },
+  { id: "about", label: "About", title: "About Me", x: 340, y: 86, width: 470, color: "#eef7fa" },
   { id: "skills", label: "Skills", title: "Skills", x: 430, y: 150, width: 470, color: "#e8f4f8" },
   { id: "contact", label: "Contact", title: "Contact", x: 520, y: 108, width: 420, color: "#f2fafc" },
   { id: "profiler", label: "System Profiler", title: "About This Portfolio", x: 632, y: 62, width: 520, color: "#dceff7" },
   { id: "search", label: "Finder Search", title: "Find Projects", x: 664, y: 178, width: 540, color: "#eef4f6" },
-  { id: "floppy", label: "Save Contact", title: "Contact Card Saved", x: 704, y: 282, width: 440, color: "#e6f5fa" },
+  { id: "floppy", label: "Save Contact", title: "Business Card", x: 704, y: 282, width: 500, color: "#e6f5fa" },
   { id: "startup", label: "Startup Disk", title: "Startup Disk", x: 250, y: 334, width: 500, color: "#edf7fa" },
   { id: "trash", label: "Trash", title: "discarded ideas.txt", x: 70, y: 608, width: 520, color: "#f6fbfd" },
 ];
@@ -361,20 +361,45 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
   if (id === "floppy") {
     return (
       <div className="font-mono text-sm text-black">
-        <div className="mx-auto max-w-sm border border-black bg-white p-5 shadow-[4px_4px_0_rgba(0,0,0,0.16)]">
-          <p className="text-xs uppercase tracking-[0.18em] text-black/42">saved contact card</p>
-          <p className="mt-4 text-2xl font-bold tracking-[-0.05em]">Ko Yamasaki</p>
-          <p className="mt-2 text-black/62">Computer Science / AI / App Development</p>
-          <div className="mt-5 space-y-2 border-t border-black pt-4">
-            <a href="https://github.com/mosamosa-ko" target="_blank" rel="noreferrer" className="block hover:underline">
-              github.com/mosamosa-ko
-            </a>
-            <a href="mailto:byt3craft3r.dev@gmail.com" className="block hover:underline">
-              byt3craft3r.dev@gmail.com
-            </a>
+        <div className="mx-auto max-w-md overflow-hidden border border-[#8fc7dd]/70 bg-[#fbfdfe] shadow-[7px_7px_0_rgba(95,159,186,0.16)]">
+          <div className="flex items-start justify-between gap-6 border-b border-[#8fc7dd]/40 bg-white px-6 py-5">
+            <div>
+              <p className="text-[0.62rem] uppercase tracking-[0.24em] text-[#2f718a]">business card</p>
+              <p className="mt-4 text-3xl font-bold tracking-[-0.07em]">Ko Yamasaki</p>
+              <p className="mt-2 text-sm leading-5 text-black/56">Computer Science / AI / App Development</p>
+            </div>
+            <img
+              src="/name_logo_transparent.png"
+              alt="Ko Yamasaki logo"
+              className="mt-1 h-14 w-24 object-contain opacity-90"
+            />
+          </div>
+          <div className="grid gap-5 px-6 py-5 sm:grid-cols-[1fr_auto]">
+            <div className="space-y-3">
+              <p className="text-[0.62rem] uppercase tracking-[0.2em] text-black/38">Contact</p>
+              <a href="mailto:byt3craft3r.dev@gmail.com" className="block text-base tracking-[-0.02em] hover:text-[#2f718a]">
+                byt3craft3r.dev@gmail.com
+              </a>
+              <a
+                href="https://github.com/mosamosa-ko"
+                target="_blank"
+                rel="noreferrer"
+                className="block text-base tracking-[-0.02em] hover:text-[#2f718a]"
+              >
+                github.com/mosamosa-ko
+              </a>
+            </div>
+            <div className="min-w-28 border-l border-[#8fc7dd]/36 pl-5 text-right">
+              <p className="text-[0.62rem] uppercase tracking-[0.2em] text-black/38">Base</p>
+              <p className="mt-3 text-sm">Hiroshima</p>
+              <p className="mt-5 text-[0.62rem] uppercase tracking-[0.2em] text-black/38">Mode</p>
+              <p className="mt-3 text-sm">Building</p>
+            </div>
           </div>
         </div>
-        <p className="mt-4 text-center text-xs uppercase tracking-[0.16em] text-black/42">contact.vcf saved to desktop</p>
+        <p className="mt-4 text-center text-xs uppercase tracking-[0.16em] text-black/42">
+          for work, collaboration, or inquiries
+        </p>
       </div>
     );
   }
@@ -487,8 +512,6 @@ function RetroMacDesktop() {
     })),
   );
   const [dragging, setDragging] = useState<DragState | null>(null);
-  const openWindowCount = windows.filter((windowItem) => windowItem.open).length;
-
   const focusWindow = (id: string) => {
     setWindows((current) => {
       const maxZ = Math.max(...current.map((windowItem) => windowItem.z));
@@ -563,7 +586,6 @@ function RetroMacDesktop() {
         </div>
         <span>Portfolio Macintosh</span>
         <div className="flex items-center gap-4 text-black/54">
-          <span>{openWindowCount} windows</span>
           <span>{new Date().getFullYear()}</span>
         </div>
       </div>
@@ -613,21 +635,6 @@ function RetroMacDesktop() {
               </button>
             );
           })}
-        </div>
-
-        <div className="absolute bottom-6 right-6 w-[320px] border border-[#8fc7dd]/36 bg-white/78 p-4 font-mono text-[0.66rem] uppercase tracking-[0.14em] text-black/44 shadow-[4px_4px_0_rgba(95,159,186,0.12)]">
-          <div className="flex items-center justify-between border-b border-[#8fc7dd]/30 pb-2">
-            <span>System status</span>
-            <span className="text-[#2f718a]">active</span>
-          </div>
-          <div className="mt-3 grid grid-cols-[1fr_auto] gap-y-2">
-            <span>folders mounted</span>
-            <span>{desktopApps.length}</span>
-            <span>windows open</span>
-            <span>{openWindowCount}</span>
-            <span>mode</span>
-            <span>portfolio os</span>
-          </div>
         </div>
 
         {windows
