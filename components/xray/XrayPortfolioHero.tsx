@@ -89,13 +89,7 @@ function LoadingScreen({ ready, visible, onDismiss }: { ready: boolean; visible:
               </div>
             </div>
 
-            <div className="relative min-w-0 overflow-hidden border border-white/12 bg-black/22 p-4 sm:p-5">
-              <img
-                src="/BDFM_face.svg"
-                alt=""
-                aria-hidden="true"
-                className="pointer-events-none absolute right-4 top-4 h-20 w-20 opacity-[0.09] grayscale invert sm:h-28 sm:w-28"
-              />
+            <div className="min-w-0 border border-white/12 bg-black/22 p-4 sm:p-5">
               <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.2em] text-white/34">
                 <span>boot manifest</span>
                 <span>{ready ? "ready" : "scanning"}</span>
@@ -300,8 +294,8 @@ export function XrayPortfolioHero() {
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.9)_0%,rgba(255,255,255,0.46)_44%,rgba(237,245,248,0.18)_100%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:radial-gradient(rgba(17,17,17,0.42)_0.7px,transparent_0.7px)] [background-size:7px_7px]" />
 
-        <div className="absolute left-6 top-6 z-10 text-[0.54rem] uppercase tracking-[0.32em] text-black/34 sm:left-10 sm:top-8">
-          Portfolio Baggage
+        <div className="absolute left-5 top-5 z-10 rounded-full border border-[#8fc7dd]/24 bg-white/74 px-4 py-2 shadow-[0_14px_40px_rgba(95,159,186,0.1)] backdrop-blur-sm sm:left-10 sm:top-8">
+          <img src="/name_logo.png" alt="Ko Yamasaki" className="h-6 w-auto object-contain sm:h-7" />
         </div>
 
         <div className="absolute left-5 top-[14%] z-10 max-w-[88vw] sm:left-10 sm:top-[17%] sm:max-w-3xl lg:left-16">

@@ -1240,7 +1240,12 @@ export function ContactSection() {
       <footer className="bg-white px-6 py-10 text-[#1d1d1f] sm:px-10 lg:px-16">
         <div className="mx-auto max-w-[1440px] border-t border-black/12 pt-6">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-            <span className="text-xs uppercase tracking-[0.16em] text-black/36">© 2026 Ko Yamasaki</span>
+            <div className="flex flex-col gap-3">
+              <div className="inline-flex w-fit rounded-full border border-[#8fc7dd]/24 bg-white px-4 py-2 shadow-[0_12px_32px_rgba(95,159,186,0.08)]">
+                <img src="/name_logo.png" alt="Ko Yamasaki" className="h-6 w-auto object-contain" />
+              </div>
+              <span className="text-xs uppercase tracking-[0.16em] text-black/36">© 2026 Ko Yamasaki</span>
+            </div>
             <div className="flex flex-wrap gap-3">
               {links.map((link) => (
                 <a
