@@ -106,7 +106,7 @@ export function SectionOverlay({
       <div className="absolute left-[3.8%] top-[13%] flex w-[22%] max-w-[280px] flex-col gap-3 text-[0.5rem] leading-[2.05]">
         <div className={panelClassName()}>
           <div className="mb-2 text-white/86">Portfolio Status</div>
-          <div>Name: Ko Yamasaki</div>
+          <div translate="no">Name: <span className="notranslate">山崎 康 / Ko Yamasaki</span></div>
           <div>Field: Computer Science</div>
           <div>Focus: AI / Graph Data</div>
           <div>Mode: Building</div>

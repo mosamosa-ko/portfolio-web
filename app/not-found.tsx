@@ -3,8 +3,8 @@ export default function NotFound() {
     <main className="min-h-screen bg-[#f8f6f1] text-black">
       <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-between px-6 py-8 sm:px-10">
         <header className="flex items-center justify-between">
-          <a href="/" className="inline-flex items-center gap-3" aria-label="Return to Ko Yamasaki portfolio home">
-            <img src="/name_logo_transparent.png" alt="Ko Yamasaki" className="h-10 w-20 object-contain" />
+          <a href="/" className="inline-flex items-center gap-3" aria-label="Return to 山崎 康 / Ko Yamasaki portfolio home">
+            <img src="/name_logo_transparent.png" alt="山崎 康 Ko Yamasaki" className="h-10 w-20 object-contain" />
             <span className="font-mono text-[0.64rem] uppercase tracking-[0.28em] text-black/54">Portfolio baggage</span>
           </a>
           <span className="font-mono text-xs uppercase tracking-[0.28em] text-[#2f718a]">404 room</span>
@@ -49,7 +49,9 @@ export default function NotFound() {
         </div>
 
         <footer className="border-t border-[#8fc7dd]/40 pt-5 font-mono text-[0.68rem] uppercase tracking-[0.24em] text-black/45">
-          © 2026 Ko Yamasaki
+          <span translate="no" className="notranslate">
+            © 2026 山崎 康 / Ko Yamasaki
+          </span>
         </footer>
       </section>
     </main>

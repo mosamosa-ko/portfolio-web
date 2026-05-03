@@ -1126,7 +1126,7 @@ export function ContactSection() {
               <div className="my-5 flex justify-center border-y border-dashed border-black/18 py-4" translate="no">
                 <img
                   src="/name_logo_transparent.png"
-                  alt="Ko Yamasaki"
+                  alt="山崎 康 Ko Yamasaki"
                   className="h-16 w-auto object-contain opacity-70"
                 />
               </div>
@@ -1232,9 +1232,11 @@ export function ContactSection() {
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col gap-3">
               <div className="inline-flex w-fit">
-                <img src="/name_logo_transparent.png" alt="Ko Yamasaki" className="h-10 w-auto object-contain" />
+                <img src="/name_logo_transparent.png" alt="山崎 康 Ko Yamasaki" className="h-10 w-auto object-contain" />
               </div>
-              <span className="text-xs uppercase tracking-[0.16em] text-black/36">© 2026 Ko Yamasaki</span>
+              <span className="text-xs tracking-[0.16em] text-black/36" translate="no">
+                <span className="notranslate">© 2026 山崎 康 / Ko Yamasaki</span>
+              </span>
             </div>
             <div className="flex flex-wrap gap-3">
               <p className="w-full text-sm leading-6 text-black/46 md:w-auto md:pr-2">

@@ -295,7 +295,7 @@ export function XrayPortfolioHero() {
         <div className="pointer-events-none absolute inset-0 opacity-[0.04] [background-image:radial-gradient(rgba(17,17,17,0.42)_0.7px,transparent_0.7px)] [background-size:7px_7px]" />
 
         <div className="absolute left-5 top-5 z-10 sm:left-10 sm:top-8">
-          <img src="/name_logo_transparent.png" alt="Ko Yamasaki" className="h-12 w-auto object-contain sm:h-14" />
+          <img src="/name_logo_transparent.png" alt="山崎 康 Ko Yamasaki" className="h-12 w-auto object-contain sm:h-14" />
         </div>
 
         <div className="absolute left-5 top-[14%] z-10 max-w-[88vw] sm:left-10 sm:top-[17%] sm:max-w-3xl lg:left-16">
@@ -312,9 +312,19 @@ export function XrayPortfolioHero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
+            translate="no"
           >
-            Ko Yamasaki
+            <span className="block notranslate">山崎 康</span>
           </motion.h1>
+          <motion.p
+            className="mt-3 text-xs uppercase tracking-[0.28em] text-black/44 sm:text-sm"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.16 }}
+            translate="no"
+          >
+            <span className="notranslate">Ko Yamasaki</span>
+          </motion.p>
           <motion.p
             className="mt-7 max-w-xl text-base leading-8 text-black/58 sm:text-lg"
             initial={{ opacity: 0, y: 16 }}
@@ -323,6 +333,9 @@ export function XrayPortfolioHero() {
           >
             Building products around location, graph data, and interactive systems.
           </motion.p>
+          <p className="sr-only">
+            山崎 康（やまさき こう / Ko Yamasaki）のポートフォリオ。位置情報、グラフデータ、インタラクティブシステムを中心に制作しています。
+          </p>
           <motion.a
             href="#works"
             className="mt-10 inline-flex border-b border-black/24 pb-2 text-[0.64rem] uppercase tracking-[0.24em] text-black/64 transition duration-300 hover:border-black/70 hover:text-black"

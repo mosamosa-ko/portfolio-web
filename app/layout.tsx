@@ -2,25 +2,30 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const siteUrl = "https://koyamasaki.com";
-const siteTitle = "Ko Yamasaki | Portfolio";
+const personNameJa = "山崎 康";
+const personNameJaCompact = "山崎康";
+const personNameRomaji = "Ko Yamasaki";
+const siteTitle = `${personNameJa} | ${personNameRomaji} | Portfolio`;
 const siteDescription =
-  "Portfolio of Ko Yamasaki. App development, interactive web experiences, graph AI research, and product experiments.";
+  "Portfolio of 山崎 康 (Ko Yamasaki). App development, interactive web experiences, graph AI research, and product experiments.";
 const socialDescription =
-  "App development, interactive web experiences, graph AI research, and product experiments.";
+  "山崎 康 (Ko Yamasaki) のポートフォリオ。App development, interactive web experiences, graph AI research, and product experiments.";
 
 export const metadata: Metadata = {
-  applicationName: "Ko Yamasaki Portfolio",
+  applicationName: `${personNameJa} Portfolio`,
   metadataBase: new URL(siteUrl),
   title: siteTitle,
   description: siteDescription,
   keywords: [
-    "Ko Yamasaki",
+    personNameJa,
+    personNameJaCompact,
+    personNameRomaji,
     "Kou Yamasaki",
     "Koyamasaki",
-    "山崎康",
     "山崎こう",
     "やまさきこう",
     "portfolio",
+    "ポートフォリオ",
     "app development",
     "graph AI",
     "web development",
@@ -41,14 +46,14 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: socialDescription,
     url: siteUrl,
-    siteName: "Ko Yamasaki Portfolio",
+    siteName: `${personNameJa} Portfolio`,
     type: "website",
     images: [
       {
         url: "/name_logo_transparent.png",
         width: 1200,
         height: 630,
-        alt: "Ko Yamasaki Portfolio",
+        alt: `${personNameJa} Portfolio`,
       },
     ],
   },
@@ -69,6 +74,10 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  other: {
+    "profile:first_name": "康",
+    "profile:last_name": "山崎",
+  },
 };
 
 const structuredData = {
@@ -77,11 +86,12 @@ const structuredData = {
     {
       "@type": "Person",
       "@id": `${siteUrl}/#person`,
-      name: "Ko Yamasaki",
-      alternateName: ["Kou Yamasaki", "Koyamasaki", "山崎康", "山崎こう", "やまさきこう"],
+      name: personNameJa,
+      alternateName: [personNameRomaji, "Kou Yamasaki", "Koyamasaki", personNameJaCompact, "山崎こう", "やまさきこう"],
       url: siteUrl,
       sameAs: ["https://github.com/mosamosa-ko"],
       jobTitle: "Computer Science Student",
+      description: "山崎 康 (Ko Yamasaki) portfolio focused on app development, graph AI, and interactive systems.",
       knowsAbout: [
         "App development",
         "Interactive web experiences",
@@ -94,10 +104,13 @@ const structuredData = {
     {
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
-      name: "Ko Yamasaki Portfolio",
+      name: `${personNameJa} Portfolio`,
       url: siteUrl,
-      inLanguage: "en",
+      inLanguage: ["ja", "en"],
       publisher: {
+        "@id": `${siteUrl}/#person`,
+      },
+      about: {
         "@id": `${siteUrl}/#person`,
       },
     },

@@ -12,6 +12,7 @@ const projects = [
     description:
       "A location-based territory game where walking through real places captures cells on the map and turns movement into play.",
     tags: ["iOS", "SwiftUI", "Firebase", "Mapbox", "GPS"],
+    searchTerms: ["テラプロット", "位置情報", "地図", "GPS", "山崎 康", "山崎康", "Ko Yamasaki"],
     href: "https://terraplot-chi.vercel.app/en",
     image: "/models/ad.png",
   },
@@ -21,6 +22,7 @@ const projects = [
     category: "Location system",
     description: "A system currently under development related to maps and location-based interaction.",
     tags: ["Web", "Map", "Product Development"],
+    searchTerms: ["マッピ", "地図", "位置情報", "ロケーション", "山崎 康", "山崎康"],
   },
   {
     code: "03",
@@ -28,6 +30,7 @@ const projects = [
     category: "Web / Design",
     description: "An interactive portfolio site using 3D and scroll-based storytelling.",
     tags: ["Next.js", "TypeScript", "Three.js", "Tailwind CSS"],
+    searchTerms: ["ポートフォリオ", "Web", "デザイン", "3D", "山崎 康", "山崎康"],
   },
   {
     code: "04",
@@ -35,6 +38,7 @@ const projects = [
     category: "Research",
     description: "Exploring graph algorithms, graph databases, GNNs, and query optimization.",
     tags: ["Python", "Graph", "GNN", "Research"],
+    searchTerms: ["研究", "グラフ", "AI", "GNN", "クエリ最適化", "山崎 康", "山崎康"],
   },
 ];
 
@@ -108,7 +112,9 @@ function FinderSearchContent({ openWindow }: { openWindow: (id: string) => void 
   const normalizedQuery = query.trim().toLowerCase();
   const results = projects.filter((project) => {
     if (!normalizedQuery) return true;
-    return `${project.title} ${project.category} ${project.description} ${project.tags.join(" ")}`.toLowerCase().includes(normalizedQuery);
+    return `${project.title} ${project.category} ${project.description} ${project.tags.join(" ")} ${project.searchTerms.join(" ")}`
+      .toLowerCase()
+      .includes(normalizedQuery);
   });
 
   return (
@@ -120,7 +126,7 @@ function FinderSearchContent({ openWindow }: { openWindow: (id: string) => void 
         id="finder-search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="try: gps, graph, web, ios"
+        placeholder="try: gps, graph, web, ios, 山崎康"
         className="mt-2 w-full border border-black bg-white px-3 py-2 outline-none"
       />
       <div className="mt-4 space-y-2">
@@ -310,7 +316,9 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
   if (id === "about") {
     return (
       <div className="font-mono text-sm leading-7 text-black/72">
-        <p className="font-bold text-black">Ko Yamasaki</p>
+        <p className="font-bold text-black" translate="no">
+          <span className="notranslate">山崎 康 / Ko Yamasaki</span>
+        </p>
         <p>Computer Science student interested in AI, graph data, app development, and location-based products.</p>
         <p className="mt-4">Base: Hiroshima</p>
         <p>Focus: AI / Graph / App Development</p>
@@ -336,7 +344,9 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
         <div className="grid gap-3 border border-black bg-white p-4 shadow-[2px_2px_0_rgba(0,0,0,0.14)] sm:grid-cols-[130px_1fr]">
           <div className="mx-auto grid h-24 w-24 place-items-center border border-black bg-[#d6e8ff] text-4xl">●</div>
           <div className="space-y-1">
-            <p className="font-bold">Ko Yamasaki Portfolio</p>
+            <p className="font-bold" translate="no">
+              <span className="notranslate">山崎 康 / Ko Yamasaki Portfolio</span>
+            </p>
             <p>System: Computer Science / AI / App Development</p>
             <p>Memory: maps, graph data, interactive systems</p>
             <p>Location: Hiroshima</p>
@@ -365,12 +375,17 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
           <div className="flex items-start justify-between gap-6 border-b border-[#8fc7dd]/40 bg-white px-6 py-5">
             <div>
               <p className="text-[0.62rem] uppercase tracking-[0.24em] text-[#2f718a]">business card</p>
-              <p className="mt-4 text-3xl font-bold tracking-[-0.07em]">Ko Yamasaki</p>
+              <p className="mt-4 text-3xl font-bold tracking-[-0.07em]" translate="no">
+                <span className="notranslate">山崎 康</span>
+              </p>
+              <p className="mt-1 text-[0.65rem] uppercase tracking-[0.2em] text-black/40" translate="no">
+                <span className="notranslate">Ko Yamasaki</span>
+              </p>
               <p className="mt-2 text-sm leading-5 text-black/56">Computer Science / AI / App Development</p>
             </div>
             <img
               src="/name_logo_transparent.png"
-              alt="Ko Yamasaki logo"
+              alt="山崎 康 Ko Yamasaki logo"
               className="mt-1 h-14 w-24 object-contain opacity-90"
             />
           </div>

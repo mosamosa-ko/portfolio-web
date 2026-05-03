@@ -161,7 +161,7 @@ function getCommandOutput(rawCommand: string) {
   if (command === "profiler") {
     return [
       "About This Portfolio",
-      "System: Ko Yamasaki / Computer Science",
+      "System: 山崎 康 / Ko Yamasaki / Computer Science",
       "Memory: location systems, graph data, app development",
       "Extensions: Next.js, SwiftUI, Firebase, Python, React Three Fiber",
       "Status: building products around movement + data",
@@ -182,7 +182,7 @@ function getCommandOutput(rawCommand: string) {
   if (command === "save") {
     return [
       "saving contact.vcf...",
-      "name: Ko Yamasaki",
+      "name: 山崎 康 / Ko Yamasaki",
       "github: https://github.com/mosamosa-ko",
       "status: saved to desktop as contact card",
     ];
