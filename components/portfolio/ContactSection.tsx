@@ -4,6 +4,8 @@ import { Component, Suspense, useEffect, useMemo, useRef, useState } from "react
 import type { PointerEvent, ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, useGLTF, useTexture } from "@react-three/drei";
+import { useSiteLanguage } from "@/components/site/LanguageProvider";
+import { withLocale } from "@/lib/i18n";
 import * as THREE from "three";
 
 const links = [
@@ -657,7 +659,7 @@ function MuseumRoom({
   );
 }
 
-function MiniMuseum() {
+function MiniMuseum({ terraplotPageHref }: { terraplotPageHref: string }) {
   const museumRef = useRef<HTMLDivElement>(null);
   const keysRef = useRef<Record<string, boolean>>({});
   const yawRef = useRef(0);
@@ -820,9 +822,9 @@ function MiniMuseum() {
             <p className="mt-1 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-black/38">{activeArtwork.type}</p>
             <p className="mt-3 text-sm leading-5 text-black/58 sm:mt-4 sm:leading-6">{activeArtwork.description}</p>
             <a
-              href={activeArtwork.link}
-              target="_blank"
-              rel="noreferrer"
+              href={activeArtwork.id === "terraplot" ? terraplotPageHref : activeArtwork.link}
+              target={activeArtwork.id === "terraplot" ? undefined : "_blank"}
+              rel={activeArtwork.id === "terraplot" ? undefined : "noreferrer"}
               className="pointer-events-auto mt-4 inline-flex rounded-full border border-[#8fc7dd]/54 bg-white px-4 py-2 text-sm font-medium text-[#2f718a] transition hover:border-[#2f718a]/60 hover:text-[#164d61] sm:mt-5"
             >
               Open project
@@ -839,6 +841,7 @@ function MiniMuseum() {
 }
 
 export function ContactSection() {
+  const { language } = useSiteLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const dragRef = useRef({ active: false, x: 0, y: 0 });
   const [shouldLoadGarage, setShouldLoadGarage] = useState(false);
@@ -850,6 +853,7 @@ export function ContactSection() {
   const [printProgress, setPrintProgress] = useState(0);
   const displayReceiptName = receiptName.trim() || "GUEST";
   const receiptNameAscii = useMemo(() => renderReceiptNameAscii(displayReceiptName), [displayReceiptName]);
+  const terraplotPageHref = withLocale(language, "/works/terraplot");
 
   const printReceipt = () => {
     setReceiptPrinted(false);
@@ -1045,7 +1049,7 @@ export function ContactSection() {
           </div>
 
           <div className="mx-[calc(50%-50vw)] mt-10">
-            <MiniMuseum />
+            <MiniMuseum terraplotPageHref={terraplotPageHref} />
           </div>
 
           <div className="mx-[calc(50%-50vw)] mt-20">

@@ -1,6 +1,8 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import { useSiteLanguage } from "@/components/site/LanguageProvider";
+import { withLocale } from "@/lib/i18n";
 
 const focusItems = [
   { label: "AI / Machine Learning", code: "ml.pipeline.train()" },
@@ -221,9 +223,33 @@ type TerminalEntry = {
 };
 
 export function AboutSection() {
+  const { language } = useSiteLanguage();
   const [input, setInput] = useState("");
   const [entries, setEntries] = useState<TerminalEntry[]>([{ output: initialLines }]);
   const [faceAscii, setFaceAscii] = useState("");
+  const terraplotPageHref = withLocale(language, "/works/terraplot");
+  const copy =
+    language === "ja"
+      ? {
+          section: "About",
+          summary: "AI、グラフデータ、アプリ開発、位置情報プロダクトに関心を持つコンピュータサイエンスの学生です。",
+          terraplot: "Terraplot を見る",
+          terraplotSub: "GPS 陣取りゲーム",
+          manifest: "マニフェストを見る",
+          manifestSub: "中に何があるか",
+          githubSub: "ソースプロフィール",
+          terminalLabel: "ポートフォリオ端末コマンド",
+        }
+      : {
+          section: "About",
+          summary: "Computer Science student interested in AI, graph data, app development, and location-based products.",
+          terraplot: "View Terraplot",
+          terraplotSub: "GPS territory game",
+          manifest: "Scan Manifest",
+          manifestSub: "what is inside",
+          githubSub: "source profile",
+          terminalLabel: "Portfolio terminal command",
+        };
 
   useEffect(() => {
     let active = true;
@@ -256,7 +282,7 @@ export function AboutSection() {
     }
 
     if (command.toLowerCase() === "open terraplot") {
-      window.open("https://terraplot-chi.vercel.app/en", "_blank", "noopener,noreferrer");
+      window.location.href = terraplotPageHref;
     }
 
     if (command.toLowerCase() === "open github") {
@@ -280,7 +306,7 @@ export function AboutSection() {
     <section className="overflow-x-hidden bg-white px-5 py-24 text-[#1d1d1f] sm:px-10 sm:py-32 lg:px-16">
       <div className="mx-auto grid max-w-[1380px] gap-10 lg:grid-cols-[0.92fr_1.18fr] lg:items-center">
         <div className="min-w-0">
-          <p className="mb-4 text-sm font-medium tracking-[-0.01em] text-black/48">About</p>
+          <p className="mb-4 text-sm font-medium tracking-[-0.01em] text-black/48">{copy.section}</p>
           <pre className="max-w-full overflow-hidden font-mono text-[0.34rem] font-semibold leading-[1.05] tracking-[-0.08em] text-[#1d1d1f] sm:text-[0.46rem] lg:text-[0.5rem] xl:text-[0.58rem]">
             {nameAscii}
           </pre>
@@ -312,26 +338,22 @@ export function AboutSection() {
               </div>
             </div>
           </div>
-          <p className="mt-7 max-w-2xl text-[1.65rem] leading-[1.25] tracking-[-0.04em] text-black/68 sm:text-3xl sm:leading-[1.35]">
-            Computer Science student interested in AI, graph data, app development, and location-based products.
-          </p>
+          <p className="mt-7 max-w-2xl text-[1.65rem] leading-[1.25] tracking-[-0.04em] text-black/68 sm:text-3xl sm:leading-[1.35]">{copy.summary}</p>
           <div className="mt-8 grid gap-3 sm:grid-cols-3">
             <a
-              href="https://terraplot-chi.vercel.app/en"
-              target="_blank"
-              rel="noreferrer"
+              href={terraplotPageHref}
               className="rounded-xl border border-[#8fc7dd]/18 bg-white px-4 py-4 text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(95,159,186,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:border-[#8fc7dd]/42 hover:text-[#2f718a]"
             >
-              View Terraplot
-              <span className="mt-1 block text-xs text-black/38">GPS territory game</span>
+              {copy.terraplot}
+              <span className="mt-1 block text-xs text-black/38">{copy.terraplotSub}</span>
             </a>
             <button
               type="button"
               onClick={() => runCommand("manifest")}
               className="rounded-xl border border-[#8fc7dd]/18 bg-white px-4 py-4 text-left text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(95,159,186,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:border-[#8fc7dd]/42 hover:text-[#2f718a]"
             >
-              Scan Manifest
-              <span className="mt-1 block text-xs text-black/38">what is inside</span>
+              {copy.manifest}
+              <span className="mt-1 block text-xs text-black/38">{copy.manifestSub}</span>
             </button>
             <a
               href="https://github.com/mosamosa-ko"
@@ -340,7 +362,7 @@ export function AboutSection() {
               className="rounded-xl border border-[#8fc7dd]/18 bg-white px-4 py-4 text-sm font-medium tracking-[-0.01em] text-black/70 shadow-[rgba(95,159,186,0.08)_3px_5px_30px_0px] transition hover:-translate-y-0.5 hover:border-[#8fc7dd]/42 hover:text-[#2f718a]"
             >
               GitHub
-              <span className="mt-1 block text-xs text-black/38">source profile</span>
+              <span className="mt-1 block text-xs text-black/38">{copy.githubSub}</span>
             </a>
           </div>
         </div>
@@ -389,7 +411,7 @@ export function AboutSection() {
 
             <form onSubmit={handleSubmit} className="mt-7 flex min-w-0 items-center border-t border-white/10 pt-5">
               <label htmlFor="portfolio-terminal" className="sr-only">
-                Portfolio terminal command
+                {copy.terminalLabel}
               </label>
               <span className="hidden text-[#6fb6d3] sm:inline">ko@portfolio</span>
               <span className="mx-2 shrink-0 text-white/34">~/baggage $</span>

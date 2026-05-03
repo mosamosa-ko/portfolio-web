@@ -3,6 +3,8 @@
 import Image from "next/image";
 import type { PointerEvent } from "react";
 import { useState } from "react";
+import { useSiteLanguage } from "@/components/site/LanguageProvider";
+import { withLocale } from "@/lib/i18n";
 
 const projects = [
   {
@@ -70,6 +72,7 @@ type DragState = {
 type WindowContentProps = {
   id: string;
   openWindow: (id: string) => void;
+  terraplotPageHref: string;
 };
 
 function FolderIcon({ active = false, color = "#ffffff" }: { active?: boolean; color?: string }) {
@@ -228,7 +231,7 @@ function ProjectSignalVisual({ project }: { project: (typeof projects)[number] }
   );
 }
 
-function WindowContent({ id, openWindow }: WindowContentProps) {
+function WindowContent({ id, openWindow, terraplotPageHref }: WindowContentProps) {
   if (id === "projects") {
     const mainProject = projects[0];
 
@@ -295,9 +298,7 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
           <h3 className="mt-3 font-mono text-3xl font-bold tracking-[-0.06em] text-black">{terraplot.title}</h3>
           <p className="mt-4 font-mono text-sm leading-6 text-black/68">{terraplot.description}</p>
           <a
-            href={terraplot.href}
-            target="_blank"
-            rel="noreferrer"
+            href={terraplotPageHref}
             className="mt-5 inline-flex border border-black bg-white px-4 py-2 font-mono text-sm font-bold text-black shadow-[2px_2px_0_rgba(0,0,0,0.18)] hover:bg-black hover:text-white"
           >
             Open TerraPlot
@@ -459,7 +460,7 @@ function WindowContent({ id, openWindow }: WindowContentProps) {
   );
 }
 
-function MobileRetroMacDesktop() {
+function MobileRetroMacDesktop({ terraplotPageHref }: { terraplotPageHref: string }) {
   const [activeApp, setActiveApp] = useState("projects");
   const [bootVisible, setBootVisible] = useState(true);
   const selectedApp = desktopApps.find((app) => app.id === activeApp) ?? desktopApps[0];
@@ -508,7 +509,7 @@ function MobileRetroMacDesktop() {
             <div className="h-[13px] flex-1 bg-[repeating-linear-gradient(to_bottom,#000_0,#000_1px,transparent_1px,transparent_3px)] opacity-70" />
           </div>
           <div className="max-h-[72vh] overflow-y-auto p-4">
-            <WindowContent id={activeApp} openWindow={setActiveApp} />
+            <WindowContent id={activeApp} openWindow={setActiveApp} terraplotPageHref={terraplotPageHref} />
           </div>
         </div>
       </div>
@@ -516,7 +517,7 @@ function MobileRetroMacDesktop() {
   );
 }
 
-function RetroMacDesktop() {
+function RetroMacDesktop({ terraplotPageHref }: { terraplotPageHref: string }) {
   const [bootVisible, setBootVisible] = useState(true);
   const [windows, setWindows] = useState<WindowState[]>(() =>
     desktopApps.map((app, index) => ({
@@ -706,7 +707,7 @@ function RetroMacDesktop() {
                 </button>
               </div>
               <div className={windowItem.expanded ? "min-h-[560px] p-6" : "min-h-[250px] p-5"}>
-                <WindowContent id={windowItem.id} openWindow={openWindow} />
+                <WindowContent id={windowItem.id} openWindow={openWindow} terraplotPageHref={terraplotPageHref} />
               </div>
               {!windowItem.expanded ? (
                 <div className="pointer-events-none absolute bottom-1 right-1 grid h-4 w-4 grid-cols-3 gap-px opacity-60">
@@ -724,21 +725,36 @@ function RetroMacDesktop() {
 }
 
 export function WorksSection() {
+  const { language } = useSiteLanguage();
+  const terraplotPageHref = withLocale(language, "/works/terraplot");
+  const copy =
+    language === "ja"
+      ? {
+          section: "Works",
+          title: "主なプロジェクト",
+          summary: "位置情報、地図、3D インターフェース、グラフ指向の研究をまたぐ制作。",
+        }
+      : {
+          section: "Works",
+          title: "Selected Projects",
+          summary: "Product experiments across location, maps, 3D interfaces, and graph-oriented research.",
+        };
+
   return (
     <section id="works" className="overflow-x-hidden bg-white px-5 py-24 text-[#1d1d1f] sm:px-10 sm:py-32 lg:px-16">
       <div className="mx-auto max-w-[1440px]">
         <div className="mx-auto mb-12 max-w-[760px] text-center sm:mb-16">
-          <p className="mb-4 text-sm font-medium tracking-[-0.01em] text-black/48">Works</p>
+          <p className="mb-4 text-sm font-medium tracking-[-0.01em] text-black/48">{copy.section}</p>
           <h2 className="font-display text-4xl font-semibold leading-[1.07] tracking-[-0.045em] text-[#1d1d1f] sm:text-6xl">
-            Selected Projects
+            {copy.title}
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-[17px] leading-[1.47] tracking-[-0.022em] text-black/58">
-            Product experiments across location, maps, 3D interfaces, and graph-oriented research.
+            {copy.summary}
           </p>
         </div>
 
-        <MobileRetroMacDesktop />
-        <RetroMacDesktop />
+        <MobileRetroMacDesktop terraplotPageHref={terraplotPageHref} />
+        <RetroMacDesktop terraplotPageHref={terraplotPageHref} />
       </div>
     </section>
   );

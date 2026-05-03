@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrthographicCamera, useProgress } from "@react-three/drei";
 import { motion } from "framer-motion";
+import { useSiteLanguage } from "@/components/site/LanguageProvider";
 import { SuitcaseModel } from "./SuitcaseModel";
 
 function clamp(value: number, min: number, max: number) {
@@ -165,6 +166,7 @@ function SceneContent({ progress, onModelReady }: { progress: number; onModelRea
 }
 
 export function XrayPortfolioHero() {
+  const { language } = useSiteLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const progressRef = useRef(0);
   const touchYRef = useRef<number | null>(null);
@@ -174,6 +176,20 @@ export function XrayPortfolioHero() {
   const [introDismissed, setIntroDismissed] = useState(false);
   const progress = useMemo(() => clamp(scrollProgress, 0, 1), [scrollProgress]);
   const showLoadingScreen = !modelReady || (!introElapsed && !introDismissed);
+  const copy =
+    language === "ja"
+      ? {
+          eyebrow: "コンピュータサイエンス / AI / アプリ開発",
+          summary: "位置情報、グラフデータ、インタラクティブシステムを中心にプロダクトをつくっています。",
+          cta: "作品を見る",
+          footer: "Portfolio Baggage",
+        }
+      : {
+          eyebrow: "Computer Science / AI / App Development",
+          summary: "Building products around location, graph data, and interactive systems.",
+          cta: "View Works",
+          footer: "Portfolio Baggage",
+        };
 
   useEffect(() => {
     const isHeroActive = () => {
@@ -305,7 +321,7 @@ export function XrayPortfolioHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7 }}
           >
-            Computer Science / AI / App Development
+            {copy.eyebrow}
           </motion.p>
           <motion.h1
             className="font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[-0.045em] text-[#111111] sm:text-7xl lg:text-8xl"
@@ -314,7 +330,7 @@ export function XrayPortfolioHero() {
             transition={{ duration: 0.8, delay: 0.1 }}
             translate="no"
           >
-            <span className="block notranslate">山崎 康</span>
+            <span className="block notranslate">Ko Yamasaki</span>
           </motion.h1>
           <motion.p
             className="mt-3 text-xs uppercase tracking-[0.28em] text-black/44 sm:text-sm"
@@ -323,7 +339,7 @@ export function XrayPortfolioHero() {
             transition={{ duration: 0.8, delay: 0.16 }}
             translate="no"
           >
-            <span className="notranslate">Ko Yamasaki</span>
+            <span className="notranslate">山崎 康 / 山崎康</span>
           </motion.p>
           <motion.p
             className="mt-7 max-w-xl text-base leading-8 text-black/58 sm:text-lg"
@@ -331,7 +347,7 @@ export function XrayPortfolioHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Building products around location, graph data, and interactive systems.
+            {copy.summary}
           </motion.p>
           <p className="sr-only">
             山崎 康（やまさき こう / Ko Yamasaki）のポートフォリオ。位置情報、グラフデータ、インタラクティブシステムを中心に制作しています。
@@ -343,12 +359,12 @@ export function XrayPortfolioHero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            View Works
+            {copy.cta}
           </motion.a>
         </div>
 
         <div className="absolute inset-x-6 bottom-7 z-10 flex items-center justify-between text-[0.5rem] uppercase tracking-[0.24em] text-black/28 sm:inset-x-10">
-          <span>Portfolio Baggage</span>
+          <span>{copy.footer}</span>
           <span>{String(Math.round(progress * 100)).padStart(2, "0")}%</span>
         </div>
       </div>
