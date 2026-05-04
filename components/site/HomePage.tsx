@@ -18,7 +18,7 @@ export function HomePage({ language }: { language: SiteLanguage }) {
         name: "山崎 康",
         alternateName: ["山崎康", "Ko Yamasaki", "Kou Yamasaki", "Koyamasaki"],
         url: `${siteUrl}${withLocale(language)}`,
-        sameAs: ["https://github.com/mosamosa-ko"],
+        sameAs: ["https://github.com/mosamosa-ko", "https://note.com/komosa", "https://x.com/byt3craft3r"],
         jobTitle: language === "ja" ? "コンピュータサイエンス学生" : "Computer Science Student",
         description:
           language === "ja"

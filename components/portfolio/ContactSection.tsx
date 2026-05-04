@@ -10,6 +10,8 @@ import * as THREE from "three";
 
 const links = [
   { label: "GitHub", href: "https://github.com/mosamosa-ko", icon: "github" },
+  { label: "note", href: "https://note.com/komosa" },
+  { label: "X", href: "https://x.com/byt3craft3r" },
   { label: "Email", href: "mailto:byt3craft3r.dev@gmail.com" },
 ];
 
