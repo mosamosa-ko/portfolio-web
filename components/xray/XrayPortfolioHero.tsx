@@ -339,7 +339,7 @@ export function XrayPortfolioHero() {
             transition={{ duration: 0.8, delay: 0.16 }}
             translate="no"
           >
-            <span className="notranslate">山崎 康 / 山崎康</span>
+            <span className="notranslate">山崎 康</span>
           </motion.p>
           <motion.p
             className="mt-7 max-w-xl text-base leading-8 text-black/58 sm:text-lg"
