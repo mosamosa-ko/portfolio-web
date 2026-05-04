@@ -4,7 +4,7 @@ import Image from "next/image";
 import type { PointerEvent } from "react";
 import { useState } from "react";
 import { useSiteLanguage } from "@/components/site/LanguageProvider";
-import { withLocale } from "@/lib/i18n";
+import { terraplotAppUrl } from "@/lib/i18n";
 
 const projects = [
   {
@@ -726,7 +726,7 @@ function RetroMacDesktop({ terraplotPageHref }: { terraplotPageHref: string }) {
 
 export function WorksSection() {
   const { language } = useSiteLanguage();
-  const terraplotPageHref = withLocale(language, "/works/terraplot");
+  const terraplotPageHref = terraplotAppUrl;
   const copy =
     language === "ja"
       ? {

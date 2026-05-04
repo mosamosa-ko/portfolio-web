@@ -5,7 +5,7 @@ import type { PointerEvent, ReactNode } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Text, useGLTF, useTexture } from "@react-three/drei";
 import { useSiteLanguage } from "@/components/site/LanguageProvider";
-import { withLocale } from "@/lib/i18n";
+import { terraplotAppUrl } from "@/lib/i18n";
 import * as THREE from "three";
 
 const links = [
@@ -853,7 +853,7 @@ export function ContactSection() {
   const [printProgress, setPrintProgress] = useState(0);
   const displayReceiptName = receiptName.trim() || "GUEST";
   const receiptNameAscii = useMemo(() => renderReceiptNameAscii(displayReceiptName), [displayReceiptName]);
-  const terraplotPageHref = withLocale(language, "/works/terraplot");
+  const terraplotPageHref = terraplotAppUrl;
 
   const printReceipt = () => {
     setReceiptPrinted(false);

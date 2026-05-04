@@ -1,12 +1,7 @@
 import Image from "next/image";
 import { LanguageProvider } from "@/components/site/LanguageProvider";
 import { LanguageSwitcher } from "@/components/site/LanguageSwitcher";
-import { siteUrl, type SiteLanguage, withLocale } from "@/lib/i18n";
-
-const appUrlByLanguage: Record<SiteLanguage, string> = {
-  en: "https://terraplot-chi.vercel.app/en",
-  ja: "https://terraplot-chi.vercel.app/en",
-};
+import { siteUrl, terraplotAppUrl, type SiteLanguage, withLocale } from "@/lib/i18n";
 
 export function TerraplotPage({ language }: { language: SiteLanguage }) {
   const copy =
@@ -137,7 +132,7 @@ export function TerraplotPage({ language }: { language: SiteLanguage }) {
             <p className="mt-5 max-w-3xl text-[17px] leading-8 text-black/56">{copy.body}</p>
             <div className="mt-10 flex flex-wrap gap-3">
               <a
-                href={appUrlByLanguage[language]}
+                href={terraplotAppUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex rounded-full border border-[#2f718a]/18 bg-[#111111] px-5 py-3 text-sm font-medium text-white transition hover:bg-[#2f718a]"
@@ -206,7 +201,7 @@ export function TerraplotPage({ language }: { language: SiteLanguage }) {
             <p className="text-sm font-medium tracking-[-0.01em] text-white/54">{copy.related}</p>
             <div className="mt-5 flex flex-wrap gap-3">
               <a
-                href={appUrlByLanguage[language]}
+                href={terraplotAppUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex rounded-full border border-white/14 px-5 py-3 text-sm font-medium text-white transition hover:border-white/34"

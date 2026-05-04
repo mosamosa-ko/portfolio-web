@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { useSiteLanguage } from "@/components/site/LanguageProvider";
-import { withLocale } from "@/lib/i18n";
+import { terraplotAppUrl } from "@/lib/i18n";
 
 const focusItems = [
   { label: "AI / Machine Learning", code: "ml.pipeline.train()" },
@@ -227,7 +227,7 @@ export function AboutSection() {
   const [input, setInput] = useState("");
   const [entries, setEntries] = useState<TerminalEntry[]>([{ output: initialLines }]);
   const [faceAscii, setFaceAscii] = useState("");
-  const terraplotPageHref = withLocale(language, "/works/terraplot");
+  const terraplotPageHref = terraplotAppUrl;
   const copy =
     language === "ja"
       ? {
