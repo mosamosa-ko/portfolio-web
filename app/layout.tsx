@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
+import { siteUrl } from "@/lib/i18n";
 import "./globals.css";
-
-const siteUrl = "https://koyamasaki.com";
 
 export const metadata: Metadata = {
   applicationName: "Ko Yamasaki Portfolio",
